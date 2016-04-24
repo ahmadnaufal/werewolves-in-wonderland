@@ -5,6 +5,7 @@
  */
 package werewolvesinwonderland.Server;
 
+import werewolvesinwonderland.Message.Identification;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

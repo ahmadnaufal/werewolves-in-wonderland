@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package werewolvesinwonderland.Server;
+package werewolvesinwonderland.Message;
 
 /**
  *
@@ -77,6 +77,7 @@ public class Identification {
     public static final String DESC_USEREXISTS = "user exists";
     public static final String DESC_GAMESTARTED = "game is started";
     public static final String DESC_GAMERUNNING = "please wait, game is currently running";
+    public static final String DESC_WAITINGOTHERS = "waiting for other player to start";
     public static final String DESC_WRONGREQUEST = "wrong request";
     public static final String DESC_LISTCLIENT = "list of clients retrieved";
     public static final String DESC_ACCEPTED = "accepted";
