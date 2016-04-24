@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +20,7 @@ import java.util.logging.Logger;
  */
 public class ServerController {
     
-    public static HashMap<String, ClientHandler> listClients = new HashMap<>();
+    public static ArrayList<ClientHandler> listClients = new ArrayList<>();
     public static ServerSocket mServerSocket;
     public static int mPort = 2016;
     
@@ -29,8 +30,9 @@ public class ServerController {
             
             while (true) {
                 Socket socket = mServerSocket.accept();
-                System.out.println(socket.getInetAddress().getHostAddress() + ":"+ socket.getPort());
+                System.out.println(socket.getInetAddress().getHostAddress() + ":" + socket.getPort());
                 ClientHandler temp = new ClientHandler(socket);
+                listClients.add(temp);
             }
             
         } catch (IOException ex) {
