@@ -20,11 +20,11 @@ import java.util.logging.Logger;
  */
 public class ServerController {
     
-    public static ArrayList<ClientHandler> listClients = new ArrayList<>();
-    public static ServerSocket mServerSocket;
-    public static int mPort = 2016;
+    public ArrayList<ClientHandler> listClients = new ArrayList<>();
+    public ServerSocket mServerSocket;
+    public int mPort = 2016;
     
-    public static void main(String[] args) {
+    public void initializeServer() {
         try {
             mServerSocket = new ServerSocket(mPort, 0, InetAddress.getLocalHost());
             
