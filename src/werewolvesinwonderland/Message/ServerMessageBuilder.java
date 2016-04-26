@@ -84,11 +84,6 @@ public class ServerMessageBuilder {
     /**
      * Leave Game Responses
      */
-    public static String createResponseLeaveGameOK() throws JSONException {
-        return new JSONObject()
-                .put(Identification.PRM_STATUS, Identification.STATUS_OK)
-                .toString();
-    }
     
     /**
      * Ready Up Responses

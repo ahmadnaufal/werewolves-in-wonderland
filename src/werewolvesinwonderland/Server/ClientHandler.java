@@ -30,7 +30,7 @@ public class ClientHandler implements Runnable {
     private DataInputStream is;
     private DataOutputStream os;
     
-    private String name = "";
+    private int playerId = 0;
     private boolean isConnected = false;
     
     /**
@@ -82,10 +82,28 @@ public class ClientHandler implements Runnable {
                 String requestMethod = requestObj.getString(Identification.PRM_METHOD);
                 switch (requestMethod) {
                     case Identification.METHOD_JOIN :
-                        name = requestObj.getString(Identification.PRM_USERNAME);
+                        String username = requestObj.getString(Identification.PRM_USERNAME);
+                        int _playerId = mServerHandle.getGame().newPlayer(username);
+                        
+                        switch (_playerId) {
+                            case -1:
+                                ServerSender.sendJoinGameResponseFailUserExist(os);
+                                break;
+                            case -2:
+                                ServerSender.sendJoinGameResponseFailUserExist(os);
+                                break;
+                            default:
+                                playerId = _playerId;
+                                ServerSender.sendJoinGameResponseOK(playerId, os);
+                                break;
+                        }
+                        
                         break;
+                        
                     case Identification.METHOD_LEAVE :
                         isConnected = false;
+                        mServerHandle.getGame().removePlayer(playerId);
+                        ServerSender.sendResponseOK(os);
                         break;
                 }
             }

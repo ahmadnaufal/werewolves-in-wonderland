@@ -57,9 +57,43 @@ public class ServerSender {
      * 
      * @param os the output stream handler
      */
-    public static void sendJoinGameResponseFail(DataOutputStream os) {
+    public static void sendJoinGameResponseFailUserExist(DataOutputStream os) {
         try {
             String packet = ServerMessageBuilder.createResponseJoinGameFailUserExist();
+            os.writeUTF(packet);
+        } catch (JSONException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * 
+     * @param os the output stream handler
+     */
+    public static void sendJoinGameResponseFailGameRunning(DataOutputStream os) {
+        try {
+            String packet = ServerMessageBuilder.createResponseJoinGameFailGameRunning();
+            os.writeUTF(packet);
+        } catch (JSONException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * 
+     * @param os the output stream handler
+     */
+    public static void sendResponseLeaveGameOK(DataOutputStream os) {
+        try {
+            String packet = ServerMessageBuilder.createResponseOK();
             os.writeUTF(packet);
         } catch (JSONException ex) {
             System.err.println(ex);
