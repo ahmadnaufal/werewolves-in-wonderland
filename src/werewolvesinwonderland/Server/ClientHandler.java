@@ -24,6 +24,8 @@ public class ClientHandler implements Runnable {
     private final Socket mSocket;
     private Thread mThread;
     
+    private ServerController mServerHandle;
+    
     // descriptors to socket input and output
     private DataInputStream is;
     private DataOutputStream os;
@@ -34,9 +36,11 @@ public class ClientHandler implements Runnable {
     /**
      * The main constructor for client handlers
      * @param newSocket the connected client socket
+     * @param handle
      */
-    public ClientHandler(Socket newSocket) {
+    public ClientHandler(Socket newSocket, ServerController handle) {
         mSocket = newSocket;
+        mServerHandle = handle;
         
         try {
           

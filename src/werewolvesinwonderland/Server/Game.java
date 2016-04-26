@@ -13,101 +13,106 @@ import java.util.Collections;
  * @author ASUS X202E
  */
 public class Game {
-  private HashMap<Integer,Player> players = new HashMap<>();
-  private ArrayList<Player> werewolves = new ArrayList<>();
-  private ArrayList<Player> aliveWerewolves = new ArrayList<>();
-  private ArrayList<Player> aliveCivilians = new ArrayList<>();
-  // private HashMap<Integer,Integer> votes = new HashMap<>();
-  private String time = "night";
-  private boolean started = false;
-  private int days = 0;
-  private int readyCount = 0;
-  // private int voteCount = 0;
-  // private boolean voted = false;
+    private HashMap<Integer,Player> players = new HashMap<>();
+    private ArrayList<Player> werewolves = new ArrayList<>();
+    private ArrayList<Player> aliveWerewolves = new ArrayList<>();
+    private ArrayList<Player> aliveCivilians = new ArrayList<>();
+    // private HashMap<Integer,Integer> votes = new HashMap<>();
+    private String time;
+    private boolean started;
+    private int days;
+    private int readyCount;
+    // private int voteCount = 0;
+    // private boolean voted = false;
 
-  public Game() {
-
-  }
-  public void restartGame() {
-    time = "night";
-    started = false;
-    days = 0;
-    readyCount = 0;
-    // voteCount = 0;
-    players.clear();
-    werewolves.clear();
-    aliveWerewolves.clear();
-    aliveCivilians.clear();
-  }
-  public void addPlayer(Player player) {
-    players.put(player.getId(),player);
-  }
-
-  public void removePlayer(int player_id) {
-    players.remove(player_id);
-  }
-
-  public Player newPlayer(String username) {
-    if (!started) {
-      int id = players.size();
-      Player player = new Player(id,username);
-      addPlayer(player);
-      return player;
-    } else return null;
-  }
-
-  public void increaseReady() {
-    readyCount++;
-    if (readyCount==players.size()) {
-      if (!started) {
-        assignRoles();
-        started = true;
-        //kirim info start game ke semua
-      } else {
-        changePhase();
-        //kirim info change phase ke semua
-      }
-      readyCount=0;
+    public Game() {
+        time = "night";
+        started = false;
+        days = 0;
+        readyCount = 0;
     }
-  }
-
-  public void assignRoles() {
-    int werewolfCount = players.size()/3;
-
-    ArrayList<Integer> list = new ArrayList<Integer>();
-    for (Integer id : players.keySet()) {
-      list.add(id);
+  
+    public void restartGame() {
+        time = "night";
+        started = false;
+        days = 0;
+        readyCount = 0;
+        // voteCount = 0;
+        players.clear();
+        werewolves.clear();
+        aliveWerewolves.clear();
+        aliveCivilians.clear();
     }
-    Collections.shuffle(list);
-    for (int i=0;i<werewolfCount;i++) {
-      setWerewolf(list.get(i));
+  
+    public void addPlayer(Player player) {
+        players.put(player.getId(),player);
     }
-    for (int i=werewolfCount;i<list.size();i++) {
-      setCivilian(list.get(i));
+
+    public void removePlayer(int player_id) {
+        players.remove(player_id);
     }
-  }
 
-  public void setWerewolf(int id) {
-    players.get(id).setRole("werewolf");
-    werewolves.add(players.get(id));
-    aliveWerewolves.add(players.get(id));
-  }
-
-  public void setCivilian(int id) {
-    players.get(id).setRole("civilian");
-    aliveCivilians.add(players.get(id));
-  }
-
-
-  public void checkEndGame() {
-    if (aliveWerewolves.isEmpty()) {
-      //kirim pesan ke semua bahwa civilian menang
-      restartGame();
-    } else if (aliveWerewolves.size()>aliveCivilians.size()) {
-      //kirim pesan ke semua bahwa civilian menang
-      restartGame();
+    public Player newPlayer(String username) {
+        if (!started) {
+            int id = players.size();
+            Player player = new Player(id,username);
+            addPlayer(player);
+            return player;
+        } else return null;
     }
-  }
+
+    public void increaseReady() {
+        readyCount++;
+        if (readyCount==players.size()) {
+            if (!started) {
+                assignRoles();
+                started = true;
+                //kirim info start game ke semua
+            } else {
+                changePhase();
+                //kirim info change phase ke semua
+            }
+            readyCount=0;
+        }
+    }
+
+    public void assignRoles() {
+        int werewolfCount = players.size()/3;
+
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for (Integer id : players.keySet()) {
+            list.add(id);
+        }
+        Collections.shuffle(list);
+        for (int i=0;i<werewolfCount;i++) {
+            setWerewolf(list.get(i));
+        }
+        for (int i=werewolfCount;i<list.size();i++) {
+            setCivilian(list.get(i));
+        }
+    }
+
+    public void setWerewolf(int id) {
+        players.get(id).setRole("werewolf");
+        werewolves.add(players.get(id));
+        aliveWerewolves.add(players.get(id));
+    }
+
+    public void setCivilian(int id) {
+        players.get(id).setRole("civilian");
+        aliveCivilians.add(players.get(id));
+    }
+
+
+    public void checkEndGame() {
+        if (aliveWerewolves.isEmpty()) {
+            //kirim pesan ke semua bahwa civilian menang
+            restartGame();
+        } else if (aliveWerewolves.size()>aliveCivilians.size()) {
+            //kirim pesan ke semua bahwa civilian menang
+            restartGame();
+        }
+    }
 
   // public void addVote(int id) {
   //   votes.put(id,votes.get(id)+1);
@@ -157,28 +162,28 @@ public class Game {
   //   }
   // }
 
-  public void killPlayer(int id) {
-    Player player = players.get(id);
-    player.setAlive(false);
-    if ((player.getRole()).equals("werewolf")) {
-      aliveWerewolves.remove(player);
-    } else {
-      aliveCivilians.remove(player);
+    public void killPlayer(int id) {
+        Player player = players.get(id);
+        player.setAlive(false);
+        if ((player.getRole()).equals("werewolf")) {
+            aliveWerewolves.remove(player);
+        } else {
+            aliveCivilians.remove(player);
+        }
+        //kirim info siapa yg dibunuh
+        changePhase();
+        checkEndGame();
     }
-    //kirim info siapa yg dibunuh
-    changePhase();
-    checkEndGame();
-  }
 
-  public void changePhase() {
-    if (time.equals("day")) {
-      time = "night";
-    } else {
-      time = "day";
-      days++;
+    public void changePhase() {
+        if (time.equals("day")) {
+            time = "night";
+        } else {
+            time = "day";
+            days++;
+        }
+        //kirim pesan change phase
     }
-    //kirim pesan change phase
-  }
 
 
 }

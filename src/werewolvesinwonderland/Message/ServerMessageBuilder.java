@@ -15,6 +15,22 @@ import org.json.JSONObject;
 public class ServerMessageBuilder {
     
     /**
+     * OK Responses
+     */
+    public static String createResponseOK() throws JSONException {
+        return new JSONObject()
+                .put(Identification.PRM_STATUS, Identification.STATUS_OK)
+                .toString();
+    }
+    
+    public static String createResponseOK(String description) throws JSONException {
+        return new JSONObject()
+                .put(Identification.PRM_STATUS, Identification.STATUS_OK)
+                .put(Identification.PRM_DESCRIPTION, description)
+                .toString();
+    }
+    
+    /**
      * Fail Responses
      */
     public static String createResponseFail(String description) throws JSONException {

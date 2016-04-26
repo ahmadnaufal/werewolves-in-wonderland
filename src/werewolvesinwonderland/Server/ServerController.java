@@ -22,8 +22,24 @@ public class ServerController {
     
     public ArrayList<ClientHandler> listClients = new ArrayList<>();
     public ServerSocket mServerSocket;
-    public int mPort = 2016;
+    public int mPort;
     
+    private Game mGame;
+    private int currentId = 0;
+    
+    /**
+     * Constructor for controllers
+     * @param port the port for socket connections
+     */
+    public ServerController(int port) {
+        mPort = port;
+        mGame = new Game();
+    }
+    
+    /**
+     * Initialize socket connection of the server
+     * to receive connections from its client
+     */
     public void initializeServer() {
         try {
             mServerSocket = new ServerSocket(mPort, 0, InetAddress.getLocalHost());
@@ -31,7 +47,7 @@ public class ServerController {
             while (true) {
                 Socket socket = mServerSocket.accept();
                 System.out.println(socket.getInetAddress().getHostAddress() + ":" + socket.getPort());
-                ClientHandler temp = new ClientHandler(socket);
+                ClientHandler temp = new ClientHandler(socket, this);
                 listClients.add(temp);
             }
             
@@ -40,4 +56,5 @@ public class ServerController {
             Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 }
