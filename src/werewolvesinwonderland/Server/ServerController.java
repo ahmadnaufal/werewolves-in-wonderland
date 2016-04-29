@@ -25,7 +25,6 @@ public class ServerController {
     public int mPort;
     
     private Game mGame;
-    private int currentId = 0;
     
     /**
      * Constructor for controllers
@@ -57,4 +56,11 @@ public class ServerController {
         }
     }
 
+    /**
+     * Get the game object
+     * @return 
+     */
+    public Game getGame() {
+        return mGame;
+    }
 }

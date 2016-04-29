@@ -52,13 +52,13 @@ public class Game {
         players.remove(player_id);
     }
 
-    public Player newPlayer(String username) {
+    public int newPlayer(String username) {
         if (!started) {
             int id = players.size();
-            Player player = new Player(id,username);
+            Player player = new Player(id, username);
             addPlayer(player);
-            return player;
-        } else return null;
+            return id;
+        } else return -1;
     }
 
     public void increaseReady() {

@@ -30,7 +30,7 @@ public class ClientHandler implements Runnable {
     private DataInputStream is;
     private DataOutputStream os;
     
-    private String name = "";
+    private int playerId = 0;
     private boolean isConnected = false;
     
     /**
@@ -78,15 +78,77 @@ public class ClientHandler implements Runnable {
                 while (is.available() > 0)
                     request += is.readUTF();
                 
-                JSONObject requestObj = new JSONObject(request);
-                String requestMethod = requestObj.getString(Identification.PRM_METHOD);
-                switch (requestMethod) {
-                    case Identification.METHOD_JOIN :
-                        name = requestObj.getString(Identification.PRM_USERNAME);
-                        break;
-                    case Identification.METHOD_LEAVE :
-                        isConnected = false;
-                        break;
+                try {
+                    JSONObject requestObj = new JSONObject(request);
+                    String requestMethod = requestObj.getString(Identification.PRM_METHOD);
+                    switch (requestMethod) {
+                        case Identification.METHOD_JOIN :
+                            String username = requestObj.getString(Identification.PRM_USERNAME);
+                            int _playerId = mServerHandle.getGame().newPlayer(username);
+                            switch (_playerId) {
+                                case -1:    // existing user
+                                    ServerSender.sendJoinGameResponseFailUserExist(os);
+                                    break;
+                                case -2:    // game is running: join game is unable
+                                    ServerSender.sendJoinGameResponseFailGameRunning(os);
+                                    break;
+                                default:
+                                    playerId = _playerId;
+                                    // TODO: get udp_address and udp_port from client
+                                    ServerSender.sendJoinGameResponseOK(playerId, os);
+                                    break;
+                            }
+                            break;
+
+                        case Identification.METHOD_LEAVE :
+                            isConnected = false;
+                            // TODO ini remove player return sesuatu aja ya, biar ada fail response nya
+                            mServerHandle.getGame().removePlayer(playerId);
+                            if (true) // stub
+                                ServerSender.sendResponseOK(os);
+                            else
+                                ServerSender.sendResponseFail(os);
+                            break;
+
+                        case Identification.METHOD_READY :
+                            // TODO: Increment ready (validate first)
+                            ServerSender.sendResponseReadyUpOK(os);
+                            break;
+                        
+                        case Identification.METHOD_CLIENTADDR :
+                            // TODO: Get list of connected clients (player_id, alive status, address, port, and role)
+                            // TODO: Send response
+                            break;
+                            
+                        case Identification.METHOD_PREPAREPROPOSAL :
+                            int kpuId = requestObj.getInt(Identification.PRM_KPUID);
+                            // TODO: Identify which player is the leader (KPU) and flag them as leader
+                            if (true) {
+                                // TODO: Send OK response
+                            } else {
+                                // TODO: Send Fail response
+                            }
+                            break;
+                            
+                        case Identification.METHOD_VOTERESULT_WEREWOLF_KILLED :
+                            // TODO: add vote results
+                            break;
+                            
+                        case Identification.METHOD_VOTERESULT :
+                            break;
+                            
+                        case Identification.METHOD_VOTERESULT_CIVILIAN_KILLED :
+                            break;
+                        
+                        default:
+                            // No valid actions: send error response: invalid request
+                            ServerSender.sendResponseError(os);
+                    }
+                } catch (JSONException ex) {
+                    System.err.println(ex);
+                    System.err.println("Sending error response to responsible client...");
+                    ServerSender.sendResponseError(os);
+                    Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             
@@ -99,8 +161,6 @@ public class ClientHandler implements Runnable {
                 mSocket.close();
             
         } catch (IOException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JSONException ex) {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

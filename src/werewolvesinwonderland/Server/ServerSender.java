@@ -21,17 +21,24 @@ public class ServerSender {
     /**
      * 
      * @param os 
+     * @return 
      */
-    public static void sendResponseOK(DataOutputStream os) {
+    public static int sendResponseOK(DataOutputStream os) {
         try {
             String packet = ServerMessageBuilder.createResponseOK();
             os.writeUTF(packet);
+            
+            return 1;
         } catch (JSONException ex) {
             System.err.println(ex);
             Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+            
+            return 0;
         } catch (IOException ex) {
             System.err.println(ex);
             Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+            
+            return -1;
         }
     }
     
@@ -39,34 +46,151 @@ public class ServerSender {
      * 
      * @param playerId
      * @param os 
+     * @return  
      */
-    public static void sendJoinGameResponseOK(int playerId, DataOutputStream os) {
+    public static int sendJoinGameResponseOK(int playerId, DataOutputStream os) {
         try {
             String packet = ServerMessageBuilder.createResponseJoinGameOK(playerId);
             os.writeUTF(packet);
+            
+            return 1;
         } catch (JSONException ex) {
             System.err.println(ex);
             Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+            
+            return 0;
         } catch (IOException ex) {
             System.err.println(ex);
             Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+            
+            return -1;
         }
     }
     
     /**
      * 
      * @param os the output stream handler
+     * @return 
      */
-    public static void sendJoinGameResponseFail(DataOutputStream os) {
+    public static int sendJoinGameResponseFailUserExist(DataOutputStream os) {
         try {
             String packet = ServerMessageBuilder.createResponseJoinGameFailUserExist();
             os.writeUTF(packet);
+            
+            return 1;
         } catch (JSONException ex) {
             System.err.println(ex);
             Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
         } catch (IOException ex) {
             System.err.println(ex);
             Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
+    /**
+     * 
+     * @param os the output stream handler
+     * @return 
+     */
+    public static int sendJoinGameResponseFailGameRunning(DataOutputStream os) {
+        try {
+            String packet = ServerMessageBuilder.createResponseJoinGameFailGameRunning();
+            os.writeUTF(packet);
+            return 1;
+        } catch (JSONException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
+    /**
+     * 
+     * @param os the output stream handler
+     * @return 
+     */
+    public static int sendResponseLeaveGameOK(DataOutputStream os) {
+        try {
+            String packet = ServerMessageBuilder.createResponseOK();
+            os.writeUTF(packet);
+            return 1;
+        } catch (JSONException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
+    /**
+     * 
+     * @param os the output stream handler
+     * @return 
+     */
+    public static int sendResponseReadyUpOK(DataOutputStream os) {
+        try {
+            String packet = ServerMessageBuilder.createResponseReadyUpOK();
+            os.writeUTF(packet);
+            return 1;
+        } catch (JSONException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
+    /**
+     * 
+     * @param os
+     * @return 
+     */
+    public static int sendResponseError(DataOutputStream os) {
+        try {
+            String packet = ServerMessageBuilder.createResponseError();
+            os.writeUTF(packet);
+            return 1;
+        } catch (JSONException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
+    /**
+     * 
+     * @param os
+     * @return 
+     */
+    public static int sendResponseFail(DataOutputStream os) {
+        try {
+            String packet = ServerMessageBuilder.createResponseFail();
+            os.writeUTF(packet);
+            return 1;
+        } catch (JSONException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
         }
     }
     

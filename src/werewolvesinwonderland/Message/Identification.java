@@ -56,10 +56,9 @@ public class Identification {
     public static final String METHOD_ACCEPTPROPOSAL = "accept_proposal";
     public static final String METHOD_VOTEWEREWOLF = "vote_werewolf";
     public static final String METHOD_VOTERESULT_WEREWOLF_KILLED = "vote_result_werewolf";
-    public static final String METHOD_VOTERESULT_WEREWOLF = "vote_result";
     public static final String METHOD_VOTECIVILIAN = "vote_civilian";
     public static final String METHOD_VOTERESULT_CIVILIAN_KILLED = "vote_result_civilian";
-    public static final String METHOD_VOTERESULT_CIVILIAN = "vote_result";
+    public static final String METHOD_VOTERESULT = "vote_result";
     public static final String METHOD_STARTGAME = "start";
     public static final String METHOD_CHANGEPHASE = "change_phase";
     public static final String METHOD_GAMEOVER = "game_over";
