@@ -58,7 +58,7 @@ public class ClientListenerUDP implements Runnable {
                 String receiveStr = new String(receivePacket.getData());
                 JSONObject receiveObj = new JSONObject(receiveStr);
                 
-                // TODO: Process the json object
+                // TODO: Process the json object from the server
             }
         } catch (IOException ex) {
             System.err.println(ex);

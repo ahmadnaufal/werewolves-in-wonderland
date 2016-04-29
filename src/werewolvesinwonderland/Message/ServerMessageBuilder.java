@@ -102,6 +102,12 @@ public class ServerMessageBuilder {
         // TODO: Belum dikerjakan
         return null;
     }
+
+    public static String createResponseFail() throws JSONException {
+        return new JSONObject()
+                .put(Identification.PRM_STATUS, Identification.STATUS_FAIL)
+                .toString();
+    }
     
     
 }

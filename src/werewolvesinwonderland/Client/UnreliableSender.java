@@ -12,7 +12,7 @@ import java.net.SocketException;
 import java.util.Random;
 
 /**
- * Kelas pembungkus DatagramSocket yang mensimulaiskan paket yang hilang
+ * Kelas pembungkus DatagramSocket yang mensimulasikan paket yang hilang
  * dalam pengiriman.
  * @author Ahmad Naufal Farhan
  */
