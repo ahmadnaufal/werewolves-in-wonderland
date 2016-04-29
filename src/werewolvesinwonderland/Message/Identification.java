@@ -81,6 +81,7 @@ public class Identification {
     public static final String DESC_LISTCLIENT = "list of clients retrieved";
     public static final String DESC_ACCEPTED = "accepted";
     public static final String DESC_REJECTED = "rejected";
+    public static final String DESC_KPUSELECTED = "Kpu is selected";
     
     /**
      * Time Parameter possible values
