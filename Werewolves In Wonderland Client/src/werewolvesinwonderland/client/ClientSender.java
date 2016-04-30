@@ -7,6 +7,10 @@ package werewolvesinwonderland.client;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
@@ -107,6 +111,28 @@ public class ClientSender {
     }
     
     /**
+     * Precondition: player calling this method is an acceptor
+     * @param kpuId
+     * @param os
+     * @return 
+     */
+    public static int sendInfoAcceptedProposal(int kpuId, DataOutputStream os) {
+        try {
+            String requestStr = ClientMessageBuilder.createRequestClientAcceptProposal(kpuId);
+            os.writeUTF(requestStr);
+            
+            ClientController.lastSentMethod = Identification.METHOD_CLIENTADDR;
+            return 1;
+        } catch (JSONException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
+    /**
      * Precondition: player calling this method is a KPU
      * @param playerKilled
      * @param voteResult
@@ -187,6 +213,124 @@ public class ClientSender {
             
             ClientController.lastSentMethod = Identification.METHOD_CLIENTADDR;
             return 1;
+        } catch (JSONException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
+    
+    /**** CLIENT-TO-CLIENT COMMUNICATIONS ****/
+    
+    private static DatagramPacket buildDatagramPacket(String content, InetAddress destAddress, int destPort) {
+        return new DatagramPacket(content.getBytes(), content.getBytes().length, destAddress, destPort);
+    }
+    
+    /**
+     * 
+     * @param proposalNumber
+     * @param playerId
+     * @param datagramSocket
+     * @param destAddr
+     * @param destPort
+     * @return 
+     */
+    public static int sendPaxosPrepareProposal(int proposalNumber, int playerId, DatagramSocket datagramSocket, InetAddress destAddr, int destPort) {
+        try {
+            String requestStr = ClientMessageBuilder.createRequestPaxosPrepareProposal(proposalNumber, playerId);
+            DatagramPacket packet = buildDatagramPacket(requestStr, destAddr, destPort);
+            UnreliableSender sender = new UnreliableSender(datagramSocket);
+            sender.send(packet);
+            
+            ClientController.lastSentMethod = Identification.METHOD_PREPAREPROPOSAL;
+            return 1;
+            
+        } catch (JSONException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
+    /**
+     * 
+     * @param proposalNumber
+     * @param playerId
+     * @param kpuId
+     * @param datagramSocket
+     * @param destAddr
+     * @param destPort
+     * @return 
+     */
+    public static int sendPaxosAcceptProposal(int proposalNumber, int playerId, int kpuId, DatagramSocket datagramSocket, InetAddress destAddr, int destPort) {
+        try {
+            String requestStr = ClientMessageBuilder.createRequestPaxosAcceptProposal(proposalNumber, playerId, kpuId);
+            DatagramPacket packet = buildDatagramPacket(requestStr, destAddr, destPort);
+            UnreliableSender sender = new UnreliableSender(datagramSocket);
+            sender.send(packet);
+            
+            ClientController.lastSentMethod = Identification.METHOD_ACCEPTPROPOSAL;
+            return 1;
+            
+        } catch (JSONException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
+    /**
+     * 
+     * @param playerId
+     * @param datagramSocket
+     * @param destAddr
+     * @param destPort
+     * @return 
+     */
+    public static int sendVoteKillWerewolf(int playerId, DatagramSocket datagramSocket, InetAddress destAddr, int destPort) {
+        try {
+            String requestStr = ClientMessageBuilder.createRequestKillWerewolfVote(playerId);
+            DatagramPacket packet = buildDatagramPacket(requestStr, destAddr, destPort);
+            UnreliableSender sender = new UnreliableSender(datagramSocket);
+            sender.send(packet);
+            
+            ClientController.lastSentMethod = Identification.METHOD_ACCEPTPROPOSAL;
+            return 1;
+            
+        } catch (JSONException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
+    /**
+     * 
+     * @param playerId
+     * @param datagramSocket
+     * @param destAddr
+     * @param destPort
+     * @return 
+     */
+    public static int sendVoteKillCivilian(int playerId, DatagramSocket datagramSocket, InetAddress destAddr, int destPort) {
+        try {
+            String requestStr = ClientMessageBuilder.createRequestKillCivilianVote(playerId);
+            DatagramPacket packet = buildDatagramPacket(requestStr, destAddr, destPort);
+            UnreliableSender sender = new UnreliableSender(datagramSocket);
+            sender.send(packet);
+            
+            ClientController.lastSentMethod = Identification.METHOD_ACCEPTPROPOSAL;
+            return 1;
+            
         } catch (JSONException ex) {
             Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
