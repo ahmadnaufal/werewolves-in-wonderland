@@ -57,6 +57,14 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    public DataOutputStream getOutputStream() {
+      return os;
+    }
+
+    public int getPlayerId() {
+      return playerId;
+    }
+
     /**
      * Method to start the handler
      */
