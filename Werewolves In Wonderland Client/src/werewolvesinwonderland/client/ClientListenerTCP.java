@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+import werewolvesinwonderland.protocol.Identification;
 
 /**
  *
@@ -26,48 +27,120 @@ import org.json.JSONObject;
 public class ClientListenerTCP extends Observable implements Runnable {
     private Socket socket = null;
     private Thread thread = null;
-    
+
     private boolean running = true;
     private ArrayList<Observer> observerList = new ArrayList<>();
-    
+
     private ClientController handler;
-    
+
     /**
      * Constructors for ClientListenerTCP
      * @param socket
-     * @param handler 
+     * @param handler
      */
     public ClientListenerTCP(Socket socket, ClientController handler) { //TODO: add observer to params
         this.socket = socket;
         this.handler = handler;
-        
+
         thread = new Thread(this);
         start();
     }
-    
+
     /**
      * Method to start the handler
      */
     private void start() {
         if (thread == null)
             thread = new Thread(this);
-        
+
         thread.start();
     }
-    
-    /**
-     * Handling given response from server (TCP)
-     * @param response 
-     */
-    public void handleResponse(String response) {
-        try {
-            JSONObject responseObj = new JSONObject(response);
-            notifyObservers(responseObj);
-            setChanged();
+
+    private void handleRequest(JSONObject messageObj) {
+      try {
+        String messageMethod = messageObj.getString(Identification.PRM_METHOD);
+        String messageDescription = messageObj.getString(Identification.PRM_DESCRIPTION);
+        //TODO: alert description
+        switch (messageMethod) {
+          case Identification.METHOD_STARTGAME:
+            String time = messageObj.getString(Identification.PRM_TIME);
+            String role = messageObj.getString(Identification.PRM_ROLE);
+            if (role.equals(Identification.ROLE_WEREWOLF)) {
+            //TODO: get array list of werewolf friends from json array if role
+            }
+            //TODO: set game variables
+            ClientSender.requestListClients(os);
+            break;
+          case Identification.METHOD_VOTENOW:
+            String phase = messageObj.getString(Identification.PRM_PHASE);
+            ClientSender.requestListClients(os);
+            //TODO: ask user to vote next victim then send to kpu
+            break;
+          case Identification.METHOD_CHANGEPHASE:
+            time = messageObj.getString(Identification.PRM_TIME);
+            int days = messageObj.getInt(Identification.PRM_DAYS);
+            //TODO: set game variables
+            ClientSender.requestListClients(os);
+            break;
+          case Identification.METHOD_KPUSELECTED:
+            int selectedKpu = messageObj.getInt(Identification.PRM_KPUID);
+            //TODO: set kpu variable (in controller?)
+            break;
+          case Identification.METHOD_GAMEOVER:
+            String winner = messageObj.getString(Identification.PRM_WINNER);
+            ClientSender.requestListClients(os);
+            //TODO: alert game over, show winner, ask to play again
+            break;
+          default:
+            // No valid actions: send error response: invalid request
+            ClientSender.sendResponseError(os);
+          }
         } catch (JSONException ex) {
-            System.err.println(ex);
-            Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
+              System.err.println(ex);
+              Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void handleResponse(JSONObject messageObj) {
+      try {
+        String status = messageObj.getString(Identification.PRM_STATUS);
+        String description = messageObj.getString(Identification.PRM_DESCRIPTION);
+        //TODO: alert description
+        switch (status) {
+          case Identification.STATUS_OK :
+            switch (ClientController.lastSentMethod) {
+              case Identification.METHOD_CLIENTADDR:
+                //TODO: get player objects from json array, pass to controller
+                break;
+              case Identification.METHOD_JOIN:
+                int playerId = messageObj.getInt(Identification.PRM_PLAYERID);
+                //TODO: set player id of client
+                break;
+              case Identification.METHOD_LEAVE:
+                //TODO: quit game
+                break;
+              default:
+                break;
+            }
+            break;
+          case Identification.STATUS_FAIL :
+            switch (ClientController.lastSentMethod) {
+              case Identification.METHOD_JOIN:
+                if (description.equals(Identification.DESC_USEREXISTS)) {
+                  //TODO: minta username lagi
+                } else {
+                  //ga bisa main
+                }
+                break;
+            }
+            break;
+          case Identification.STATUS_ERROR :
+            break;
+        }
+      } catch (JSONException ex) {
+          System.err.println(ex);
+          Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
+      }
     }
 
     @Override
@@ -75,20 +148,30 @@ public class ClientListenerTCP extends Observable implements Runnable {
         try {
             DataInputStream is = (DataInputStream) socket.getInputStream();
             while (running) {
-                String response = "";
+                String message = "";
                 while (is.available() > 0)
-                    response += is.readUTF();
-                
-                handleResponse(response);
+                    message += is.readUTF();
+                    try {
+                        JSONObject messageObj = new JSONObject(message);
+                        String messageMethod = messageObj.getString(Identification.PRM_METHOD);
+                        if (messageMethod==null) { //response
+                            handleResponse(messageObj);
+                        } else { //request
+                            handleRequest(messageObj);
+                        }
+                    } catch (JSONException ex) {
+                        System.err.println(ex);
+                        Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
+                    }
             }
-            
+
             socket.close();
         } catch (IOException ex) {
             System.err.println(ex);
             Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @Override
     public void notifyObservers(Object arg) {
         // Check if not null
@@ -97,5 +180,5 @@ public class ClientListenerTCP extends Observable implements Runnable {
         }
         clearChanged();
     }
-   
+
 }
