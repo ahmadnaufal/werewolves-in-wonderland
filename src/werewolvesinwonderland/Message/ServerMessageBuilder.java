@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import werewolvesinwonderland.Message.model.ClientInfo;
 
 /**
  *
@@ -102,22 +103,26 @@ public class ServerMessageBuilder {
     /**
      * #4 List Client
      */
-    public static String createResponseClientList() throws JSONException {
-        ArrayList<String> players = new ArrayList<>();
-        JSONArray clients = new JSONArray();
-        for (String player : players) {
-            clients.put(new JSONObject()
-                    .put(Identification.PRM_PLAYERID, 0)
-                    .put(Identification.PRM_ISALIVE, 0)
-                    .put(Identification.PRM_ADDR, 0)
-                    .put(Identification.PRM_PORT, 0)
-                    .put(Identification.PRM_USERNAME, 0));
+    public static String createResponseClientList(ArrayList<ClientInfo> clientList) throws JSONException {
+        JSONArray clientListArray = new JSONArray();
+        for (ClientInfo client : clientList) {
+            JSONObject clientObject = new JSONObject()
+                    .put(Identification.PRM_PLAYERID, client.getPlayerId())
+                    .put(Identification.PRM_ISALIVE, client.getIsAlive())
+                    .put(Identification.PRM_ADDR, client.getAddress())
+                    .put(Identification.PRM_PORT, client.getPort())
+                    .put(Identification.PRM_USERNAME, client.getUsername());
+            
+            if (client.getRole() != null)
+                clientObject.put(Identification.PRM_ROLE, client.getRole());
+            
+            clientListArray.put(client);
         }
         
         return new JSONObject()
                 .put(Identification.PRM_STATUS, Identification.STATUS_OK)
-                //TODO: add client list, tinggal dikasih parameter untuk for loop di atas
-                .put(Identification.PRM_CLIENTS, clients.toString())
+                .put(Identification.PRM_CLIENTS, clientListArray.toString())
+                .put(Identification.PRM_DESCRIPTION, Identification.DESC_LISTCLIENT)
                 .toString();
     }
     
