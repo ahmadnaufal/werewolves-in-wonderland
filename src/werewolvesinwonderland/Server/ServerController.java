@@ -19,22 +19,22 @@ import java.util.logging.Logger;
  * @author Ahmad Naufal Farhan
  */
 public class ServerController {
-    
+
     public ArrayList<ClientHandler> listClients = new ArrayList<>();
     public ServerSocket mServerSocket;
     public int mPort;
-    
+
     private Game mGame;
-    
+
     /**
      * Constructor for controllers
      * @param port the port for socket connections
      */
     public ServerController(int port) {
         mPort = port;
-        mGame = new Game();
+        mGame = new Game(this);
     }
-    
+
     /**
      * Initialize socket connection of the server
      * to receive connections from its client
@@ -42,14 +42,14 @@ public class ServerController {
     public void initializeServer() {
         try {
             mServerSocket = new ServerSocket(mPort, 0, InetAddress.getLocalHost());
-            
+
             while (true) {
                 Socket socket = mServerSocket.accept();
                 System.out.println(socket.getInetAddress().getHostAddress() + ":" + socket.getPort());
                 ClientHandler temp = new ClientHandler(socket, this);
                 listClients.add(temp);
             }
-            
+
         } catch (IOException ex) {
             System.out.println(ex);
             Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
@@ -58,9 +58,14 @@ public class ServerController {
 
     /**
      * Get the game object
-     * @return 
+     * @return
      */
     public Game getGame() {
         return mGame;
     }
+
+    public void sendStartGame() {
+        
+    }
+
 }

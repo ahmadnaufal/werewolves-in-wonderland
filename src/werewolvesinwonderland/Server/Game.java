@@ -14,69 +14,90 @@ import java.util.Collections;
  */
 public class Game {
     private HashMap<Integer,Player> players = new HashMap<>();
-    private ArrayList<Player> werewolves = new ArrayList<>();
-    private ArrayList<Player> aliveWerewolves = new ArrayList<>();
-    private ArrayList<Player> aliveCivilians = new ArrayList<>();
-    // private HashMap<Integer,Integer> votes = new HashMap<>();
-    private String time;
-    private boolean started;
-    private int days;
-    private int readyCount;
-    // private int voteCount = 0;
-    // private boolean voted = false;
+    private HashMap<Integer,Player> werewolves = new HashMap<>();
+    private HashMap<Integer,Player> aliveWerewolves = new HashMap<>();
+    private HashMap<Integer,Player> aliveCivilians = new HashMap<>();
+    private String phase = "night";
+    private boolean started = false;
+    private int days = 0;
+    private int readyCount = 0;
+    private HashMap<Integer,Integer> kpuProposals = new HashMap<>();
+    private int selectedKpu = -1;
+    private int kpuProposalCount = 0;
+    private ServerController mServerHandle;
 
-    public Game() {
-        time = "night";
-        started = false;
-        days = 0;
-        readyCount = 0;
+    public Game(ServerController mServerHandle) {
+        this.serverHandle = mServerHandle;
     }
-  
+
     public void restartGame() {
-        time = "night";
+        phase = "night";
         started = false;
         days = 0;
         readyCount = 0;
-        // voteCount = 0;
+        selectedKpu = -1;
+        kpuProposalCount = 0;
         players.clear();
         werewolves.clear();
         aliveWerewolves.clear();
         aliveCivilians.clear();
     }
-  
-    public void addPlayer(Player player) {
+
+    public void
+
+    private void addPlayer(Player player) {
         players.put(player.getId(),player);
     }
 
-    public void removePlayer(int player_id) {
-        players.remove(player_id);
+    public void removePlayer(int id) {
+        if ((players.get(id).getRole()).equals("werewolf")) {
+            aliveWerewolves.remove(id);
+        } else {
+            aliveCivilians.remove(id);
+        }
+        players.remove(id);
+        checkEndGame();
+    }
+
+    private void userExists(String username) {
+      for(Entry<Integer, Integer> entry : players.entrySet()) {
+        if (entry.getUsername().equals(username)) return true;
+      }
+      return false;
     }
 
     public int newPlayer(String username) {
-        if (!started) {
+        if (started) {
+          return -2;
+        } else if (userExists(username)) {
+          return -1;
+        } else {
             int id = players.size();
             Player player = new Player(id, username);
             addPlayer(player);
             return id;
-        } else return -1;
+        }
     }
 
     public void increaseReady() {
         readyCount++;
         if (readyCount==players.size()) {
             if (!started) {
-                assignRoles();
-                started = true;
-                //kirim info start game ke semua
+              startGame();
             } else {
-                changePhase();
-                //kirim info change phase ke semua
+              changePhase();
             }
-            readyCount=0;
         }
     }
 
-    public void assignRoles() {
+    private void startGame() {
+      assignRoles();
+      started = true;
+      readyCount=0;
+      mServerHandle.sendStartGame();
+    }
+
+    private void assignRoles() {
         int werewolfCount = players.size()/3;
 
         ArrayList<Integer> list = new ArrayList<Integer>();
@@ -92,19 +113,19 @@ public class Game {
         }
     }
 
-    public void setWerewolf(int id) {
+    private void setWerewolf(int id) {
         players.get(id).setRole("werewolf");
-        werewolves.add(players.get(id));
-        aliveWerewolves.add(players.get(id));
+        werewolves.put(id,players.get(id));
+        aliveWerewolves.put(id,players.get(id));
     }
 
-    public void setCivilian(int id) {
+    private void setCivilian(int id) {
         players.get(id).setRole("civilian");
-        aliveCivilians.add(players.get(id));
+        aliveCivilians.put(id,players.get(id));
     }
 
 
-    public void checkEndGame() {
+    private void checkEndGame() {
         if (aliveWerewolves.isEmpty()) {
             //kirim pesan ke semua bahwa civilian menang
             restartGame();
@@ -114,76 +135,66 @@ public class Game {
         }
     }
 
-  // public void addVote(int id) {
-  //   votes.put(id,votes.get(id)+1);
-  //   voteCount++;
-  //   if ((time.equals("day") && voteCount == aliveWerewolves.size()+aliveCivilians.size())
-  //   || (time.equals("night") && voteCount == aliveWerewolves.size())) {
-  //     voted = true;
-  //     voteCount = 0;
-  //     countVotes();
-  //   }
-  // }
-  //
-  // public void countVotes() {
-  //   Integer max = Collections.max(votes.values());
-  //   Integer maxId;
-  //   boolean tie = false;
-  //
-  //   for(Entry<Integer, Integer> entry : votes.entrySet()) {
-  //     Integer value = entry.getValue();
-  //
-  //       if(max == value) {
-  //           if (maxId==null) {
-  //             maxId = entry.getId();
-  //           } else {
-  //             tie = true;
-  //             break;
-  //           }
-  //       }
-  //   }
-  //   if (tie) tieVote();
-  //   else {
-  //     killPlayer(players.get(maxId));
-  //   }
-  // }
-  //
-  //
-  // public void tieVote() {
-  //   if (time.equals("night")) {
-  //     if (voted) {
-  //       changePhase();
-  //       //kirim pesan ke semua bahwa tidak ada yg dibunuh
-  //     } else {
-  //       //kirim pesan ke werewolves u/ vote ulang
-  //     }
-  //   } else {
-  //     //kirim pesan ke semua untuk vote ulang
-  //   }
-  // }
+    public void addKpuProposal(int id) {
+      kpuProposals.put(id,kpuProposals.get(id)+1);
+      proposalCount++;
+      if (proposalCount==aliveWerewolves.size()+aliveCivilians.size())
+        countKpuProposals();
+    }
+
+    private void countKpuProposals() {
+      Integer max = Collections.max(kpuProposals.values());
+      int maxId;
+
+      for(Entry<Integer, Integer> entry : kpuProposals.entrySet()) {
+        Integer value = entry.getValue();
+
+          if(max == value) {
+            maxId = entry.getId();
+          }
+      }
+      selectedKpu = maxId;
+    }
+
+    public int getSelectedKpu() {
+      return selectedKpu;
+    }
+
 
     public void killPlayer(int id) {
         Player player = players.get(id);
         player.setAlive(false);
         if ((player.getRole()).equals("werewolf")) {
-            aliveWerewolves.remove(player);
+            aliveWerewolves.remove(id);
         } else {
-            aliveCivilians.remove(player);
+            aliveCivilians.remove(id);
         }
-        //kirim info siapa yg dibunuh
         changePhase();
         checkEndGame();
     }
 
-    public void changePhase() {
-        if (time.equals("day")) {
-            time = "night";
+    private void changePhase() {
+        if (phase.equals("day")) {
+            phase = "night";
         } else {
-            time = "day";
+            phase = "day";
             days++;
+            selectedKpu = -1;
         }
-        //kirim pesan change phase
+        mServerHandle.sendChangePhase();
     }
 
+    public HashMap<Integer,Player> getWerewolves() {
+      return werewolves;
+    }
 
+    public HashMap<Integer,Player> getAliveWerewolves() {
+      return aliveWerewolves;
+    }
+
+    public HashMap<Integer,Player> getAlivePlayers() {
+      HashMap<Integer,Player> alive = new HashMap<>(aliveWerewolves);
+      alive.putAll(aliveCivilians);
+      return alive;
+    }
 }
