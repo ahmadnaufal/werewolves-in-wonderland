@@ -23,6 +23,8 @@ public class Identification {
      */
     // Join Game
     public static final String PRM_USERNAME = "username";
+    public static final String PRM_UDPADDR = "udp_address";
+    public static final String PRM_UDPPORT = "udp_port";
     public static final String PRM_PLAYERID = "player_id";
     // Leave Game
     public static final String PRM_TIME = "time";
@@ -44,6 +46,8 @@ public class Identification {
     public static final String PRM_VOTERESULT = "vote_result";
     // Game Over
     public static final String PRM_WINNER = "winner";
+    // Start Game
+    public static final String PRM_FRIEND = "friend";
     
     /**
      * Method Parameter possible values
@@ -54,6 +58,7 @@ public class Identification {
     public static final String METHOD_CLIENTADDR = "client_address";
     public static final String METHOD_PREPAREPROPOSAL = "prepare_proposal";
     public static final String METHOD_ACCEPTPROPOSAL = "accept_proposal";
+    public static final String METHOD_VOTENOW = "vote_now";
     public static final String METHOD_VOTEWEREWOLF = "vote_werewolf";
     public static final String METHOD_VOTERESULT_WEREWOLF_KILLED = "vote_result_werewolf";
     public static final String METHOD_VOTECIVILIAN = "vote_civilian";
@@ -81,10 +86,30 @@ public class Identification {
     public static final String DESC_LISTCLIENT = "list of clients retrieved";
     public static final String DESC_ACCEPTED = "accepted";
     public static final String DESC_REJECTED = "rejected";
+    public static final String DESC_KPUSELECTED = "Kpu is selected";
     
     /**
      * Time Parameter possible values
      */
     public static final String TIME_DAY = "day";
     public static final String TIME_NIGHT = "night";
+    
+    /**
+     * Status Player Parameter possible values
+     */
+    public final static int STATPLAYER_KILLED = 1;
+    public final static int STATPLAYER_NOTKILLED = -1;
+    
+    /**
+     * Is Alive Parameter possible values
+     */
+    public final static int ISALIVE_ALIVE = 1;
+    public final static int ISALIVE_DIED = -1;
+    
+    /**
+     * Role Parameter possible values
+     */
+    public final static String ROLE_WEREWOLF = "werewolf";
+    public final static String ROLE_CIVILIAN = "civilian";
+    
 }
