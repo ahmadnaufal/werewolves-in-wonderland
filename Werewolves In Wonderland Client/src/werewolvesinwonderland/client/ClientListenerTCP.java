@@ -6,6 +6,8 @@
 package werewolvesinwonderland.client;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
@@ -24,23 +26,46 @@ import org.json.JSONObject;
 public class ClientListenerTCP extends Observable implements Runnable {
     private Socket socket = null;
     private Thread thread = null;
-    private BufferedReader br;
+    
     private boolean running = true;
     private ArrayList<Observer> observerList = new ArrayList<>();
     
-    public ClientListenerTCP(Socket socket) { //TODO: add observer to params
+    private ClientController handler;
+    
+    /**
+     * Constructors for ClientListenerTCP
+     * @param socket
+     * @param handler 
+     */
+    public ClientListenerTCP(Socket socket, ClientController handler) { //TODO: add observer to params
         this.socket = socket;
+        this.handler = handler;
+        
         thread = new Thread(this);
+        start();
+    }
+    
+    /**
+     * Method to start the handler
+     */
+    private void start() {
+        if (thread == null)
+            thread = new Thread(this);
+        
         thread.start();
     }
     
+    /**
+     * Handling given response from server (TCP)
+     * @param response 
+     */
     public void handleResponse(String response) {
-        
         try {
             JSONObject responseObj = new JSONObject(response);
             notifyObservers(responseObj);
             setChanged();
         } catch (JSONException ex) {
+            System.err.println(ex);
             Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -48,15 +73,18 @@ public class ClientListenerTCP extends Observable implements Runnable {
     @Override
     public void run() {
         try {
-            br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String response;
+            DataInputStream is = (DataInputStream) socket.getInputStream();
             while (running) {
-                response = br.readLine();
+                String response = "";
+                while (is.available() > 0)
+                    response += is.readUTF();
+                
                 handleResponse(response);
             }
-            br.close();
+            
             socket.close();
         } catch (IOException ex) {
+            System.err.println(ex);
             Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

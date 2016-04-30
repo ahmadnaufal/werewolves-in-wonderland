@@ -108,9 +108,9 @@ public class ServerMessageBuilder {
         for (Player client : clientList) {
             JSONObject clientObject = new JSONObject()
                     .put(Identification.PRM_PLAYERID, client.getPlayerId())
-                    .put(Identification.PRM_ISALIVE, client.getIsAlive())
-                    .put(Identification.PRM_ADDR, client.getAddress())
-                    .put(Identification.PRM_PORT, client.getPort())
+                    .put(Identification.PRM_ISALIVE, client.isAlive())
+                    .put(Identification.PRM_ADDR, client.getUdpAddress())
+                    .put(Identification.PRM_PORT, client.getUdpPort())
                     .put(Identification.PRM_USERNAME, client.getUsername());
 
             if (!client.isAlive())

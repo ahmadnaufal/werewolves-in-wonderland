@@ -8,6 +8,9 @@ package werewolvesinwonderland.client;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
@@ -17,23 +20,28 @@ import org.json.JSONObject;
  *
  * @author Tifani
  */
-public class ClientListenerUDP implements Runnable {
+public class ClientListenerUDP extends Observable implements Runnable {
     
-    private DatagramSocket mSocket;
-    private Thread mThread;
+    private DatagramSocket datagramSocket;
+    private Thread thread;
     
-    private boolean isActive = false;
+    private boolean running = true;
+    private ArrayList<Observer> observerList = new ArrayList<>();
+
     byte[] receiveData = new byte[1024];
+    
+    private ClientController handler;
     
     /**
      * Default constructor for ClientListenerUDP
      * @param socket the Datagram Socket attached to this listener
+     * @param handler
      */
-    public ClientListenerUDP(DatagramSocket socket) {
-        mSocket = socket;
-        isActive = true;
+    public ClientListenerUDP(DatagramSocket socket, ClientController handler) {
+        this.datagramSocket = socket;
+        this.handler = handler;
         
-        mThread = new Thread(this);
+        thread = new Thread(this);
         start();
     }
     
@@ -41,29 +49,40 @@ public class ClientListenerUDP implements Runnable {
      * Method to start the handler
      */
     private void start() {
-        if (mThread == null)
-            mThread = new Thread(this);
+        if (thread == null)
+            thread = new Thread(this);
         
-        mThread.start();
+        thread.start();
+    }
+    
+    /**
+     * Handling given response from server (TCP)
+     * @param response 
+     */
+    public void handleResponse(String response) {
+        try {
+            JSONObject responseObj = new JSONObject(response);
+            notifyObservers(responseObj);
+            setChanged();
+        } catch (JSONException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
     public void run() {
         try {
             // Process only when active
-            while (isActive) {
+            while (running) {
                 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-                mSocket.receive(receivePacket);
+                datagramSocket.receive(receivePacket);
 
                 String receiveStr = new String(receivePacket.getData());
-                JSONObject receiveObj = new JSONObject(receiveStr);
-                
-                // TODO: Process the json object from the server
+                handleResponse(receiveStr);
             }
+            datagramSocket.close();
         } catch (IOException ex) {
-            System.err.println(ex);
-            Logger.getLogger(ClientListenerUDP.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JSONException ex) {
             System.err.println(ex);
             Logger.getLogger(ClientListenerUDP.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -74,7 +93,16 @@ public class ClientListenerUDP implements Runnable {
      * @return the socket
      */
     public DatagramSocket getSocket() {
-        return mSocket;
+        return datagramSocket;
+    }
+    
+    @Override
+    public void notifyObservers(Object arg) {
+        // Check if not null
+        for (Observer obj : observerList) {
+            obj.update(this, arg);
+        }
+        clearChanged();
     }
     
 }

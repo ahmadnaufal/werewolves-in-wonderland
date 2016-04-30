@@ -28,9 +28,6 @@ public class ClientController {
     private ClientListenerTCP clientListenerTcpHandle = null;
     private ClientListenerUDP clientListenerUdpHandle = null;
     
-    private DataInputStream is;
-    private DataOutputStream os;
-    
     /**
      * Constructor for Client Controller
      * Precondition: hostName is not an empty string, or port is defined
@@ -39,9 +36,9 @@ public class ClientController {
      * @param listenport the port for udp connection
      */
     public ClientController(String hostName, int port, int listenport) {
-        setServerHostName(hostName);
-        setServerPort(port);
-        setListenPort(listenport);
+        serverHostName = hostName;
+        serverPort = port;
+        listenPort = listenport;
         initClientConnection();
     }
     
@@ -58,10 +55,10 @@ public class ClientController {
             }
             
             Socket socket = new Socket(inetAddr, serverPort);
-            clientListenerTcpHandle = new ClientListenerTCP(socket);
+            clientListenerTcpHandle = new ClientListenerTCP(socket, this);
             
             DatagramSocket udpSocket = new DatagramSocket(listenPort);
-            clientListenerUdpHandle = new ClientListenerUDP(udpSocket);
+            clientListenerUdpHandle = new ClientListenerUDP(udpSocket, this);
             
         } catch (UnknownHostException ex) {
             System.err.println(ex);
@@ -114,34 +111,5 @@ public class ClientController {
     public void setListenPort(int listenPort) {
         this.listenPort = listenPort;
     }
-
-    /**
-     * @return the is
-     */
-    public DataInputStream getInputStream() {
-        return is;
-    }
-
-    /**
-     * @param is the is to set
-     */
-    public void setInputStream(DataInputStream is) {
-        this.is = is;
-    }
-
-    /**
-     * @return the os
-     */
-    public DataOutputStream getOutputStream() {
-        return os;
-    }
-
-    /**
-     * @param os the os to set
-     */
-    public void setOutputStream(DataOutputStream os) {
-        this.os = os;
-    }
-   
-
+    
 }

@@ -196,7 +196,7 @@ public class Game {
     }
 
     public ArrayList<String> getWerewolvesUsernames() {
-      ArrayList<String> usernames = new ArrayList<String>();
+      ArrayList<String> usernames = new ArrayList<>();
       for (Player werewolf : aliveWerewolves) {
         usernames.add(werewolf.getUsername());
       }
@@ -208,13 +208,13 @@ public class Game {
     }
 
     public ArrayList<Player> getAlivePlayers() {
-      ArrayList<Player> alivePlayers = new ArrayList<Player>(aliveCivilians);
+      ArrayList<Player> alivePlayers = new ArrayList<>(aliveCivilians);
       alivePlayers.addAll(aliveWerewolves);
       return alivePlayers;
     }
 
     public ArrayList<Player> getPlayersList() {
-      ArrayList<Player> playersList = new ArrayList<Player>(players.values());
+      ArrayList<Player> playersList = new ArrayList<>(players.values());
       return playersList;
     }
 
