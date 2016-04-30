@@ -52,7 +52,7 @@ public class GameFrame extends javax.swing.JFrame {
             }
         });
         homePanel.add(btnStart);
-        btnStart.setBounds(540, 540, 211, 75);
+        btnStart.setBounds(580, 610, 211, 75);
 
         bgHome.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/bg_home.png"))); // NOI18N
         homePanel.add(bgHome);

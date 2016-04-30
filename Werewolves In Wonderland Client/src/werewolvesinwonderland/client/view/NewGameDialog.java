@@ -8,6 +8,7 @@ package werewolvesinwonderland.client.view;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JLayer;
+import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JPanel;
 
 /**
@@ -24,6 +25,7 @@ public class NewGameDialog extends JFrame {
         initComponents();
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setTitle("Werewolf in Wonderland: New Game");
+        this.setSize(new Dimension(585, 440));
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
@@ -46,30 +48,52 @@ public class NewGameDialog extends JFrame {
         tfServerAddr = new javax.swing.JTextField();
         tfClientPort = new javax.swing.JTextField();
         btnStartGame = new javax.swing.JButton();
+        bgStatGameDialog = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(null);
 
-        lbUsername.setFont(new java.awt.Font("Abel", 0, 18)); // NOI18N
+        lbUsername.setFont(new java.awt.Font("Abel", 1, 18)); // NOI18N
+        lbUsername.setForeground(new java.awt.Color(102, 51, 0));
         lbUsername.setText("Username");
+        getContentPane().add(lbUsername);
+        lbUsername.setBounds(68, 100, 76, 24);
 
-        lbServerAddr.setFont(new java.awt.Font("Abel", 0, 18)); // NOI18N
+        lbServerAddr.setFont(new java.awt.Font("Abel", 1, 18)); // NOI18N
+        lbServerAddr.setForeground(new java.awt.Color(102, 51, 0));
         lbServerAddr.setText("Server Address");
+        getContentPane().add(lbServerAddr);
+        lbServerAddr.setBounds(68, 158, 120, 24);
 
-        lbServerPort.setFont(new java.awt.Font("Abel", 0, 18)); // NOI18N
+        lbServerPort.setFont(new java.awt.Font("Abel", 1, 18)); // NOI18N
+        lbServerPort.setForeground(new java.awt.Color(102, 51, 0));
         lbServerPort.setText("Server Port");
+        getContentPane().add(lbServerPort);
+        lbServerPort.setBounds(68, 213, 85, 24);
 
-        lbClientPort.setFont(new java.awt.Font("Abel", 0, 18)); // NOI18N
+        lbClientPort.setFont(new java.awt.Font("Abel", 1, 18)); // NOI18N
+        lbClientPort.setForeground(new java.awt.Color(102, 51, 0));
         lbClientPort.setText("Client Port");
+        getContentPane().add(lbClientPort);
+        lbClientPort.setBounds(68, 270, 82, 24);
 
         tfUsername.setFont(new java.awt.Font("Abel", 0, 18)); // NOI18N
+        getContentPane().add(tfUsername);
+        tfUsername.setBounds(191, 97, 230, 30);
 
         tfServerPort.setFont(new java.awt.Font("Abel", 0, 18)); // NOI18N
+        getContentPane().add(tfServerPort);
+        tfServerPort.setBounds(191, 210, 230, 30);
 
         tfServerAddr.setFont(new java.awt.Font("Abel", 0, 18)); // NOI18N
+        getContentPane().add(tfServerAddr);
+        tfServerAddr.setBounds(191, 155, 230, 30);
 
         tfClientPort.setFont(new java.awt.Font("Abel", 0, 18)); // NOI18N
+        getContentPane().add(tfClientPort);
+        tfClientPort.setBounds(191, 267, 230, 30);
 
-        btnStartGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/button_start_game.png"))); // NOI18N
+        btnStartGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/btn_startgame.png"))); // NOI18N
         btnStartGame.setToolTipText("");
         btnStartGame.setBorderPainted(false);
         btnStartGame.setContentAreaFilled(false);
@@ -78,55 +102,12 @@ public class NewGameDialog extends JFrame {
                 btnStartGameMouseClicked(evt);
             }
         });
+        getContentPane().add(btnStartGame);
+        btnStartGame.setBounds(180, 320, 209, 47);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(68, 68, 68)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbServerPort)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbUsername)
-                            .addComponent(lbServerAddr)
-                            .addComponent(lbClientPort))
-                        .addGap(24, 24, 24)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tfClientPort, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tfServerPort, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tfServerAddr, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(69, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnStartGame)
-                .addGap(178, 178, 178))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(97, 97, 97)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbUsername)
-                    .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbServerAddr)
-                    .addComponent(tfServerAddr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbServerPort)
-                    .addComponent(tfServerPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbClientPort)
-                    .addComponent(tfClientPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                .addComponent(btnStartGame)
-                .addGap(21, 21, 21))
-        );
+        bgStatGameDialog.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/bg_startgame_dialog.png"))); // NOI18N
+        getContentPane().add(bgStatGameDialog);
+        bgStatGameDialog.setBounds(0, 0, 570, 400);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -134,32 +115,45 @@ public class NewGameDialog extends JFrame {
     private void btnStartGameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnStartGameMouseClicked
         String username = tfUsername.getText();
         String serverAddress = tfServerAddr.getText();
-        int serverPort = Integer.parseInt(tfServerPort.getText());
-        int clientPort = Integer.parseInt(tfClientPort.getText());
-        System.out.println(NewGameDialog.class.getSimpleName() +
-            ": [Join Game] " +
-            "Username: " + username + ", " +
-            "Server Address: " + serverAddress + ", " +
-            "Server Port: " + serverPort + ", " +
-            "Client Port: " + clientPort);
+        if (username != null && !username.equals("") &&
+                serverAddress != null && !serverAddress.equals("") &&
+                tfServerPort.getText() != null && !tfServerPort.getText().equals("") &&
+                tfClientPort.getText() != null && !tfClientPort.getText().equals("")) {
+            try {                
+                int serverPort = Integer.parseInt(tfServerPort.getText());
+                int clientPort = Integer.parseInt(tfClientPort.getText());
+                System.out.println(NewGameDialog.class.getSimpleName() +
+                    ": [Join Game] " +
+                    "Username: " + username + ", " +
+                    "Server Address: " + serverAddress + ", " +
+                    "Server Port: " + serverPort + ", " +
+                    "Client Port: " + clientPort);
 
-        LoadingUI layerUI = new LoadingUI();
-        JPanel panel = new JPanel() {
+                LoadingUI layerUI = new LoadingUI();
+                JPanel panel = new JPanel() {
 
-            @Override
-            public Dimension getPreferredSize() {
-                return new Dimension(400, 300);
+                    @Override
+                    public Dimension getPreferredSize() {
+                        return new Dimension(400, 300);
+                    }
+                };
+                JLayer<JPanel> jlayer = new JLayer<>(panel, layerUI);
+                this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                this.add(jlayer);
+                this.pack();
+                this.setVisible(true);
+                layerUI.start();
+            } catch (Exception e) {
+                 showMessageDialog(null, "Please fill in all fields!!");
             }
-        };
-        JLayer<JPanel> jlayer = new JLayer<>(panel, layerUI);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.add(jlayer);
-        this.pack();
-        this.setVisible(true);
-        layerUI.start();
+        } else {
+            showMessageDialog(null, "Please fill in all fields!!");
+        }
+        
     }//GEN-LAST:event_btnStartGameMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel bgStatGameDialog;
     private javax.swing.JButton btnStartGame;
     private javax.swing.JLabel lbClientPort;
     private javax.swing.JLabel lbServerAddr;
