@@ -92,7 +92,9 @@ public class ClientHandler implements Runnable {
                     switch (requestMethod) {
                         case Identification.METHOD_JOIN :
                             String username = requestObj.getString(Identification.PRM_USERNAME);
-                            int _playerId = mServerHandle.getGame().newPlayer(username);
+                            String udpAddress = requestObj.getString(Identification.PRM_UDPADDR);
+                            int udpPort = requestObj.getInt(Identification.PRM_UDPPORT);
+                            int _playerId = mServerHandle.getGame().addPlayer(username,udpAddress,udpPort);
                             switch (_playerId) {
                                 case -1:    // existing user
                                     ServerSender.sendJoinGameResponseFailUserExist(os);
@@ -102,7 +104,7 @@ public class ClientHandler implements Runnable {
                                     break;
                                 default:
                                     playerId = _playerId;
-                                    // TODO: get udp_address and udp_port from client
+                                    mServerHandle.mapPlayerClient(this);
                                     ServerSender.sendJoinGameResponseOK(playerId, os);
                                     break;
                             }
@@ -119,36 +121,36 @@ public class ClientHandler implements Runnable {
                             break;
 
                         case Identification.METHOD_READY :
-                            // TODO: Increment ready (validate first)
+                            mServerHandle.getGame().increaseReady();
                             ServerSender.sendResponseReadyUpOK(os);
                             break;
 
                         case Identification.METHOD_CLIENTADDR :
-                            // TODO: Get list of connected clients (player_id, alive status, address, port, and role)
-                            // TODO: Send response
+                            ServerSender.sendResponseClientList(mServerHandle.getGame().getPlayersList(),os);
                             break;
 
-                        case Identification.METHOD_PREPAREPROPOSAL :
+                        case Identification.METHOD_ACCEPTPROPOSAL :
                             int kpuId = requestObj.getInt(Identification.PRM_KPUID);
-                            while (mServerHandle.getGame().getSelectedKpu()==-1) {
-                              //wait until selected kpu is computed
-                            }
-                            // TODO: Identify which player is the leader (KPU) and flag them as leader
-                            if (mServerHandle.getGame().getSelectedKpu()==kpuId) {
-                                // TODO: Send OK response
-                            } else {
-                                // TODO: Send Fail response
-                            }
+                            mServerHandle.getGame().addKpuProposal(kpuId);
+                            ServerSender.sendResponseOK(os);
                             break;
 
                         case Identification.METHOD_VOTERESULT_WEREWOLF_KILLED :
-                            // TODO: add vote results
-                            break;
-
-                        case Identification.METHOD_VOTERESULT :
-                            break;
-
                         case Identification.METHOD_VOTERESULT_CIVILIAN_KILLED :
+                        case Identification.METHOD_VOTERESULT :
+                            if (playerId==mServerHandle.getGame().getSelectedKpu()) {
+                              int status = requestObj.getInt(Identification.PRM_STATUS);
+                              if (status==1) {
+                                int killedId = requestObj.getInt(Identification.PRM_PLAYERKILLED);
+                                mServerHandle.getGame().killPlayer(killedId);
+                              } else if (status==-1) {
+                                mServerHandle.getGame().tieVote();
+                              } else {
+                                ServerSender.sendResponseError(os);
+                              }
+                            } else {
+                              ServerSender.sendResponseError(os);
+                            }
                             break;
 
                         default:

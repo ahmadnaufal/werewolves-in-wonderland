@@ -10,14 +10,14 @@ package werewolvesinwonderland.protocol;
  * @author Ahmad Naufal Farhan
  */
 public class Identification {
-    
+
     /**
      * General method parameter names
      */
     public static final String PRM_METHOD = "method";
     public static final String PRM_STATUS = "status";
     public static final String PRM_DESCRIPTION = "description";
-    
+
     /**
      * Game-Specific parameter names
      */
@@ -50,7 +50,7 @@ public class Identification {
     public static final String PRM_WINNER = "winner";
     // Start Game
     public static final String PRM_FRIEND = "friend";
-    
+
     /**
      * Method Parameter possible values
      */
@@ -59,7 +59,7 @@ public class Identification {
     public static final String METHOD_READY = "ready";
     public static final String METHOD_CLIENTADDR = "client_address";
     public static final String METHOD_PREPAREPROPOSAL = "prepare_proposal";
-    public static final String METHOD_ACCEPTPROPOSAL = "accept_proposal";
+    public static final String METHOD_ACCEPTPROPOSAL = "accepted_proposal";
     public static final String METHOD_VOTENOW = "vote_now";
     public static final String METHOD_VOTEWEREWOLF = "vote_werewolf";
     public static final String METHOD_VOTERESULT_WEREWOLF_KILLED = "vote_result_werewolf";
@@ -69,14 +69,15 @@ public class Identification {
     public static final String METHOD_STARTGAME = "start";
     public static final String METHOD_CHANGEPHASE = "change_phase";
     public static final String METHOD_GAMEOVER = "game_over";
-    
+    public static final String METHOD_KPUSELECTED = "kpu_selected";
+
     /**
      * Status Parameter possible values
      */
     public static final String STATUS_OK = "ok";
     public static final String STATUS_ERROR = "error";
     public static final String STATUS_FAIL = "fail";
-    
+
     /**
      * Description Parameter possible values
      */
@@ -89,35 +90,35 @@ public class Identification {
     public static final String DESC_ACCEPTED = "accepted";
     public static final String DESC_REJECTED = "rejected";
     public static final String DESC_KPUSELECTED = "Kpu is selected";
-    
+
     /**
      * Time Parameter possible values
      */
     public static final String TIME_DAY = "day";
     public static final String TIME_NIGHT = "night";
-    
+
     /**
      * Time Parameter possible values
      */
     public static final String PHASE_DAY = "day";
     public static final String PHASE_NIGHT = "night";
-    
+
     /**
      * Status Player Parameter possible values
      */
     public final static int STATPLAYER_KILLED = 1;
     public final static int STATPLAYER_NOTKILLED = -1;
-    
+
     /**
      * Is Alive Parameter possible values
      */
     public final static int ISALIVE_ALIVE = 1;
     public final static int ISALIVE_DIED = -1;
-    
+
     /**
      * Role Parameter possible values
      */
     public final static String ROLE_WEREWOLF = "werewolf";
     public final static String ROLE_CIVILIAN = "civilian";
-    
+
 }
