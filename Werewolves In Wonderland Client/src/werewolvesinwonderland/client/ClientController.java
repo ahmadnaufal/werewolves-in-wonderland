@@ -8,6 +8,7 @@ package werewolvesinwonderland.client;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -20,10 +21,13 @@ import java.util.logging.Logger;
  */
 public class ClientController {
     
-    private String hostName;
-    private int port;
+    private String serverHostName;
+    private int serverPort;
+    private int listenPort;
             
-    private Socket mSocket;
+    private ClientListenerTCP clientListenerTcpHandle = null;
+    private ClientListenerUDP clientListenerUdpHandle = null;
+    
     private DataInputStream is;
     private DataOutputStream os;
     
@@ -32,10 +36,13 @@ public class ClientController {
      * Precondition: hostName is not an empty string, or port is defined
      * @param hostName the host name
      * @param port the port number
+     * @param listenport the port for udp connection
      */
-    public ClientController(String hostName, int port) {
-        setHostName(hostName);
-        setPort(port);
+    public ClientController(String hostName, int port, int listenport) {
+        setServerHostName(hostName);
+        setServerPort(port);
+        setListenPort(listenport);
+        initClientConnection();
     }
     
     /**
@@ -44,13 +51,17 @@ public class ClientController {
     public void initClientConnection() {
         
         try {
-            InetAddress inetAddr = InetAddress.getByName(hostName);
+            InetAddress inetAddr = InetAddress.getByName(serverHostName);
             if (!inetAddr.isReachable(10000)) {
-                System.err.println("Address " + hostName + " is unreachable.");
+                System.err.println("Address " + serverHostName + " is unreachable.");
                 return;
             }
             
-            mSocket = new Socket(hostName, port);
+            Socket socket = new Socket(inetAddr, serverPort);
+            clientListenerTcpHandle = new ClientListenerTCP(socket);
+            
+            DatagramSocket udpSocket = new DatagramSocket(listenPort);
+            clientListenerUdpHandle = new ClientListenerUDP(udpSocket);
             
         } catch (UnknownHostException ex) {
             System.err.println(ex);
@@ -65,43 +76,43 @@ public class ClientController {
     /**
      * @return the hostName
      */
-    public String getHostName() {
-        return hostName;
+    public String getServerHostName() {
+        return serverHostName;
     }
 
     /**
      * @param hostName the hostName to set
      */
-    public void setHostName(String hostName) {
-        this.hostName = hostName;
+    public void setServerHostName(String hostName) {
+        this.serverHostName = hostName;
     }
 
     /**
      * @return the port
      */
     public int getPort() {
-        return port;
+        return serverPort;
     }
 
     /**
      * @param port the port to set
      */
-    public void setPort(int port) {
-        this.port = port;
+    public void setServerPort(int port) {
+        this.serverPort = port;
+    }
+    
+    /**
+     * @return the port
+     */
+    public int getListenPort() {
+        return listenPort;
     }
 
     /**
-     * @return the mSocket
+     * @param listenPort the port to set
      */
-    public Socket getmSocket() {
-        return mSocket;
-    }
-
-    /**
-     * @param mSocket the mSocket to set
-     */
-    public void setmSocket(Socket mSocket) {
-        this.mSocket = mSocket;
+    public void setListenPort(int listenPort) {
+        this.listenPort = listenPort;
     }
 
     /**

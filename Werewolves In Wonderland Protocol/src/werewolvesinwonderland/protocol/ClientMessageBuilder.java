@@ -17,6 +17,8 @@ public class ClientMessageBuilder {
     
     /**
      * OK Responses
+     * @return 
+     * @throws org.json.JSONException
      */
     public static String createResponseOK() throws JSONException {
         return new JSONObject()
