@@ -10,8 +10,9 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
-import java.util.HashMap;
 import werewolvesinwonderland.protocol.ServerMessageBuilder;
+import werewolvesinwonderland.protocol.model.Player;
+import java.util.ArrayList;
 
 /**
  *
@@ -112,27 +113,6 @@ public class ServerSender {
     }
 
     /**
-     * 
-     * @param os the output stream handler
-     * @return
-     */
-    public static int sendResponseLeaveGameOK(DataOutputStream os) {
-        try {
-            String packet = ServerMessageBuilder.createResponseOK();
-            os.writeUTF(packet);
-            return 1;
-        } catch (JSONException ex) {
-            System.err.println(ex);
-            Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
-            return 0;
-        } catch (IOException ex) {
-            System.err.println(ex);
-            Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
-            return -1;
-        }
-    }
-
-    /**
      *
      * @param os the output stream handler
      * @return
@@ -193,6 +173,102 @@ public class ServerSender {
             Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
             return -1;
         }
+    }
+
+    public static int sendResponseClientList(ArrayList<Player> clientList, DataOutputStream os) {
+      try {
+          String packet = ServerMessageBuilder.createResponseClientList(clientList);
+          os.writeUTF(packet);
+          return 1;
+      } catch (JSONException ex) {
+          System.err.println(ex);
+          Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+          return 0;
+      } catch (IOException ex) {
+          System.err.println(ex);
+          Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+          return -1;
+      }
+    }
+
+    public static int sendRequestStartGame(String time, String role, ArrayList<String> friend, DataOutputStream os) {
+      try {
+          String packet = ServerMessageBuilder.createRequestStartGame(time,role,friend);
+          os.writeUTF(packet);
+          return 1;
+      } catch (JSONException ex) {
+          System.err.println(ex);
+          Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+          return 0;
+      } catch (IOException ex) {
+          System.err.println(ex);
+          Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+          return -1;
+      }
+    }
+
+    public static int sendRequestChangePhase(String time, int days, DataOutputStream os) {
+      try {
+          String packet = ServerMessageBuilder.createRequestChangePhase(time, days);
+          os.writeUTF(packet);
+          return 1;
+      } catch (JSONException ex) {
+          System.err.println(ex);
+          Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+          return 0;
+      } catch (IOException ex) {
+          System.err.println(ex);
+          Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+          return -1;
+      }
+    }
+
+    public static int sendRequestGameOver(String winner, DataOutputStream os) {
+      try {
+          String packet = ServerMessageBuilder.createRequestGameOver(winner);
+          os.writeUTF(packet);
+          return 1;
+      } catch (JSONException ex) {
+          System.err.println(ex);
+          Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+          return 0;
+      } catch (IOException ex) {
+          System.err.println(ex);
+          Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+          return -1;
+      }
+    }
+
+    public static int sendRequestVote(String phase, DataOutputStream os) {
+      try {
+          String packet = ServerMessageBuilder.createRequestVote(phase);
+          os.writeUTF(packet);
+          return 1;
+      } catch (JSONException ex) {
+          System.err.println(ex);
+          Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+          return 0;
+      } catch (IOException ex) {
+          System.err.println(ex);
+          Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+          return -1;
+      }
+    }
+
+    public static int sendRequestKpuSelected(int kpuId, DataOutputStream os) {
+      try {
+          String packet = ServerMessageBuilder.createRequestKpuSelected(kpuId);
+          os.writeUTF(packet);
+          return 1;
+      } catch (JSONException ex) {
+          System.err.println(ex);
+          Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+          return 0;
+      } catch (IOException ex) {
+          System.err.println(ex);
+          Logger.getLogger(ServerSender.class.getName()).log(Level.SEVERE, null, ex);
+          return -1;
+      }
     }
 
 }

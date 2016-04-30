@@ -9,14 +9,14 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import werewolvesinwonderland.protocol.model.ClientInfo;
+import werewolvesinwonderland.protocol.model.Player;
 
 /**
  *
  * @author Tifani
  */
 public class ServerMessageBuilder {
-    
+
     /**
      * OK Responses
      */
@@ -25,14 +25,14 @@ public class ServerMessageBuilder {
                 .put(Identification.PRM_STATUS, Identification.STATUS_OK)
                 .toString();
     }
-    
+
     public static String createResponseOK(String description) throws JSONException {
         return new JSONObject()
                 .put(Identification.PRM_STATUS, Identification.STATUS_OK)
                 .put(Identification.PRM_DESCRIPTION, description)
                 .toString();
     }
-    
+
     /**
      * Fail Responses
      */
@@ -41,14 +41,14 @@ public class ServerMessageBuilder {
                 .put(Identification.PRM_STATUS, Identification.STATUS_FAIL)
                 .toString();
     }
-    
+
     public static String createResponseFail(String description) throws JSONException {
         return new JSONObject()
                 .put(Identification.PRM_STATUS, Identification.STATUS_FAIL)
                 .put(Identification.PRM_DESCRIPTION, description)
                 .toString();
     }
-    
+
     /**
      * Error Responses
      */
@@ -58,14 +58,14 @@ public class ServerMessageBuilder {
                 .put(Identification.PRM_DESCRIPTION, Identification.DESC_WRONGREQUEST)
                 .toString();
     }
-    
+
     public static String createResponseError(String description) throws JSONException {
         return new JSONObject()
                 .put(Identification.PRM_STATUS, Identification.STATUS_ERROR)
                 .put(Identification.PRM_DESCRIPTION, description)
                 .toString();
     }
-    
+
     /**
      * #1 Join Game
      */
@@ -75,21 +75,21 @@ public class ServerMessageBuilder {
                 .put(Identification.PRM_PLAYERID, playerId)
                 .toString();
     }
-    
+
     public static String createResponseJoinGameFailUserExist() throws JSONException {
         return new JSONObject()
                 .put(Identification.PRM_STATUS, Identification.STATUS_FAIL)
                 .put(Identification.PRM_DESCRIPTION, Identification.DESC_USEREXISTS)
                 .toString();
     }
-    
+
     public static String createResponseJoinGameFailGameRunning() throws JSONException {
         return new JSONObject()
                 .put(Identification.PRM_STATUS, Identification.STATUS_FAIL)
                 .put(Identification.PRM_DESCRIPTION, Identification.DESC_GAMERUNNING)
                 .toString();
     }
-    
+
     /**
      * #3 Ready Up
      */
@@ -99,33 +99,33 @@ public class ServerMessageBuilder {
                 .put(Identification.PRM_DESCRIPTION, Identification.DESC_WAITINGOTHERS)
                 .toString();
     }
-    
+
     /**
      * #4 List Client
      */
-    public static String createResponseClientList(ArrayList<ClientInfo> clientList) throws JSONException {
+    public static String createResponseClientList(ArrayList<Player> clientList) throws JSONException {
         JSONArray clientListArray = new JSONArray();
-        for (ClientInfo client : clientList) {
+        for (Player client : clientList) {
             JSONObject clientObject = new JSONObject()
                     .put(Identification.PRM_PLAYERID, client.getPlayerId())
-                    .put(Identification.PRM_ISALIVE, client.getIsAlive())
-                    .put(Identification.PRM_ADDR, client.getAddress())
-                    .put(Identification.PRM_PORT, client.getPort())
+                    .put(Identification.PRM_ISALIVE, client.isAlive())
+                    .put(Identification.PRM_ADDR, client.getUdpAddress())
+                    .put(Identification.PRM_PORT, client.getUdpPort())
                     .put(Identification.PRM_USERNAME, client.getUsername());
-            
-            if (client.getRole() != null)
+
+            if (!client.isAlive())
                 clientObject.put(Identification.PRM_ROLE, client.getRole());
-            
+
             clientListArray.put(client);
         }
-        
+
         return new JSONObject()
                 .put(Identification.PRM_STATUS, Identification.STATUS_OK)
                 .put(Identification.PRM_CLIENTS, clientListArray.toString())
                 .put(Identification.PRM_DESCRIPTION, Identification.DESC_LISTCLIENT)
                 .toString();
     }
-    
+
     /**
      * #12 Start Game
      */
@@ -142,7 +142,7 @@ public class ServerMessageBuilder {
                 .put(Identification.PRM_DESCRIPTION, Identification.DESC_GAMESTARTED)
                 .toString();
     }
-    
+
     /**
      * #13 Change Phase
      */
@@ -154,7 +154,7 @@ public class ServerMessageBuilder {
                 .put(Identification.PRM_DESCRIPTION, "")
                 .toString();
     }
-    
+
     /**
      * #14 Vote
      */
@@ -164,7 +164,7 @@ public class ServerMessageBuilder {
                 .put(Identification.PRM_PHASE, phase)
                 .toString();
     }
-    
+
     /**
      * #15 Game Over
      */
@@ -175,5 +175,15 @@ public class ServerMessageBuilder {
                 .put(Identification.PRM_DESCRIPTION, "")
                 .toString();
     }
-    
+
+    /**
+     * #16 KPU Selected
+     */
+
+     public static String createRequestKpuSelected(int kpuId) throws JSONException {
+         return new JSONObject()
+                 .put(Identification.PRM_METHOD, Identification.METHOD_KPUSELECTED)
+                 .put(Identification.PRM_KPUID, kpuId)
+                 .toString();
+     }
 }

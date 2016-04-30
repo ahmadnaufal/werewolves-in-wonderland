@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import werewolvesinwonderland.protocol.Identification;
+import werewolvesinwonderland.protocol.model.Player;
 
 /**
  *
@@ -20,10 +22,10 @@ import java.util.logging.Logger;
  */
 public class ServerController {
 
-    public ArrayList<ClientHandler> listClients = new ArrayList<>();
+    public ArrayList<ClientHandler> clientsList = new ArrayList<>();
+    public HashMap<Player,ClientHandler> playerClientMap = new HashMap<>();
     public ServerSocket mServerSocket;
     public int mPort;
-
     private Game mGame;
 
     /**
@@ -47,7 +49,7 @@ public class ServerController {
                 Socket socket = mServerSocket.accept();
                 System.out.println(socket.getInetAddress().getHostAddress() + ":" + socket.getPort());
                 ClientHandler temp = new ClientHandler(socket, this);
-                listClients.add(temp);
+                clientsList.add(temp);
             }
 
         } catch (IOException ex) {
@@ -64,15 +66,54 @@ public class ServerController {
         return mGame;
     }
 
-    public void sendStartGame() {
-        
-    }
-    
-    public void sendChangePhase() {
-        
+    public void mapPlayerClient(ClientHandler client) {
+      playerClientMap.put(mGame.getPlayer(client.getPlayerId()),client);
     }
 
-    public void sendGameOver(String winnerRole) {
-        
+    public void sendStartGame() {
+      String time = Identification.TIME_DAY;
+      ArrayList<String> werewolves = mGame.getWerewolvesUsernames();
+      ArrayList<String> friends;
+      for (Player player : mGame.getPlayersList()) {
+        if (player.getRole().equals(Identification.ROLE_WEREWOLF)) {
+          friends = new ArrayList<String>(werewolves);
+          friends.remove(player.getUsername());
+        } else {
+          friends = new ArrayList<String>();
+        }
+        ServerSender.sendRequestStartGame(time,player.getRole(),friends,playerClientMap.get(player).getOutputStream());
+      }
+    }
+
+    public void sendChangePhase() {
+      String time = mGame.getTime();
+      int days = mGame.getDays();
+      for (Player player : mGame.getPlayersList()) {
+        ServerSender.sendRequestChangePhase(time,days,playerClientMap.get(player).getOutputStream());
+      }
+    }
+
+    public void sendGameOver(String winner) {
+      for (Player player : mGame.getPlayersList()) {
+        ServerSender.sendRequestGameOver(winner,playerClientMap.get(player).getOutputStream());
+      }
+    }
+
+    public void sendVoteNight() {
+      for (Player player : mGame.getAliveWerewolves()) {
+        ServerSender.sendRequestVote(Identification.TIME_NIGHT,playerClientMap.get(player).getOutputStream());
+      }
+    }
+
+    public void sendVoteDay() {
+      for (Player player : mGame.getAlivePlayers()) {
+        ServerSender.sendRequestVote(Identification.TIME_DAY,playerClientMap.get(player).getOutputStream());
+      }
+    }
+
+    public void sendKpuSelected(int kpu) {
+      for (Player player : mGame.getPlayersList()) {
+        ServerSender.sendRequestKpuSelected(kpu,playerClientMap.get(player).getOutputStream());
+      }
     }
 }
