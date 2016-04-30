@@ -20,19 +20,19 @@ import org.json.JSONObject;
  * @author Ahmad Naufal Farhan
  */
 public class ClientHandler implements Runnable {
-    
+
     private final Socket mSocket;
     private Thread mThread;
-    
+
     private ServerController mServerHandle;
-    
+
     // descriptors to socket input and output
     private DataInputStream is;
     private DataOutputStream os;
-    
-    private int playerId = 0;
+
+    private int playerId = -1;
     private boolean isConnected = false;
-    
+
     /**
      * The main constructor for client handlers
      * @param newSocket the connected client socket
@@ -41,14 +41,14 @@ public class ClientHandler implements Runnable {
     public ClientHandler(Socket newSocket, ServerController handle) {
         mSocket = newSocket;
         mServerHandle = handle;
-        
+
         try {
-          
+
             is = new DataInputStream(mSocket.getInputStream());
             os = new DataOutputStream(mSocket.getOutputStream());
-            
+
             isConnected = true;
-            
+
             mThread = new Thread(this);
             start();
         } catch (IOException ex) {
@@ -56,17 +56,17 @@ public class ClientHandler implements Runnable {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     /**
      * Method to start the handler
      */
     private void start() {
         if (mThread == null)
             mThread = new Thread(this);
-        
+
         mThread.start();
     }
-    
+
     /**
      * Implementing Run method from Runnable
      */
@@ -77,7 +77,7 @@ public class ClientHandler implements Runnable {
                 String request = "";
                 while (is.available() > 0)
                     request += is.readUTF();
-                
+
                 try {
                     JSONObject requestObj = new JSONObject(request);
                     String requestMethod = requestObj.getString(Identification.PRM_METHOD);
@@ -114,32 +114,35 @@ public class ClientHandler implements Runnable {
                             // TODO: Increment ready (validate first)
                             ServerSender.sendResponseReadyUpOK(os);
                             break;
-                        
+
                         case Identification.METHOD_CLIENTADDR :
                             // TODO: Get list of connected clients (player_id, alive status, address, port, and role)
                             // TODO: Send response
                             break;
-                            
+
                         case Identification.METHOD_PREPAREPROPOSAL :
                             int kpuId = requestObj.getInt(Identification.PRM_KPUID);
+                            while (mServerHandle.getGame().getSelectedKpu()==-1) {
+                              //wait until selected kpu is computed
+                            }
                             // TODO: Identify which player is the leader (KPU) and flag them as leader
-                            if (true) {
+                            if (mServerHandle.getGame().getSelectedKpu()==kpuId) {
                                 // TODO: Send OK response
                             } else {
                                 // TODO: Send Fail response
                             }
                             break;
-                            
+
                         case Identification.METHOD_VOTERESULT_WEREWOLF_KILLED :
                             // TODO: add vote results
                             break;
-                            
+
                         case Identification.METHOD_VOTERESULT :
                             break;
-                            
+
                         case Identification.METHOD_VOTERESULT_CIVILIAN_KILLED :
                             break;
-                        
+
                         default:
                             // No valid actions: send error response: invalid request
                             ServerSender.sendResponseError(os);
@@ -151,7 +154,7 @@ public class ClientHandler implements Runnable {
                     Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
+
             // Closing all the sockets and streams
             if (os != null)
                 os.close();
@@ -159,10 +162,10 @@ public class ClientHandler implements Runnable {
                 is.close();
             if (mSocket != null)
                 mSocket.close();
-            
+
         } catch (IOException ex) {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
 }
