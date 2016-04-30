@@ -28,6 +28,8 @@ public class ClientController {
     private ClientListenerTCP clientListenerTcpHandle = null;
     private ClientListenerUDP clientListenerUdpHandle = null;
     
+    public static String lastSentMethod = "";
+    
     /**
      * Constructor for Client Controller
      * Precondition: hostName is not an empty string, or port is defined
@@ -111,5 +113,6 @@ public class ClientController {
     public void setListenPort(int listenPort) {
         this.listenPort = listenPort;
     }
+    
     
 }
