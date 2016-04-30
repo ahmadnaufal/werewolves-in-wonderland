@@ -44,6 +44,8 @@ public class Identification {
     public static final String PRM_VOTESTATUS = "vote_status";
     public static final String PRM_PLAYERKILLED = "player_killed";
     public static final String PRM_VOTERESULT = "vote_result";
+    // Phase
+    public static final String PRM_PHASE = "phase";
     // Game Over
     public static final String PRM_WINNER = "winner";
     // Start Game
@@ -93,6 +95,12 @@ public class Identification {
      */
     public static final String TIME_DAY = "day";
     public static final String TIME_NIGHT = "night";
+    
+    /**
+     * Time Parameter possible values
+     */
+    public static final String PHASE_DAY = "day";
+    public static final String PHASE_NIGHT = "night";
     
     /**
      * Status Player Parameter possible values

@@ -158,10 +158,10 @@ public class ServerMessageBuilder {
     /**
      * #14 Vote
      */
-    public static String createRequestVote(String time) throws JSONException {
+    public static String createRequestVote(String phase) throws JSONException {
         return new JSONObject()
                 .put(Identification.PRM_METHOD, Identification.METHOD_VOTENOW)
-                .put(Identification.PRM_TIME, time)
+                .put(Identification.PRM_PHASE, phase)
                 .toString();
     }
     
