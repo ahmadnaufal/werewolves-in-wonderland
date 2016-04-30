@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+import werewolvesinwonderland.protocol.model.ClientInfo;
 
 /**
  *
@@ -32,6 +33,8 @@ public class ClientHandler implements Runnable {
 
     private int playerId = -1;
     private boolean isConnected = false;
+    
+    private ClientInfo clientInfo;
 
     /**
      * The main constructor for client handlers
