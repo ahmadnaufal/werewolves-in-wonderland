@@ -5,6 +5,8 @@
  */
 package werewolvesinwonderland.Message;
 
+import java.util.ArrayList;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,6 +35,12 @@ public class ServerMessageBuilder {
     /**
      * Fail Responses
      */
+    public static String createResponseFail() throws JSONException {
+        return new JSONObject()
+                .put(Identification.PRM_STATUS, Identification.STATUS_FAIL)
+                .toString();
+    }
+    
     public static String createResponseFail(String description) throws JSONException {
         return new JSONObject()
                 .put(Identification.PRM_STATUS, Identification.STATUS_FAIL)
@@ -58,7 +66,7 @@ public class ServerMessageBuilder {
     }
     
     /**
-     * Join Game Responses
+     * #1 Join Game
      */
     public static String createResponseJoinGameOK(int playerId) throws JSONException {
         return new JSONObject()
@@ -82,11 +90,7 @@ public class ServerMessageBuilder {
     }
     
     /**
-     * Leave Game Responses
-     */
-    
-    /**
-     * Ready Up Responses
+     * #3 Ready Up
      */
     public static String createResponseReadyUpOK() throws JSONException {
         return new JSONObject()
@@ -96,18 +100,75 @@ public class ServerMessageBuilder {
     }
     
     /**
-     * List Client Responses
+     * #4 List Client
      */
-    public static String createResponseClientList() {
-        // TODO: Belum dikerjakan
-        return null;
-    }
-
-    public static String createResponseFail() throws JSONException {
+    public static String createResponseClientList() throws JSONException {
+        ArrayList<String> players = new ArrayList<>();
+        JSONArray clients = new JSONArray();
+        for (String player : players) {
+            clients.put(new JSONObject()
+                    .put(Identification.PRM_PLAYERID, 0)
+                    .put(Identification.PRM_ISALIVE, 0)
+                    .put(Identification.PRM_ADDR, 0)
+                    .put(Identification.PRM_PORT, 0)
+                    .put(Identification.PRM_USERNAME, 0));
+        }
+        
         return new JSONObject()
-                .put(Identification.PRM_STATUS, Identification.STATUS_FAIL)
+                .put(Identification.PRM_STATUS, Identification.STATUS_OK)
+                //TODO: add client list, tinggal dikasih parameter untuk for loop di atas
+                .put(Identification.PRM_CLIENTS, clients.toString())
                 .toString();
     }
     
+    /**
+     * #12 Start Game
+     */
+    public static String createRequestStartGame(String time, String role, ArrayList<String> friend) throws JSONException {
+        JSONArray friends = new JSONArray();
+        for (String f : friend) {
+            friends.put(f);
+        }
+        return new JSONObject()
+                .put(Identification.PRM_METHOD, Identification.METHOD_STARTGAME)
+                .put(Identification.PRM_TIME, time)
+                .put(Identification.PRM_ROLE, role)
+                .put(Identification.PRM_FRIEND, friends.toString()) //TODO: Array friend
+                .put(Identification.PRM_DESCRIPTION, Identification.DESC_GAMESTARTED)
+                .toString();
+    }
+    
+    /**
+     * #13 Change Phase
+     */
+    public static String createRequestChangePhase(String time, int days) throws JSONException {
+        return new JSONObject()
+                .put(Identification.PRM_METHOD, Identification.METHOD_CHANGEPHASE)
+                .put(Identification.PRM_TIME, time)
+                .put(Identification.PRM_DAYS, days)
+                .put(Identification.PRM_DESCRIPTION, "")
+                .toString();
+    }
+    
+    /**
+     * #14 Vote
+     */
+    public static String createRequestVote(String time) throws JSONException {
+        return new JSONObject()
+                .put(Identification.PRM_METHOD, Identification.METHOD_VOTENOW)
+                .put(Identification.PRM_TIME, time)
+                .toString();
+    }
+    
+    /**
+     * #15 Game Over
+     */
+    public static String createRequestGameOver(String winner) throws JSONException {
+        return new JSONObject()
+                .put(Identification.PRM_METHOD, Identification.METHOD_GAMEOVER)
+                .put(Identification.PRM_WINNER, winner)
+                .put(Identification.PRM_DESCRIPTION, "")
+                .toString();
+    }
     
 }

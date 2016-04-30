@@ -23,6 +23,8 @@ public class Identification {
      */
     // Join Game
     public static final String PRM_USERNAME = "username";
+    public static final String PRM_UDPADDR = "udp_address";
+    public static final String PRM_UDPPORT = "udp_port";
     public static final String PRM_PLAYERID = "player_id";
     // Leave Game
     public static final String PRM_TIME = "time";
@@ -88,4 +90,10 @@ public class Identification {
      */
     public static final String TIME_DAY = "day";
     public static final String TIME_NIGHT = "night";
+    
+    /**
+     * Status Player Parameter possible values
+     */
+    public final static int STATPLAYER_KILLED = 1;
+    public final static int STATPLAYER_NOTKILLED = -1;
 }
