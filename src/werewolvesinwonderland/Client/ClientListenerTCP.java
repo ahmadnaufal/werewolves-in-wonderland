@@ -11,4 +11,13 @@ package werewolvesinwonderland.Client;
  */
 public class ClientListenerTCP {
     
+    private String lastSentMethod = "";
+    
+    /**
+     * set the last sent method
+     */
+    public void setLastSentMethod(String method) {
+        lastSentMethod = method;
+    }
+    
 }
