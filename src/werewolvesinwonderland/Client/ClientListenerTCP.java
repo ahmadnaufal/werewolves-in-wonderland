@@ -27,12 +27,20 @@ public class ClientListenerTCP extends Observable implements Runnable {
     private Thread thread = null;
     private BufferedReader br;
     private boolean running = true;
+    private String lastSentMethod = "";
     private ArrayList<Observer> observerList = new ArrayList<>();
     
-    public ClientListenerTCP(Socket socket) { //TODO: add observer
+    public ClientListenerTCP(Socket socket) { //TODO: add observer to params
         this.socket = socket;
         thread = new Thread(this);
         thread.start();
+    }
+    
+    /**
+     * set the last sent method
+     */
+    public void setLastSentMethod(String method) {
+        lastSentMethod = method;
     }
     
     public void handleResponse(String response){
@@ -71,4 +79,5 @@ public class ClientListenerTCP extends Observable implements Runnable {
         }
         clearChanged();
     }
+   
 }
