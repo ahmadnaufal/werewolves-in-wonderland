@@ -23,13 +23,14 @@ import werewolvesinwonderland.protocol.model.Player;
 public class ServerController {
 
     public ArrayList<ClientHandler> clientsList = new ArrayList<>();
-    public HashMap<Player,ClientHandler> playerClientMap = new HashMap<>();
+    public HashMap<Player, ClientHandler> playerClientMap = new HashMap<>();
     public ServerSocket mServerSocket;
     public int mPort;
     private Game mGame;
 
     /**
      * Constructor for controllers
+     *
      * @param port the port for socket connections
      */
     public ServerController(int port) {
@@ -38,16 +39,19 @@ public class ServerController {
     }
 
     /**
-     * Initialize socket connection of the server
-     * to receive connections from its client
+     * Initialize socket connection of the server to receive connections from
+     * its client
      */
     public void initializeServer() {
+        System.out.println("Initializing Server...");
         try {
             mServerSocket = new ServerSocket(mPort, 0, InetAddress.getLocalHost());
+            System.out.println("Server is now connected at " + InetAddress.getLocalHost() + ":" + mPort);
 
             while (true) {
                 Socket socket = mServerSocket.accept();
-                System.out.println(socket.getInetAddress().getHostAddress() + ":" + socket.getPort());
+                System.out.print("A Client is connecting... ");
+                System.out.println("Address: " + socket.getInetAddress().getHostAddress() + ":" + socket.getPort());
                 ClientHandler temp = new ClientHandler(socket, this);
                 clientsList.add(temp);
             }
@@ -60,6 +64,7 @@ public class ServerController {
 
     /**
      * Get the game object
+     *
      * @return
      */
     public Game getGame() {
@@ -67,53 +72,53 @@ public class ServerController {
     }
 
     public void mapPlayerClient(ClientHandler client) {
-      playerClientMap.put(mGame.getPlayer(client.getPlayerId()),client);
+        playerClientMap.put(mGame.getPlayer(client.getPlayerId()), client);
     }
 
     public void sendStartGame() {
-      String time = Identification.TIME_DAY;
-      ArrayList<String> werewolves = mGame.getWerewolvesUsernames();
-      ArrayList<String> friends;
-      for (Player player : mGame.getPlayersList()) {
-        if (player.getRole().equals(Identification.ROLE_WEREWOLF)) {
-          friends = new ArrayList<String>(werewolves);
-          friends.remove(player.getUsername());
-        } else {
-          friends = new ArrayList<String>();
+        String time = Identification.TIME_DAY;
+        ArrayList<String> werewolves = mGame.getWerewolvesUsernames();
+        ArrayList<String> friends;
+        for (Player player : mGame.getPlayersList()) {
+            if (player.getRole().equals(Identification.ROLE_WEREWOLF)) {
+                friends = new ArrayList<String>(werewolves);
+                friends.remove(player.getUsername());
+            } else {
+                friends = new ArrayList<String>();
+            }
+            ServerSender.sendRequestStartGame(time, player.getRole(), friends, playerClientMap.get(player).getOutputStream());
         }
-        ServerSender.sendRequestStartGame(time,player.getRole(),friends,playerClientMap.get(player).getOutputStream());
-      }
     }
 
     public void sendChangePhase() {
-      String time = mGame.getTime();
-      int days = mGame.getDays();
-      for (Player player : mGame.getPlayersList()) {
-        ServerSender.sendRequestChangePhase(time,days,playerClientMap.get(player).getOutputStream());
-      }
+        String time = mGame.getTime();
+        int days = mGame.getDays();
+        for (Player player : mGame.getPlayersList()) {
+            ServerSender.sendRequestChangePhase(time, days, playerClientMap.get(player).getOutputStream());
+        }
     }
 
     public void sendGameOver(String winner) {
-      for (Player player : mGame.getPlayersList()) {
-        ServerSender.sendRequestGameOver(winner,playerClientMap.get(player).getOutputStream());
-      }
+        for (Player player : mGame.getPlayersList()) {
+            ServerSender.sendRequestGameOver(winner, playerClientMap.get(player).getOutputStream());
+        }
     }
 
     public void sendVoteNight() {
-      for (Player player : mGame.getAliveWerewolves()) {
-        ServerSender.sendRequestVote(Identification.TIME_NIGHT,playerClientMap.get(player).getOutputStream());
-      }
+        for (Player player : mGame.getAliveWerewolves()) {
+            ServerSender.sendRequestVote(Identification.TIME_NIGHT, playerClientMap.get(player).getOutputStream());
+        }
     }
 
     public void sendVoteDay() {
-      for (Player player : mGame.getAlivePlayers()) {
-        ServerSender.sendRequestVote(Identification.TIME_DAY,playerClientMap.get(player).getOutputStream());
-      }
+        for (Player player : mGame.getAlivePlayers()) {
+            ServerSender.sendRequestVote(Identification.TIME_DAY, playerClientMap.get(player).getOutputStream());
+        }
     }
 
     public void sendKpuSelected(int kpu) {
-      for (Player player : mGame.getPlayersList()) {
-        ServerSender.sendRequestKpuSelected(kpu,playerClientMap.get(player).getOutputStream());
-      }
+        for (Player player : mGame.getPlayersList()) {
+            ServerSender.sendRequestKpuSelected(kpu, playerClientMap.get(player).getOutputStream());
+        }
     }
 }
