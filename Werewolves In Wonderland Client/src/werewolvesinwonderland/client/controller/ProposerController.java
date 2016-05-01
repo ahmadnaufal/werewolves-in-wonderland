@@ -33,6 +33,9 @@ public class ProposerController {
 
     public ProposerController(GameController gameController) {
         gameHandle = gameController;
+    }
+    
+    public void setPlayerId() {
         playerId = gameHandle.getGame().getCurrentPlayer().getPlayerId();
     }
 

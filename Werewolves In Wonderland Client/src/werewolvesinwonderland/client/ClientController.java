@@ -54,12 +54,12 @@ public class ClientController {
     /**
      *
      */
-    public void initClientConnection() {
+    public int initClientConnection() {
         try {
             InetAddress inetAddr = InetAddress.getByName(serverHostName);
             if (!inetAddr.isReachable(10000)) {
                 System.err.println("Address " + serverHostName + " is unreachable.");
-                return;
+                return -3;
             }
 
             socket = new Socket(inetAddr, serverPort);
@@ -72,12 +72,15 @@ public class ClientController {
 
             InetAddress inetAddress = InetAddress.getLocalHost();
             clientHostName = inetAddress.getHostAddress();
+            return 1;
         } catch (UnknownHostException ex) {
             System.err.println(ex);
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
         } catch (IOException ex) {
             System.err.println(ex);
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
         }
     }
 

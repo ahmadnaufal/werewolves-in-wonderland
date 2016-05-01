@@ -309,19 +309,18 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
                     "Server Port: " + serverPort + ", " +
                     "Client Port: " + clientPort);
         
-        ClientController clientHandle = new ClientController(serverAddress, serverPort, clientPort);
-        clientHandle.initClientConnection();
-        gameController.setClientHandle(clientHandle);
+        
 
         JDialog dlgProgress = createProgressDialog();
 
         SwingWorker<Void, Void> sw = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
-                gameController.joinGame(username);
+                int ret = gameController.joinGame(username, serverAddress, serverPort, clientPort);
                 while (gameController.getClientHandle().isWaitingResponse()) {
                     // Waiting
                 }
+                // if (ret != 0) showErrorMessage("Error joining game");
                 return null;
             }
 

@@ -63,16 +63,22 @@ public class GameController {
 
     public void createPlayer(int id) {
         mGame.setCurrentPlayer(new Player(id, username, clientHandle.getClientHostName(), clientHandle.getListenPort()));
+        proposerController.setPlayerId();
         frame.joinGameSuccess();
     }
 
-    public void joinGame(String username) {
-        if (ClientSender.requestJoinGame(username,
+    public int joinGame(String username, String serverAddress, int serverPort, int clientPort) {
+        clientHandle = new ClientController(serverAddress, serverPort, clientPort);
+        int ret = clientHandle.initClientConnection();
+        if (ret == 1) {
+            if (ClientSender.requestJoinGame(username,
                 clientHandle.getClientHostName(),
                 clientHandle.getListenPort(),
                 clientHandle.getOutputStream()) != 1) {
-            clientHandle.setResponseHasArrived();
+                clientHandle.setResponseHasArrived();
+            }
         }
+        return ret;
     }
 
     public void readyUp() {
