@@ -23,7 +23,7 @@ public class GameController {
     private String username;
     private int selectedKpu;
     private ArrayList<String> werewolfFriends;
-    
+
     private AcceptorController acceptorController;
     private ProposerController proposerController;
 
@@ -33,11 +33,11 @@ public class GameController {
         acceptorController = new AcceptorController(this);
         proposerController = new ProposerController(this);
     }
-    
+
     public ClientController getClientHandle() {
         return clientHandle;
     }
-    
+
     public void setClientHandle(ClientController clientHandle) {
         this.clientHandle = clientHandle;
     }
@@ -74,12 +74,13 @@ public class GameController {
             clientHandle.setResponseHasArrived();
         }
     }
-    
+
     public void readyUp() {
         ClientSender.requestReadyUp(clientHandle.getOutputStream());
     }
 
     public void startVote() {
+        if (mGame.getCurrentPlayer().getPlayerId()==selectedKpu) proposerController.startVote();
         if (mGame.getCurrentPlayer().getRole().equals(Identification.ROLE_WEREWOLF) && mGame.getTime().equals(Identification.TIME_NIGHT)) {
             //enable cells berisi civilians u/ divoting
         } else if (mGame.getTime().equals(Identification.TIME_DAY)) {
@@ -101,7 +102,7 @@ public class GameController {
         mGame.setTime(time);
         mGame.setDays(days);
         //update view
-        
+
         startPaxos();
     }
 
@@ -117,11 +118,11 @@ public class GameController {
         //TODO: Masih bingung
         ClientSender.requestLeaveGame(clientHandle.getOutputStream());
     }
-    
+
     public void showInformationDialog(String message) {
         frame.showInformationMessage(message);
     }
-    
+
     public void showErrorDialog(String message) {
         //alert message
         frame.showErrorMessage(message);
@@ -132,15 +133,13 @@ public class GameController {
         int proposer1 = Collections.max(playerIds);
         playerIds.remove(proposer1);
         int proposer2 = Collections.max(playerIds);
-        
-        if (mGame.getCurrentPlayer().getPlayerId() == proposer1) {
-            Map<Integer, Player> acceptors = new HashMap<>(mGame.getListPlayers());
-            acceptors.remove(proposer2);
-            getProposerController().prepareProposal(proposer1, acceptors);
-        } else if (mGame.getCurrentPlayer().getPlayerId() == proposer2) {
+
+        if (mGame.getCurrentPlayer().getPlayerId() == proposer1
+          || mGame.getCurrentPlayer().getPlayerId() == proposer2) {
             Map<Integer, Player> acceptors = new HashMap<>(mGame.getListPlayers());
             acceptors.remove(proposer1);
-            getProposerController().prepareProposal(proposer2, acceptors);
+            acceptors.remove(proposer2);
+            getProposerController().startRound(acceptors);
         } else {
             // This is an acceptor
         }
@@ -172,6 +171,10 @@ public class GameController {
      */
     public void setProposerController(ProposerController proposerController) {
         this.proposerController = proposerController;
+    }
+
+    public Game getGame() {
+      return mGame;
     }
 
 }

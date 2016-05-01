@@ -15,29 +15,129 @@ import werewolvesinwonderland.protocol.model.Player;
  * @author Ahmad Naufal Farhan
  */
 public class ProposerController {
-    
+
     private GameController gameHandle;
+    private int playerId;
     private int proposalNumber = 1;
     private int quorum = 0;
-    private int totalPlayer;
-    
+    private int kpuId;
+    private Map<Integer, Player> acceptorList;
+    private Map<Integer, Integer> killVotes = new HashMap<Integer,Integer>();
+    private int voteCount = 0;
+    private int aliveWerewolvesCount;
+    private int alivePlayersCount;
+
     public ProposerController(GameController gameController) {
         gameHandle = gameController;
+        playerId = gameHandle.getGame().getCurrentPlayer().getPlayerId();
     }
-    
-    public void startRound() {
-        
+
+    public void startRound(Map<Integer, Player> acceptorList) {
+      this.acceptorList = acceptorList;
+      quorum = 0;
+      kpuId = playerId;
+      prepareProposal();
     }
-    
-    public void prepareProposal(int proposerId, Map<Integer, Player> acceptorList) {
-        int playerId = proposerId;
+
+    public void prepareProposal() {
         for (Entry<Integer, Player> e : acceptorList.entrySet()) {
             ClientSender.sendPaxosPrepareProposal(proposalNumber, playerId,
                     gameHandle.getClientHandle().getUdpSocket(),
                     e.getValue().getUdpAddress(), e.getValue().getUdpPort());
         }
-        
+
         proposalNumber++;
     }
-    
+
+    public void receiveOK(int previousAccepted) {
+      quorum++;
+      if (previousAccepted!=-1 && previousAccepted > kpuId) kpuId = previousAccepted;
+      if (quorum >= acceptorList.size()/2) {
+        requestAcceptProposal();
+      }
+    }
+
+    public void requestAcceptProposal() {
+      for (Entry<Integer, Player> e : acceptorList.entrySet()) {
+          ClientSender.sendPaxosAcceptProposal(proposalNumber, playerId, kpuId,
+                  gameHandle.getClientHandle().getUdpSocket(),
+                  e.getValue().getUdpAddress(), e.getValue().getUdpPort());
+      }
+    }
+
+    public void addKillVote(int id) {
+      if (killVotes.containsKey(id)) {
+          killVotes.put(id, killVotes.get(id) + 1);
+      } else {
+          killVotes.put(id, 1);
+      }
+      voteCount++;
+      if (gameHandle.getGame().getTime().equals(Identification.TIME_DAY) && voteCount == alivePlayersCount
+        || gameHandle.getGame().getTime().equals(Identification.TIME_NIGHT) && voteCount == aliveWerewolvesCount) {
+          voteCount = 0;
+          killVotes.clear();
+          countKillVotes();
+      }
+    }
+
+    private void countKillVotes() {
+      Integer max = Collections.max(killVotes.values());
+      Integer maxId = null;
+      boolean tie = true;
+
+      for (Entry<Integer, Integer> entry : killVotes.entrySet()) {
+          Integer value = entry.getValue();
+
+          if (max == value) {
+            if (maxId == null)
+              maxId = entry.getKey();
+            else {
+              tie = true;
+              break;
+            }
+          }
+      }
+      if (!tie) sendInfoKilled(maxId)
+      else sendInfoKilled(-1);
+    }
+
+    private startVote() {
+      if (gameHandle.getGame().getTime().equals(Identification.TIME_DAY))
+        alivePlayersCount = gameHandle.getGame().getAlivePlayers().size();
+      else
+        countAliveWerewolves();
+    }
+
+    private void countAliveWerewolves() {
+      aliveWerewolves = (acceptorList.size()+2)/3;
+      for (Entry<Integer, Player> e : gameHandle.getGame().getListPlayers().entrySet()) {
+          if (e.getValue().getRole().equals(Identification.ROLE_WEREWOLF)) aliveWerewolves--;
+      }
+    }
+
+    private void sendInfoKilled(int playerKilled) {
+      ArrayList<ArrayList<Integer>> killVotesArrayList = new ArrayList<ArrayList<Integer>>();
+      for (Entry<Integer, Integer> entry : killVotes.entrySet()) {
+        ArrayList<Integer> temp = new ArrayList<Integer>();
+        temp.add(entry.getKey());
+        temp.add(entry.getValue());
+        killVotesArrayList.add(temp);
+      }
+      if (gameHandle.getGame().getTime().equals(Identification.TIME_DAY)) {
+        if (playerKilled==-1)
+          ClientSender.sendInfoWerewolfNotKilled(killVotesArrayList,gameHandle.getClientHandle().getOutputStream());
+        else
+          ClientSender.sendInfoWerewolfKilled(playerKilled,killVotesArrayList,gameHandle.getClientHandle().getOutputStream());
+      }
+      else {
+        if (playerKilled==-1)
+          ClientSender.sendInfoCivilianNotKilled(killVotesArrayList,gameHandle.getClientHandle().getOutputStream());
+        else
+          ClientSender.sendInfoCivilianKilled(playerKilled,killVotesArrayList,gameHandle.getClientHandle().getOutputStream());
+      }
+    }
+
+
+
+
 }

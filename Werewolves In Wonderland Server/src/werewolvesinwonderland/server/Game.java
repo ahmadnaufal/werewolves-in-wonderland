@@ -161,7 +161,7 @@ public class Game {
         }
 
         mServerHandle.sendKpuSelected(selectedKpu);
-
+        mServerHandle.sendVoteDay();
     }
 
     public int getSelectedKpu() {
