@@ -294,10 +294,10 @@ public class ClientSender {
      * @param destPort
      * @return 
      */
-    public static int sendVoteKillWerewolf(int playerId, DatagramSocket datagramSocket, InetAddress destAddr, int destPort) {
+    public static int sendVoteKillWerewolf(int playerId, DatagramSocket datagramSocket, String destAddr, int destPort) {
         try {
             String requestStr = ClientMessageBuilder.createRequestKillWerewolfVote(playerId);
-            DatagramPacket packet = buildDatagramPacket(requestStr, destAddr, destPort);
+            DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
             UnreliableSender sender = new UnreliableSender(datagramSocket);
             sender.send(packet);
             
@@ -321,10 +321,10 @@ public class ClientSender {
      * @param destPort
      * @return 
      */
-    public static int sendVoteKillCivilian(int playerId, DatagramSocket datagramSocket, InetAddress destAddr, int destPort) {
+    public static int sendVoteKillCivilian(int playerId, DatagramSocket datagramSocket, String destAddr, int destPort) {
         try {
             String requestStr = ClientMessageBuilder.createRequestKillCivilianVote(playerId);
-            DatagramPacket packet = buildDatagramPacket(requestStr, destAddr, destPort);
+            DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
             UnreliableSender sender = new UnreliableSender(datagramSocket);
             sender.send(packet);
             

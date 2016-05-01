@@ -150,19 +150,21 @@ public class ClientListenerTCP extends Observable implements Runnable {
             DataInputStream is = new DataInputStream(socket.getInputStream());
             while (running) {
                 String message = "";
-                while (is.available() > 0)
-                    message += is.readUTF();
-                    try {
-                        JSONObject messageObj = new JSONObject(message);
-                        if (messageObj.has(Identification.PRM_METHOD)) {
-                            handleRequest(messageObj);
-                        } else {
-                            handleResponse(messageObj);
-                        }
-                    } catch (JSONException ex) {
-                        System.err.println(ex);
-                        Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
+                while (is.available() <= 0);
+                message += is.readUTF();
+                
+                try {
+                    JSONObject messageObj = new JSONObject(message);
+                    if (messageObj.has(Identification.PRM_METHOD)) {
+                        handleRequest(messageObj);
+                    } else {
+                        handleResponse(messageObj);
                     }
+                } catch (JSONException ex) {
+                    System.err.println(ex);
+                    Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             socket.close();
           } catch (IOException ex) {
             System.err.println(ex);
