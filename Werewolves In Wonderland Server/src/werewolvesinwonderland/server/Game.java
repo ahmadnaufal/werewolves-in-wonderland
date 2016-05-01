@@ -26,7 +26,6 @@ public class Game {
     private int days = 0;
     private int readyCount = 0;
     private HashMap<Integer, Integer> kpuProposals = new HashMap<>();
-    private int kpuProposalCount = 0;
     private boolean dayVoted = false;
     private int selectedKpu = -1;
     private ServerController mServerHandle;
@@ -141,27 +140,12 @@ public class Game {
         } else {
             kpuProposals.put(id, 1);
         }
-        kpuProposalCount++;
-        if (kpuProposalCount == aliveWerewolves.size() + aliveCivilians.size() - 2) {
-            kpuProposalCount = 0;
+        if (kpuProposals.get(id)>=players.size()-2) {
+            selectedKpu = id;
+            mServerHandle.sendKpuSelected(id);
+            mServerHandle.sendVoteDay();
             kpuProposals.clear();
-            countKpuProposals();
         }
-    }
-
-    private void countKpuProposals() {
-        Integer max = Collections.max(kpuProposals.values());
-
-        for (Entry<Integer, Integer> entry : kpuProposals.entrySet()) {
-            Integer value = entry.getValue();
-
-            if (max == value) {
-                selectedKpu = entry.getKey();
-            }
-        }
-
-        mServerHandle.sendKpuSelected(selectedKpu);
-
     }
 
     public int getSelectedKpu() {
