@@ -12,12 +12,17 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import werewolvesinwonderland.client.ClientController;
 import werewolvesinwonderland.client.ClientSender;
+import werewolvesinwonderland.client.controller.GameController;
 import werewolvesinwonderland.client.view.NewGameDialog.NewGameDialogListener;
 /**
  *
@@ -59,11 +64,19 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         tblPlayerList = new javax.swing.JTable();
         btnReadyUp = new javax.swing.JButton();
         btnLeaveGame = new javax.swing.JButton();
+        lbUsername1 = new javax.swing.JLabel();
+        lbRole = new javax.swing.JLabel();
+        lbUsername = new javax.swing.JLabel();
+        icPlayer = new javax.swing.JLabel();
+        lbU = new javax.swing.JLabel();
+        lbR = new javax.swing.JLabel();
+        lbS = new javax.swing.JLabel();
         iconTitle = new javax.swing.JLabel();
         bgTable = new javax.swing.JLabel();
         bgProfile = new javax.swing.JLabel();
         bgInfo = new javax.swing.JLabel();
         bgGame = new javax.swing.JLabel();
+        lbUsername2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -111,7 +124,6 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
             }
         ));
         tblPlayerList.setFocusable(false);
-        tblPlayerList.setGridColor(new Color(0,0,0,0));
         tblPlayerList.setOpaque(false);
         tblPlayerList.setSelectionBackground(new Color(0,0,0,0));
         tblPlayerList.setSelectionForeground(new Color(0,0,0,0));
@@ -146,6 +158,43 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         gamePanel.add(btnLeaveGame);
         btnLeaveGame.setBounds(1070, 70, 192, 41);
 
+        lbUsername1.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
+        lbUsername1.setText("Alive");
+        gamePanel.add(lbUsername1);
+        lbUsername1.setBounds(1220, 200, 60, 19);
+
+        lbRole.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
+        lbRole.setText("Werewolf");
+        gamePanel.add(lbRole);
+        lbRole.setBounds(1220, 170, 60, 19);
+
+        lbUsername.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
+        lbUsername.setText("Snowball");
+        gamePanel.add(lbUsername);
+        lbUsername.setBounds(1220, 140, 60, 19);
+
+        icPlayer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/ic_player110_werewolf2.png"))); // NOI18N
+        gamePanel.add(icPlayer);
+        icPlayer.setBounds(1040, 140, 110, 110);
+
+        lbU.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
+        lbU.setForeground(new java.awt.Color(102, 51, 0));
+        lbU.setText("Username");
+        gamePanel.add(lbU);
+        lbU.setBounds(1160, 140, 60, 19);
+
+        lbR.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
+        lbR.setForeground(new java.awt.Color(102, 51, 0));
+        lbR.setText("Role");
+        gamePanel.add(lbR);
+        lbR.setBounds(1160, 170, 60, 19);
+
+        lbS.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
+        lbS.setForeground(new java.awt.Color(102, 51, 0));
+        lbS.setText("Status");
+        gamePanel.add(lbS);
+        lbS.setBounds(1160, 200, 60, 19);
+
         iconTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/icon_title.png"))); // NOI18N
         gamePanel.add(iconTitle);
         iconTitle.setBounds(50, 20, 947, 100);
@@ -166,6 +215,12 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         gamePanel.add(bgGame);
         bgGame.setBounds(0, 0, 1366, 768);
 
+        lbUsername2.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
+        lbUsername2.setForeground(new java.awt.Color(102, 51, 0));
+        lbUsername2.setText("Role");
+        gamePanel.add(lbUsername2);
+        lbUsername2.setBounds(1160, 170, 60, 19);
+
         mainPanel.add(gamePanel, "gamePanel");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -183,18 +238,19 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnStartMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnStartMouseClicked
-        new NewGameDialog(this);
+        newGameDialog = new NewGameDialog(this);
     }//GEN-LAST:event_btnStartMouseClicked
 
     private void btnReadyUpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReadyUpMouseClicked
-        // TODO: request ready up
+        gameController.readyUp();
     }//GEN-LAST:event_btnReadyUpMouseClicked
 
     private void btnLeaveGameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLeaveGameMouseClicked
-        // TODO: request leave game
+        changeScreen("homePanel");
     }//GEN-LAST:event_btnLeaveGameMouseClicked
 
-    private ClientController clientController = null;
+    private final GameController gameController = new GameController(this);
+    private JFrame newGameDialog;
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel bgGame;
@@ -207,7 +263,15 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     private javax.swing.JButton btnStart;
     private javax.swing.JPanel gamePanel;
     private javax.swing.JPanel homePanel;
+    private javax.swing.JLabel icPlayer;
     private javax.swing.JLabel iconTitle;
+    private javax.swing.JLabel lbR;
+    private javax.swing.JLabel lbRole;
+    private javax.swing.JLabel lbS;
+    private javax.swing.JLabel lbU;
+    private javax.swing.JLabel lbUsername;
+    private javax.swing.JLabel lbUsername1;
+    private javax.swing.JLabel lbUsername2;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JScrollPane spTable;
     private javax.swing.JTable tblPlayerList;
@@ -222,21 +286,26 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
                     "Server Port: " + serverPort + ", " +
                     "Client Port: " + clientPort);
         
-        clientController = new ClientController(serverAddress, serverPort, clientPort);
-        clientController.initClientConnection();
+        ClientController clientHandle = new ClientController(serverAddress, serverPort, clientPort);
+        clientHandle.initClientConnection();
+        gameController.setClientHandle(clientHandle);
 
         JDialog dlgProgress = createProgressDialog();
 
         SwingWorker<Void, Void> sw = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
-                // TODO: Request join game
+                gameController.joinGame(username);
+                while (gameController.getClientHandle().isWaitingResponse()) {
+                    // Waiting
+                }
                 return null;
             }
 
             @Override
             protected void done() {
                 dlgProgress.dispose();//close the modal dialog
+                newGameDialog.dispose();
             }
         };
 
@@ -245,10 +314,11 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     }
     
     private void initPlayerListBoard () {
+        tblPlayerList.setModel(new DefaultTableModel(2, 4));
         for(int i=0; i<3; i++) {
             tblPlayerList.setRowHeight(i, 232);
             for (int j=0; j<4; j++) {
-                //tblPlayerList.getColumnModel().getColumn(i*4 + j).setCellRenderer(new PlayerPanel());
+                tblPlayerList.getColumnModel().getColumn(j).setCellRenderer(new PlayerPanel());
             }
         }
     }
@@ -273,4 +343,20 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         return dlgProgress;
     }
     
+    public void joinGameSuccess() {
+        changeScreen("gamePanel");
+    }
+    
+    public void joinGameFailed(String message) {
+        newGameDialog.setVisible(true);
+        showErrorMessage(message);
+    }
+    
+    public void showInformationMessage(String message) {
+        showMessageDialog(null, message, "Information", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    public void showErrorMessage(String message) {
+        showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
 }

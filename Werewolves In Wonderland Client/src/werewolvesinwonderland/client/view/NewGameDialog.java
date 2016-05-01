@@ -145,7 +145,6 @@ public class NewGameDialog extends JFrame {
                 int clientPort = Integer.parseInt(tfClientPort.getText());
                 this.setVisible(false);
                 dialogListener.onJoinGameButtonClicked(username, serverAddress, serverPort, clientPort);
-                this.dispose();
             } catch (Exception e) {
                 showMessageDialog(null, "Please fill in all of the fields in properly!!", "Error", JOptionPane.ERROR_MESSAGE);
             }

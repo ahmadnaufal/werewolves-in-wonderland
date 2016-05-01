@@ -340,4 +340,20 @@ public class ClientSender {
         }
     }
     
+    public static int sendResponseError(DataOutputStream os) {
+        try {
+            String requestStr = ClientMessageBuilder.createResponseError();
+            os.writeUTF(requestStr);
+            
+            ClientController.lastSentMethod = Identification.METHOD_LEAVE;
+            return 1;
+        } catch (JSONException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
 }

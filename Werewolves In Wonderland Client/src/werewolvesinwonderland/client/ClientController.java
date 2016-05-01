@@ -63,7 +63,8 @@ public class ClientController {
             }
 
             socket = new Socket(inetAddr, serverPort);
-            clientListenerTcpHandle = new ClientListenerTCP(socket, this);
+            clientListenerTcpHandle = new ClientListenerTCP(socket, this,
+                    (DataOutputStream) socket.getOutputStream());
             os = new DataOutputStream(socket.getOutputStream());
 
             udpSocket = new DatagramSocket(listenPort);
@@ -147,5 +148,12 @@ public class ClientController {
     public void setGameHandler(GameController gameHandler) {
         this.gameHandler = gameHandler;
     }
-
+    
+    public boolean isWaitingResponse() {
+        return !lastSentMethod.equals("");
+    }
+    
+    public void setResponseHasArrived() {
+        lastSentMethod = "";
+    }
 }

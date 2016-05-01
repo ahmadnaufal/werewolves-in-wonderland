@@ -19,8 +19,9 @@ public class GameController {
     private int kpuId;
     private ArrayList<String> werewolfFriends;
 
-    public GameController() {
-        mGame = new Game();
+    public GameController(GameFrame frame) {
+        this.mGame = new Game();
+        this.frame = frame;
     }
     
     public ClientController getClientHandle() {
@@ -52,14 +53,20 @@ public class GameController {
 
     public void createPlayer(int id) {
         mGame.setCurrentPlayer(new Player(id, username, clientHandle.getClientHostName(), clientHandle.getListenPort()));
+        frame.joinGameSuccess();
     }
 
     public void joinGame(String username) {
-        ClientSender.requestJoinGame(username, clientHandle.getClientHostName(), clientHandle.getListenPort(), clientHandle.getOutputStream());
+        if (ClientSender.requestJoinGame(username,
+                clientHandle.getClientHostName(),
+                clientHandle.getListenPort(),
+                clientHandle.getOutputStream()) != 1) {
+            clientHandle.setResponseHasArrived();
+        }
     }
-
-    public void showDialog(String message) {
-        //alert message
+    
+    public void readyUp() {
+        ClientSender.requestReadyUp(clientHandle.getOutputStream());
     }
 
     public void startVote() {
@@ -95,11 +102,17 @@ public class GameController {
     }
 
     public void leaveGame() {
-
+        //TODO: Masih bingung
+        ClientSender.requestLeaveGame(clientHandle.getOutputStream());
     }
-
-    public void userExists() {
-
+    
+    public void showInformationDialog(String message) {
+        frame.showInformationMessage(message);
+    }
+    
+    public void showErrorDialog(String message) {
+        //alert message
+        frame.showErrorMessage(message);
     }
 
 }

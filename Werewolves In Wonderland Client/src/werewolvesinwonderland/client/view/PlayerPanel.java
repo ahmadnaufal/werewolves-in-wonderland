@@ -7,6 +7,7 @@ package werewolvesinwonderland.client.view;
 
 import java.awt.Component;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
 /**
@@ -31,33 +32,68 @@ public class PlayerPanel extends javax.swing.JPanel implements TableCellRenderer
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        lbUsername = new javax.swing.JLabel();
+        icPlayer = new javax.swing.JLabel();
+        lbRole = new javax.swing.JLabel();
+        btnKill = new javax.swing.JButton();
 
-        setPreferredSize(new java.awt.Dimension(180, 180));
+        setBackground(new java.awt.Color(0, 51, 51));
+        setPreferredSize(new java.awt.Dimension(232, 232));
+        setVerifyInputWhenFocusTarget(false);
 
-        jLabel1.setText("jLabel1");
+        lbUsername.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        lbUsername.setForeground(new java.awt.Color(255, 255, 204));
+        lbUsername.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbUsername.setText("Snowball");
+
+        icPlayer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        icPlayer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/ic_player132_werewolf1.png"))); // NOI18N
+
+        lbRole.setForeground(new java.awt.Color(255, 255, 255));
+        lbRole.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbRole.setText("Werewolf");
+        lbRole.setToolTipText("");
+        lbRole.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lbRole.setHorizontalTextPosition(SwingConstants.CENTER);
+        lbRole.setMaximumSize(new java.awt.Dimension(110, 14));
+        lbRole.setMinimumSize(new java.awt.Dimension(110, 14));
+        lbRole.setPreferredSize(new java.awt.Dimension(110, 14));
+
+        btnKill.setText("Kill");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lbUsername, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(lbRole, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
+            .addComponent(icPlayer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(92, 92, 92)
+                .addComponent(btnKill)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(53, Short.MAX_VALUE))
+                .addComponent(icPlayer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbUsername)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbRole, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnKill)
+                .addGap(12, 12, 12))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton btnKill;
+    private javax.swing.JLabel icPlayer;
+    private javax.swing.JLabel lbRole;
+    private javax.swing.JLabel lbUsername;
     // End of variables declaration//GEN-END:variables
 
     @Override
