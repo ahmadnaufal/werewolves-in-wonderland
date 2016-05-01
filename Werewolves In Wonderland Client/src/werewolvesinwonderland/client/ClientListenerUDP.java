@@ -60,6 +60,8 @@ public class ClientListenerUDP extends Observable implements Runnable {
     /**
      * Handling given response from server (TCP)
      * @param messageObj
+     * @param requestAddress
+     * @param requestPort
      */
     public void handleRequest(JSONObject messageObj, String requestAddress, int requestPort) {
         try {
@@ -75,15 +77,29 @@ public class ClientListenerUDP extends Observable implements Runnable {
                         case 1: // has not seen other proposal before
                             ClientSender.sendResponsePaxosPrepareProposalOK(datagramSocket, requestAddress, requestPort);
                             break;
-                        case 2:
+                        case 0:
+                            break;
+                        case -1:
+                            ClientSender.sendResponsePaxosPrepareProposalFail(datagramSocket, requestAddress, requestPort);
+                            break;
+                        default:
+                            if (result > 1) {
+                                int previousAcceptedId = result - 1;
+                                ClientSender.sendResponsePaxosPrepareProposalOK(previousAcceptedId, datagramSocket, requestAddress, requestPort);
+                            } else {
+                                // No action needed: ignored
+                            }
                     }
                     break;
                     
                 case Identification.METHOD_ACCEPTPROPOSAL:
                     break;
+                    
                 case Identification.METHOD_VOTEWEREWOLF:
-                    break;
                 case Identification.METHOD_VOTECIVILIAN:
+                    int playerId = messageObj.getInt(Identification.PRM_PLAYERID);
+                    clientHandle.getGameHandler().getProposerController().addKillVote(playerId);
+                    ClientSender.sendResponseVoteOK(datagramSocket, requestAddress, requestPort);
                     break;
             }
         } catch (JSONException ex) {
@@ -119,9 +135,7 @@ public class ClientListenerUDP extends Observable implements Runnable {
                             break;
                         case Identification.METHOD_VOTEWEREWOLF:
                         case Identification.METHOD_VOTECIVILIAN:
-                            //TODO: get player objects from json array
-
-                            //handle.updatePlayers(players);
+                            //TODO: notify views that the client cannot vote again
                             break;
                         default:
                             // Unknown

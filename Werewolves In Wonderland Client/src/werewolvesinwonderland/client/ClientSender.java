@@ -265,7 +265,6 @@ public class ClientSender {
             UnreliableSender sender = new UnreliableSender(datagramSocket);
             sender.send(packet);
             
-            ClientController.lastSentMethod = Identification.METHOD_PREPAREPROPOSAL;
             return 1;
             
         } catch (JSONException ex) {
@@ -291,7 +290,81 @@ public class ClientSender {
             UnreliableSender sender = new UnreliableSender(datagramSocket);
             sender.send(packet);
             
-            ClientController.lastSentMethod = Identification.METHOD_PREPAREPROPOSAL;
+            return 1;
+            
+        } catch (JSONException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
+    /**
+     * 
+     * @param datagramSocket
+     * @param destAddr
+     * @param destPort
+     * @return 
+     */
+    public static int sendResponsePaxosPrepareProposalFail(DatagramSocket datagramSocket, String destAddr, int destPort) {
+        try {
+            String requestStr = ClientMessageBuilder.createResponseFail(Identification.DESC_REJECTED);
+            DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
+            UnreliableSender sender = new UnreliableSender(datagramSocket);
+            sender.send(packet);
+            
+            return 1;
+            
+        } catch (JSONException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
+    /**
+     * 
+     * @param datagramSocket
+     * @param destAddr
+     * @param destPort
+     * @return 
+     */
+    public static int sendResponseVoteOK(DatagramSocket datagramSocket, String destAddr, int destPort) {
+        try {
+            String requestStr = ClientMessageBuilder.createResponseOK("");
+            DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
+            UnreliableSender sender = new UnreliableSender(datagramSocket);
+            sender.send(packet);
+            
+            return 1;
+            
+        } catch (JSONException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
+    /**
+     * 
+     * @param datagramSocket
+     * @param destAddr
+     * @param destPort
+     * @return 
+     */
+    public static int sendResponseVoteFail(DatagramSocket datagramSocket, String destAddr, int destPort) {
+        try {
+            String requestStr = ClientMessageBuilder.createResponseFail();
+            DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
+            UnreliableSender sender = new UnreliableSender(datagramSocket);
+            sender.send(packet);
+            
             return 1;
             
         } catch (JSONException ex) {
