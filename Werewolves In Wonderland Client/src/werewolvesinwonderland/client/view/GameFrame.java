@@ -10,6 +10,8 @@ import java.awt.Color;
 import java.awt.Dialog;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.util.ArrayList;
+import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -24,6 +26,8 @@ import werewolvesinwonderland.client.ClientController;
 import werewolvesinwonderland.client.ClientSender;
 import werewolvesinwonderland.client.controller.GameController;
 import werewolvesinwonderland.client.view.NewGameDialog.NewGameDialogListener;
+import werewolvesinwonderland.protocol.Identification;
+import werewolvesinwonderland.protocol.model.Player;
 /**
  *
  * @author Tifani
@@ -44,6 +48,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         this.setIconImage(img.getImage());
         this.setTitle("Werewolf in Wonderland");
         changeScreen("gamePanel");
+        setPlayerInfo(new Player(1, true, "123", 8080, "Tifani", Identification.ROLE_CIVILIAN));
     }
 
     /**
@@ -64,7 +69,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         tblPlayerList = new javax.swing.JTable();
         btnReadyUp = new javax.swing.JButton();
         btnLeaveGame = new javax.swing.JButton();
-        lbUsername1 = new javax.swing.JLabel();
+        lbStatus = new javax.swing.JLabel();
         lbRole = new javax.swing.JLabel();
         lbUsername = new javax.swing.JLabel();
         icPlayer = new javax.swing.JLabel();
@@ -125,6 +130,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         ));
         tblPlayerList.setFocusable(false);
         tblPlayerList.setOpaque(false);
+        tblPlayerList.setRowSelectionAllowed(false);
         tblPlayerList.setSelectionBackground(new Color(0,0,0,0));
         tblPlayerList.setSelectionForeground(new Color(0,0,0,0));
         spTable.setViewportView(tblPlayerList);
@@ -158,38 +164,38 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         gamePanel.add(btnLeaveGame);
         btnLeaveGame.setBounds(1070, 70, 192, 41);
 
-        lbUsername1.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
-        lbUsername1.setText("Alive");
-        gamePanel.add(lbUsername1);
-        lbUsername1.setBounds(1220, 200, 60, 19);
+        lbStatus.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
+        lbStatus.setText("Alive");
+        gamePanel.add(lbStatus);
+        lbStatus.setBounds(1230, 200, 60, 19);
 
         lbRole.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
         lbRole.setText("Werewolf");
         gamePanel.add(lbRole);
-        lbRole.setBounds(1220, 170, 60, 19);
+        lbRole.setBounds(1230, 170, 60, 19);
 
         lbUsername.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
         lbUsername.setText("Snowball");
         gamePanel.add(lbUsername);
-        lbUsername.setBounds(1220, 140, 60, 19);
+        lbUsername.setBounds(1230, 140, 60, 19);
 
         icPlayer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/ic_player110_werewolf2.png"))); // NOI18N
         gamePanel.add(icPlayer);
         icPlayer.setBounds(1040, 140, 110, 110);
 
-        lbU.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
+        lbU.setFont(new java.awt.Font("Abel", 1, 14)); // NOI18N
         lbU.setForeground(new java.awt.Color(102, 51, 0));
         lbU.setText("Username");
         gamePanel.add(lbU);
         lbU.setBounds(1160, 140, 60, 19);
 
-        lbR.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
+        lbR.setFont(new java.awt.Font("Abel", 1, 14)); // NOI18N
         lbR.setForeground(new java.awt.Color(102, 51, 0));
         lbR.setText("Role");
         gamePanel.add(lbR);
         lbR.setBounds(1160, 170, 60, 19);
 
-        lbS.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
+        lbS.setFont(new java.awt.Font("Abel", 1, 14)); // NOI18N
         lbS.setForeground(new java.awt.Color(102, 51, 0));
         lbS.setText("Status");
         gamePanel.add(lbS);
@@ -251,6 +257,8 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
 
     private final GameController gameController = new GameController(this);
     private JFrame newGameDialog;
+    private int[] werewolfPic = {1,2};
+    private int[] civilianPic = {1,2,3,4};
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel bgGame;
@@ -268,9 +276,9 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     private javax.swing.JLabel lbR;
     private javax.swing.JLabel lbRole;
     private javax.swing.JLabel lbS;
+    private javax.swing.JLabel lbStatus;
     private javax.swing.JLabel lbU;
     private javax.swing.JLabel lbUsername;
-    private javax.swing.JLabel lbUsername1;
     private javax.swing.JLabel lbUsername2;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JScrollPane spTable;
@@ -314,11 +322,26 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     }
     
     private void initPlayerListBoard () {
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(new Player(2, true, "123", 8080, "Nilta", Identification.ROLE_CIVILIAN));
+        Player player = new Player(2, true, "123", 8080, "Yoru", Identification.ROLE_CIVILIAN);
+        player.setAlive(false);
+        players.add(player);
+        player = new Player(3, true, "123", 8080, "Nami", Identification.ROLE_WEREWOLF);
+        player.setAlive(false);
+        players.add(player);
+        players.add(new Player(4, true, "123", 8080, "Ahmad", Identification.ROLE_CIVILIAN));
+        players.add(new Player(5, true, "123", 8080, "Inochhi", Identification.ROLE_CIVILIAN));
+        players.add(new Player(6, true, "123", 8080, "Snowball", Identification.ROLE_CIVILIAN));
+        players.add(new Player(1, true, "123", 8080, "Quincy", Identification.ROLE_CIVILIAN));
+        
         tblPlayerList.setModel(new DefaultTableModel(2, 4));
         for(int i=0; i<3; i++) {
             tblPlayerList.setRowHeight(i, 232);
             for (int j=0; j<4; j++) {
-                tblPlayerList.getColumnModel().getColumn(j).setCellRenderer(new PlayerPanel());
+                Random random = new Random();
+                int x = random.nextInt(players.size() - 1 - 0 + 1) + 0;
+                tblPlayerList.getColumnModel().getColumn(j).setCellRenderer(new PlayerPanel(this, players.get(x)));
             }
         }
     }
@@ -359,4 +382,38 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     public void showErrorMessage(String message) {
         showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
+    
+    public void setBackground(String time) {
+        if (time.equals(Identification.TIME_DAY)) {
+            bgGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/bg_game_day.png")));
+        } else {
+            bgGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/bg_game_night.png")));
+        }
+    }
+    
+    public void setPlayerInfo(Player currentPlayer) {
+        Random random = new Random();
+        int i;
+        if (currentPlayer.getRole().equals(Identification.ROLE_WEREWOLF))
+            i = random.nextInt(werewolfPic.length - 1 + 1) + 1;
+        else
+            i = random.nextInt(civilianPic.length - 1 + 1) + 1;
+        icPlayer.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+                createStringPicture(currentPlayer.getRole(),
+                        i, "110", currentPlayer.isAlive()))));
+        lbUsername.setText(currentPlayer.getUsername());
+        lbRole.setText(currentPlayer.getRole().substring(0, 1).toUpperCase()
+                + currentPlayer.getRole().substring(1));
+        if (currentPlayer.isAlive()) lbStatus.setText("Alive");
+            else lbStatus.setText("Died");
+    }
+        
+    /* Asset things */
+    private String createStringPicture(String role, int i, String size, boolean isAlive) {
+        if (isAlive)
+            return "/werewolvesinwonderland/client/assets/ic_player" + size + "_" + role + i + ".png";
+        else
+            return "/werewolvesinwonderland/client/assets/ic_player" + size + "_" + role + i + "_died.png";
+    }
+    
 }

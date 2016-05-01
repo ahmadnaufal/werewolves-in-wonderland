@@ -5,10 +5,14 @@
  */
 package werewolvesinwonderland.client.view;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.util.Random;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
+import werewolvesinwonderland.protocol.Identification;
+import werewolvesinwonderland.protocol.model.Player;
 
 /**
  *
@@ -18,9 +22,12 @@ public class PlayerPanel extends javax.swing.JPanel implements TableCellRenderer
 
     /**
      * Creates new form PlayerPanel
-     */
-    public PlayerPanel() {
+     */    
+    public PlayerPanel(GameFrame frame, Player player) {
+        this.frame = frame;
+        this.player = player;
         initComponents();
+        initPlayerStyle();
     }
 
     /**
@@ -37,19 +44,19 @@ public class PlayerPanel extends javax.swing.JPanel implements TableCellRenderer
         lbRole = new javax.swing.JLabel();
         btnKill = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(0, 51, 51));
+        setBackground(new Color(204,204,255,100));
+        setBorder(javax.swing.BorderFactory.createMatteBorder(3, 3, 3, 3, new java.awt.Color(255, 255, 255)));
         setPreferredSize(new java.awt.Dimension(232, 232));
         setVerifyInputWhenFocusTarget(false);
 
         lbUsername.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        lbUsername.setForeground(new java.awt.Color(255, 255, 204));
+        lbUsername.setForeground(new java.awt.Color(0, 51, 51));
         lbUsername.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbUsername.setText("Snowball");
 
         icPlayer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         icPlayer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/ic_player132_werewolf1.png"))); // NOI18N
 
-        lbRole.setForeground(new java.awt.Color(255, 255, 255));
         lbRole.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbRole.setText("Werewolf");
         lbRole.setToolTipText("");
@@ -66,7 +73,7 @@ public class PlayerPanel extends javax.swing.JPanel implements TableCellRenderer
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(lbUsername, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(lbRole, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
+            .addComponent(lbRole, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
             .addComponent(icPlayer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(92, 92, 92)
@@ -88,7 +95,12 @@ public class PlayerPanel extends javax.swing.JPanel implements TableCellRenderer
         );
     }// </editor-fold>//GEN-END:initComponents
 
-
+    private int[] werewolfPic = {1,2};
+    private int[] civilianPic = {1,2,3,4};
+    
+    private GameFrame frame;
+    private Player player;
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnKill;
     private javax.swing.JLabel icPlayer;
@@ -96,8 +108,47 @@ public class PlayerPanel extends javax.swing.JPanel implements TableCellRenderer
     private javax.swing.JLabel lbUsername;
     // End of variables declaration//GEN-END:variables
 
+    private void initPlayerStyle() {
+        Random random = new Random();
+        int i;
+        
+        lbUsername.setText(player.getUsername());
+        if (player.isAlive()) {
+            i = random.nextInt(civilianPic.length - 1 + 1) + 1;
+            icPlayer.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+                createStringPicture(player.getRole(),
+                        i, "132", true))));
+            lbRole.setText("?");
+        } else {
+            if (player.getRole().equals(Identification.ROLE_WEREWOLF))
+                i = random.nextInt(werewolfPic.length - 1 + 1) + 1;
+            else
+                i = random.nextInt(civilianPic.length - 1 + 1) + 1;
+            icPlayer.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+                     createStringPicture(player.getRole(),
+                            i, "132", player.isAlive()))));
+            lbRole.setText(player.getRole().substring(0, 1).toUpperCase()
+                + player.getRole().substring(1));
+        }            
+        
+        btnKill.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                System.out.println("MIAW");
+                frame.showErrorMessage("BERHASIL CLICK");
+            }
+        });
+    }
+    
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         return this;
+    }
+    
+    /* Asset things */
+    private String createStringPicture(String role, int i, String size, boolean isAlive) {
+        if (isAlive)
+            return "/werewolvesinwonderland/client/assets/ic_player" + size + "_" + role + i + ".png";
+        else
+            return "/werewolvesinwonderland/client/assets/ic_player" + size + "_" + role + i + "_died.png";
     }
 }
