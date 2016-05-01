@@ -1,7 +1,12 @@
 package werewolvesinwonderland.client.controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import werewolvesinwonderland.client.ClientController;
 import werewolvesinwonderland.client.ClientSender;
@@ -16,12 +21,17 @@ public class GameController {
     private GameFrame frame;
     private ClientController clientHandle;
     private String username;
-    private int kpuId;
+    private int selectedKpu;
     private ArrayList<String> werewolfFriends;
+    
+    private AcceptorController acceptorController;
+    private ProposerController proposerController;
 
     public GameController(GameFrame frame) {
         this.mGame = new Game();
         this.frame = frame;
+        acceptorController = new AcceptorController(this);
+        proposerController = new ProposerController(this);
     }
     
     public ClientController getClientHandle() {
@@ -78,7 +88,7 @@ public class GameController {
     }
 
     public void voteVictim(int playerId) {
-        Player kpu = mGame.getPlayer(kpuId);
+        Player kpu = mGame.getPlayer(selectedKpu);
         String time = mGame.getTime();
         if (time.equals(Identification.TIME_DAY)) {
             ClientSender.sendVoteKillWerewolf(playerId, clientHandle.getUdpSocket(), kpu.getUdpAddress(), kpu.getUdpPort());
@@ -91,10 +101,12 @@ public class GameController {
         mGame.setTime(time);
         mGame.setDays(days);
         //update view
+        
+        startPaxos();
     }
 
     public void setKpu(int kpuId) {
-        this.kpuId = kpuId;
+        this.selectedKpu = kpuId;
     }
 
     public void gameOver(String winner) {
@@ -113,6 +125,53 @@ public class GameController {
     public void showErrorDialog(String message) {
         //alert message
         frame.showErrorMessage(message);
+    }
+
+    private void startPaxos() {
+        Set<Integer> playerIds = new HashSet<>(mGame.getListPlayers().keySet());
+        int proposer1 = Collections.max(playerIds);
+        playerIds.remove(proposer1);
+        int proposer2 = Collections.max(playerIds);
+        
+        if (mGame.getCurrentPlayer().getPlayerId() == proposer1) {
+            Map<Integer, Player> acceptors = new HashMap<>(mGame.getListPlayers());
+            acceptors.remove(proposer2);
+            getProposerController().prepareProposal(proposer1, acceptors);
+        } else if (mGame.getCurrentPlayer().getPlayerId() == proposer2) {
+            Map<Integer, Player> acceptors = new HashMap<>(mGame.getListPlayers());
+            acceptors.remove(proposer1);
+            getProposerController().prepareProposal(proposer2, acceptors);
+        } else {
+            // This is an acceptor
+        }
+    }
+
+    /**
+     * @return the acceptorController
+     */
+    public AcceptorController getAcceptorController() {
+        return acceptorController;
+    }
+
+    /**
+     * @param acceptorController the acceptorController to set
+     */
+    public void setAcceptorController(AcceptorController acceptorController) {
+        this.acceptorController = acceptorController;
+    }
+
+    /**
+     * @return the proposerController
+     */
+    public ProposerController getProposerController() {
+        return proposerController;
+    }
+
+    /**
+     * @param proposerController the proposerController to set
+     */
+    public void setProposerController(ProposerController proposerController) {
+        this.proposerController = proposerController;
     }
 
 }

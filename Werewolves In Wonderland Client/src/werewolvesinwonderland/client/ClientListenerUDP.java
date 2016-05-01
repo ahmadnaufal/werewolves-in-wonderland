@@ -13,8 +13,10 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import werewolvesinwonderland.protocol.Identification;
 
 /**
  *
@@ -30,7 +32,7 @@ public class ClientListenerUDP extends Observable implements Runnable {
 
     byte[] receiveData = new byte[1024];
     
-    private ClientController handler;
+    private ClientController clientHandle;
     
     /**
      * Default constructor for ClientListenerUDP
@@ -39,7 +41,7 @@ public class ClientListenerUDP extends Observable implements Runnable {
      */
     public ClientListenerUDP(DatagramSocket socket, ClientController handler) {
         this.datagramSocket = socket;
-        this.handler = handler;
+        this.clientHandle = handler;
         
         thread = new Thread(this);
         start();
@@ -57,17 +59,134 @@ public class ClientListenerUDP extends Observable implements Runnable {
     
     /**
      * Handling given response from server (TCP)
-     * @param response 
+     * @param messageObj
      */
-    public void handleResponse(String response) {
+    public void handleRequest(JSONObject messageObj, String requestAddress, int requestPort) {
         try {
-            JSONObject responseObj = new JSONObject(response);
-            notifyObservers(responseObj);
-            setChanged();
+            String messageMethod = messageObj.getString(Identification.PRM_METHOD);
+            //handler.showDialog(description);
+            switch (messageMethod) {
+                case Identification.METHOD_PREPAREPROPOSAL:
+                    JSONArray proposal = messageObj.getJSONArray(Identification.PRM_PROPOSALID);
+                    int proposalNumber = proposal.getInt(0);
+                    int proposerId = proposal.getInt(1);
+                    int result = clientHandle.getGameHandler().getAcceptorController().promiseProposal(proposalNumber, proposerId);
+                    switch (result) {
+                        case 1: // has not seen other proposal before
+                            ClientSender.sendResponsePaxosPrepareProposalOK(datagramSocket, requestAddress, requestPort);
+                            break;
+                        case 2:
+                    }
+                    break;
+                    
+                case Identification.METHOD_ACCEPTPROPOSAL:
+                    break;
+                case Identification.METHOD_VOTEWEREWOLF:
+                    break;
+                case Identification.METHOD_VOTECIVILIAN:
+                    break;
+            }
         } catch (JSONException ex) {
             System.err.println(ex);
             Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    /**
+     * Handling given response from server (TCP) 
+     * @param messageObj
+     */
+    public void handleResponse(JSONObject messageObj) {
+        String description = "";
+        try {
+            String status = messageObj.getString(Identification.PRM_STATUS);
+            switch (status) {
+                case Identification.STATUS_OK:
+                    if (messageObj.has(Identification.PRM_DESCRIPTION)) {
+                        description = messageObj.getString(Identification.PRM_DESCRIPTION);
+                        clientHandle.getGameHandler().showInformationDialog(description);
+                    }
+                    switch (ClientController.lastSentMethod) {
+                        case Identification.METHOD_PREPAREPROPOSAL:
+                            //TODO: get player objects from json array
+
+                            //handle.updatePlayers(players);
+                            break;
+                        case Identification.METHOD_ACCEPTPROPOSAL:
+                            //TODO: get player objects from json array
+
+                            //handle.updatePlayers(players);
+                            break;
+                        case Identification.METHOD_VOTEWEREWOLF:
+                        case Identification.METHOD_VOTECIVILIAN:
+                            //TODO: get player objects from json array
+
+                            //handle.updatePlayers(players);
+                            break;
+                        default:
+                            // Unknown
+                            break;
+                    }
+                    break;
+                case Identification.STATUS_FAIL:
+                    if (messageObj.has(Identification.PRM_DESCRIPTION)) {
+                        description = messageObj.getString(Identification.PRM_DESCRIPTION);
+                        clientHandle.getGameHandler().showInformationDialog(description);
+                    }
+                    switch (ClientController.lastSentMethod) {
+                        case Identification.METHOD_PREPAREPROPOSAL:
+                            //TODO: get player objects from json array
+
+                            //handle.updatePlayers(players);
+                            break;
+                        case Identification.METHOD_ACCEPTPROPOSAL:
+                            //TODO: get player objects from json array
+
+                            //handle.updatePlayers(players);
+                            break;
+                        case Identification.METHOD_VOTEWEREWOLF:
+                        case Identification.METHOD_VOTECIVILIAN:
+                            //TODO: get player objects from json array
+
+                            //handle.updatePlayers(players);
+                            break;
+                        default:
+                            // Unknown
+                            break;
+                    }
+                    break;
+                case Identification.STATUS_ERROR:
+                    if (messageObj.has(Identification.PRM_DESCRIPTION)) {
+                        description = messageObj.getString(Identification.PRM_DESCRIPTION);
+                        clientHandle.getGameHandler().showInformationDialog(description);
+                    }
+                    switch (ClientController.lastSentMethod) {
+                        case Identification.METHOD_PREPAREPROPOSAL:
+                            //TODO: get player objects from json array
+
+                            //handle.updatePlayers(players);
+                            break;
+                        case Identification.METHOD_ACCEPTPROPOSAL:
+                            //TODO: get player objects from json array
+
+                            //handle.updatePlayers(players);
+                            break;
+                        case Identification.METHOD_VOTEWEREWOLF:
+                        case Identification.METHOD_VOTECIVILIAN:
+                            //TODO: get player objects from json array
+
+                            //handle.updatePlayers(players);
+                            break;
+                        default:
+                            // Unknown
+                            break;
+                    }
+            }
+        } catch (JSONException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        clientHandle.setResponseHasArrived();
     }
 
     @Override
@@ -79,7 +198,18 @@ public class ClientListenerUDP extends Observable implements Runnable {
                 datagramSocket.receive(receivePacket);
 
                 String receiveStr = new String(receivePacket.getData());
-                handleResponse(receiveStr);
+                
+                try {
+                    JSONObject messageObj = new JSONObject(receiveStr);
+                    if (messageObj.has(Identification.PRM_METHOD)) {
+                        handleRequest(messageObj, receivePacket.getAddress().getHostName(), receivePacket.getPort());
+                    } else {
+                        handleResponse(messageObj);
+                    }
+                } catch (JSONException ex) {
+                    System.err.println(ex);
+                    Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             datagramSocket.close();
         } catch (IOException ex) {

@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import werewolvesinwonderland.client.controller.GameController;
 import werewolvesinwonderland.protocol.Identification;
 
 /**
@@ -93,7 +92,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
                 case Identification.METHOD_CHANGEPHASE:
                     time = messageObj.getString(Identification.PRM_TIME);
                     int days = messageObj.getInt(Identification.PRM_DAYS);
-                    //handler.changePhase(time,days);
+                    clientHandle.getGameHandler().changePhase(time,days);
                     ClientSender.requestListClients(os);
                     break;
                 case Identification.METHOD_KPUSELECTED:
@@ -113,7 +112,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
             System.err.println(ex);
             Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
         }
-      }
+    }
 
     private void handleResponse(JSONObject messageObj) {
         String description = "";

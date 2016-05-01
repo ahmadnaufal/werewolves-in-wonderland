@@ -25,6 +25,27 @@ public class ClientSender {
     
     /**
      * 
+     * @param os
+     * @return 
+     */
+    public static int sendResponseError(DataOutputStream os) {
+        try {
+            String requestStr = ClientMessageBuilder.createResponseError();
+            os.writeUTF(requestStr);
+            
+            ClientController.lastSentMethod = Identification.METHOD_LEAVE;
+            return 1;
+        } catch (JSONException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
+    /**
+     * 
      * @param username
      * @param address
      * @param port
@@ -231,6 +252,59 @@ public class ClientSender {
     
     /**
      * 
+     * @param playerId
+     * @param datagramSocket
+     * @param destAddr
+     * @param destPort
+     * @return 
+     */
+    public static int sendResponsePaxosPrepareProposalOK(int playerId, DatagramSocket datagramSocket, String destAddr, int destPort) {
+        try {
+            String requestStr = ClientMessageBuilder.createResponsePaxosPrepareProposalOK(playerId);
+            DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
+            UnreliableSender sender = new UnreliableSender(datagramSocket);
+            sender.send(packet);
+            
+            ClientController.lastSentMethod = Identification.METHOD_PREPAREPROPOSAL;
+            return 1;
+            
+        } catch (JSONException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
+    /**
+     * 
+     * @param datagramSocket
+     * @param destAddr
+     * @param destPort
+     * @return 
+     */
+    public static int sendResponsePaxosPrepareProposalOK(DatagramSocket datagramSocket, String destAddr, int destPort) {
+        try {
+            String requestStr = ClientMessageBuilder.createResponsePaxosPrepareProposalOK();
+            DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
+            UnreliableSender sender = new UnreliableSender(datagramSocket);
+            sender.send(packet);
+            
+            ClientController.lastSentMethod = Identification.METHOD_PREPAREPROPOSAL;
+            return 1;
+            
+        } catch (JSONException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+    
+    /**
+     * 
      * @param proposalNumber
      * @param playerId
      * @param datagramSocket
@@ -238,10 +312,10 @@ public class ClientSender {
      * @param destPort
      * @return 
      */
-    public static int sendPaxosPrepareProposal(int proposalNumber, int playerId, DatagramSocket datagramSocket, InetAddress destAddr, int destPort) {
+    public static int sendPaxosPrepareProposal(int proposalNumber, int playerId, DatagramSocket datagramSocket, String destAddr, int destPort) {
         try {
             String requestStr = ClientMessageBuilder.createRequestPaxosPrepareProposal(proposalNumber, playerId);
-            DatagramPacket packet = buildDatagramPacket(requestStr, destAddr, destPort);
+            DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
             UnreliableSender sender = new UnreliableSender(datagramSocket);
             sender.send(packet);
             
@@ -267,10 +341,10 @@ public class ClientSender {
      * @param destPort
      * @return 
      */
-    public static int sendPaxosAcceptProposal(int proposalNumber, int playerId, int kpuId, DatagramSocket datagramSocket, InetAddress destAddr, int destPort) {
+    public static int sendPaxosAcceptProposal(int proposalNumber, int playerId, int kpuId, DatagramSocket datagramSocket, String destAddr, int destPort) {
         try {
             String requestStr = ClientMessageBuilder.createRequestPaxosAcceptProposal(proposalNumber, playerId, kpuId);
-            DatagramPacket packet = buildDatagramPacket(requestStr, destAddr, destPort);
+            DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
             UnreliableSender sender = new UnreliableSender(datagramSocket);
             sender.send(packet);
             
@@ -298,8 +372,7 @@ public class ClientSender {
         try {
             String requestStr = ClientMessageBuilder.createRequestKillWerewolfVote(playerId);
             DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
-            UnreliableSender sender = new UnreliableSender(datagramSocket);
-            sender.send(packet);
+            datagramSocket.send(packet);
             
             ClientController.lastSentMethod = Identification.METHOD_ACCEPTPROPOSAL;
             return 1;
@@ -325,28 +398,11 @@ public class ClientSender {
         try {
             String requestStr = ClientMessageBuilder.createRequestKillCivilianVote(playerId);
             DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
-            UnreliableSender sender = new UnreliableSender(datagramSocket);
-            sender.send(packet);
+            datagramSocket.send(packet);
             
             ClientController.lastSentMethod = Identification.METHOD_ACCEPTPROPOSAL;
             return 1;
             
-        } catch (JSONException ex) {
-            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
-            return 0;
-        } catch (IOException ex) {
-            Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
-            return -1;
-        }
-    }
-    
-    public static int sendResponseError(DataOutputStream os) {
-        try {
-            String requestStr = ClientMessageBuilder.createResponseError();
-            os.writeUTF(requestStr);
-            
-            ClientController.lastSentMethod = Identification.METHOD_LEAVE;
-            return 1;
         } catch (JSONException ex) {
             Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
             return 0;

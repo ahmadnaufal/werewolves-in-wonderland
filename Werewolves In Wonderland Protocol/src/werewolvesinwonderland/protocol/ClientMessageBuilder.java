@@ -150,6 +150,17 @@ public class ClientMessageBuilder {
     }
     
     /**
+     * #5 Paxos Prepare Proposal
+     * Client (Acceptor) to Client (Proposer)
+     */
+    public static String createResponsePaxosPrepareProposalOK() throws JSONException {
+        return new JSONObject()
+                .put(Identification.PRM_STATUS, Identification.STATUS_OK)
+                .put(Identification.PRM_DESCRIPTION, Identification.DESC_ACCEPTED)
+                .toString();
+    }
+    
+    /**
      * #6 Paxos Accept Proposal
      * Client (Proposer) to Client (Acceptor)
      */
