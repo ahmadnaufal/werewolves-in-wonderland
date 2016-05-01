@@ -81,10 +81,10 @@ public class ServerController {
         ArrayList<String> friends;
         for (Player player : mGame.getPlayersList()) {
             if (player.getRole().equals(Identification.ROLE_WEREWOLF)) {
-                friends = new ArrayList<String>(werewolves);
+                friends = new ArrayList<>(werewolves);
                 friends.remove(player.getUsername());
             } else {
-                friends = new ArrayList<String>();
+                friends = new ArrayList<>();
             }
             ServerSender.sendRequestStartGame(time, player.getRole(), friends, playerClientMap.get(player).getOutputStream());
         }

@@ -5,6 +5,7 @@
  */
 package werewolvesinwonderland.protocol;
 
+import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -190,12 +191,12 @@ public class ClientMessageBuilder {
      * #9 Info Werewolf Killed
      * KPU to Server
      */
-    public static String createRequestInfoWerewolfKilled(int playerKilled, String voteResult) throws JSONException {
+    public static String createRequestInfoWerewolfKilled(int playerKilled, ArrayList<ArrayList<Integer> > voteResult) throws JSONException {
         return new JSONObject()
                 .put(Identification.PRM_METHOD, Identification.METHOD_VOTERESULT_WEREWOLF_KILLED)
                 .put(Identification.PRM_VOTESTATUS, Identification.STATPLAYER_KILLED)
                 .put(Identification.PRM_PLAYERKILLED, playerKilled)
-                .put(Identification.PRM_VOTERESULT, voteResult) // TODO: bisa dijadiin array etc tergantung representasi vote result
+                .put(Identification.PRM_VOTERESULT, new JSONArray(voteResult)) // TODO: bisa dijadiin array etc tergantung representasi vote result
                 .toString();
     }
     
@@ -203,11 +204,11 @@ public class ClientMessageBuilder {
      * #9 Info Werewolf Killed
      * KPU to Server
      */
-    public static String createRequestInfoWerewolfNotKilled(String voteResult) throws JSONException {
+    public static String createRequestInfoWerewolfNotKilled(ArrayList<ArrayList<Integer> > voteResult) throws JSONException {
         return new JSONObject()
                 .put(Identification.PRM_METHOD, Identification.METHOD_VOTERESULT) //TODO: Vote result or vote result werewolf?
                 .put(Identification.PRM_VOTESTATUS, Identification.STATPLAYER_NOTKILLED)
-                .put(Identification.PRM_VOTERESULT, voteResult) // TODO: bisa dijadiin array etc tergantung representasi vote result
+                .put(Identification.PRM_VOTERESULT, new JSONArray(voteResult)) // TODO: bisa dijadiin array etc tergantung representasi vote result
                 .toString();
     }
     
@@ -226,12 +227,12 @@ public class ClientMessageBuilder {
      * #11 Info Civilian Killed
      * KPU to Server
      */
-    public static String createRequestInfoCivilianKilled(int playerKilled, String voteResult) throws JSONException {
+    public static String createRequestInfoCivilianKilled(int playerKilled, ArrayList<ArrayList<Integer> > voteResult) throws JSONException {
         return new JSONObject()
                 .put(Identification.PRM_METHOD, Identification.METHOD_VOTERESULT_CIVILIAN_KILLED)
                 .put(Identification.PRM_VOTESTATUS, Identification.STATPLAYER_KILLED)
                 .put(Identification.PRM_PLAYERKILLED, playerKilled)
-                .put(Identification.PRM_VOTERESULT, voteResult) // TODO: bisa dijadiin array etc tergantung representasi vote result
+                .put(Identification.PRM_VOTERESULT, new JSONArray(voteResult)) // TODO: bisa dijadiin array etc tergantung representasi vote result
                 .toString();
     }
     
@@ -239,11 +240,11 @@ public class ClientMessageBuilder {
      * #11 Info Civilian Killed
      * KPU to Server
      */
-    public static String createRequestInfoCivilianNotKilled(String voteResult) throws JSONException {
+    public static String createRequestInfoCivilianNotKilled(ArrayList<ArrayList<Integer> > voteResult) throws JSONException {
         return new JSONObject()
                 .put(Identification.PRM_METHOD, Identification.METHOD_VOTERESULT)
                 .put(Identification.PRM_VOTESTATUS, Identification.STATPLAYER_NOTKILLED)
-                .put(Identification.PRM_VOTERESULT, voteResult)
+                .put(Identification.PRM_VOTERESULT, new JSONArray(voteResult)) // TODO: bisa dijadiin array etc tergantung representasi vote result
                 .toString();           
     }
 }

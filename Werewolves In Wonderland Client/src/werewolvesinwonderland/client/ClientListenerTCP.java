@@ -5,11 +5,9 @@
  */
 package werewolvesinwonderland.client;
 
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Observable;
@@ -25,6 +23,7 @@ import werewolvesinwonderland.protocol.Identification;
  * @author Tifani
  */
 public class ClientListenerTCP extends Observable implements Runnable {
+
     private Socket socket = null;
     private Thread thread = null;
 
@@ -35,6 +34,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
 
     /**
      * Constructors for ClientListenerTCP
+     *
      * @param socket
      * @param handler
      */
@@ -50,8 +50,9 @@ public class ClientListenerTCP extends Observable implements Runnable {
      * Method to start the handler
      */
     private void start() {
-        if (thread == null)
+        if (thread == null) {
             thread = new Thread(this);
+        }
 
         thread.start();
     }
@@ -60,7 +61,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
       /* try {
         String messageMethod = messageObj.getString(Identification.PRM_METHOD);
         String messageDescription = messageObj.getString(Identification.PRM_DESCRIPTION);
-        //handle.showDialog(description);
+        //handler.showDialog(description);
         switch (messageMethod) {
           case Identification.METHOD_STARTGAME:
             String time = messageObj.getString(Identification.PRM_TIME);
@@ -98,17 +99,16 @@ public class ClientListenerTCP extends Observable implements Runnable {
             // No valid actions: send error response: invalid request
             ClientSender.sendResponseError(os);
           }
-        } catch (JSONException ex) {
-              System.err.println(ex);
-              Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
         }*/
-    }
+      }
 
     private void handleResponse(JSONObject messageObj) {
       /* try {
         String status = messageObj.getString(Identification.PRM_STATUS);
-        String description = messageObj.getString(Identification.PRM_DESCRIPTION);
-        //handle.showDialog(description);
+        if (messageObj.has(Identification.PRM_DESCRIPTION)) {
+            String description = messageObj.getString(Identification.PRM_DESCRIPTION);
+            handler.showDialog(description);
+        }
         switch (status) {
           case Identification.STATUS_OK :
             switch (ClientController.lastSentMethod) {
@@ -137,20 +137,17 @@ public class ClientListenerTCP extends Observable implements Runnable {
                 }
                 break;
             }
-            break;
-          case Identification.STATUS_ERROR :
-            break;
-        }
-      } catch (JSONException ex) {
-          System.err.println(ex);
-          Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
-      }*/
+          }
+        } catch (JSONException ex) {
+            System.err.println(ex);
+            Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
     }
 
     @Override
     public void run() {
         try {
-            DataInputStream is = (DataInputStream) socket.getInputStream();
+            DataInputStream is = new DataInputStream(socket.getInputStream());
             while (running) {
                 String message = "";
                 while (is.available() > 0)
@@ -166,10 +163,8 @@ public class ClientListenerTCP extends Observable implements Runnable {
                         System.err.println(ex);
                         Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
                     }
-            }
-
             socket.close();
-        } catch (IOException ex) {
+          } catch (IOException ex) {
             System.err.println(ex);
             Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
         }

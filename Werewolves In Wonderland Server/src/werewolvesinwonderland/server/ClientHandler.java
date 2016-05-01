@@ -32,10 +32,10 @@ public class ClientHandler implements Runnable {
 
     private int playerId = -1;
     private boolean isConnected = false;
-    
 
     /**
      * The main constructor for client handlers
+     *
      * @param newSocket the connected client socket
      * @param handle
      */
@@ -59,19 +59,20 @@ public class ClientHandler implements Runnable {
     }
 
     public DataOutputStream getOutputStream() {
-      return os;
+        return os;
     }
 
     public int getPlayerId() {
-      return playerId;
+        return playerId;
     }
 
     /**
      * Method to start the handler
      */
     private void start() {
-        if (mThread == null)
+        if (mThread == null) {
             mThread = new Thread(this);
+        }
 
         mThread.start();
     }
@@ -84,26 +85,36 @@ public class ClientHandler implements Runnable {
         try {
             while (isConnected) {
                 String request = "";
-                while (is.available() > 0)
-                    request += is.readUTF();
-
+                while (is.available() <= 0);
+                request += is.readUTF();
                 try {
+                    System.out.println(request);
                     JSONObject requestObj = new JSONObject(request);
                     String requestMethod = requestObj.getString(Identification.PRM_METHOD);
+
                     switch (requestMethod) {
-                        case Identification.METHOD_JOIN :
+                        case Identification.METHOD_JOIN:
                             String username = requestObj.getString(Identification.PRM_USERNAME);
                             String udpAddress = requestObj.getString(Identification.PRM_UDPADDR);
                             int udpPort = requestObj.getInt(Identification.PRM_UDPPORT);
-                            int _playerId = mServerHandle.getGame().addPlayer(username,udpAddress,udpPort);
+
+                            System.out.println("REQUEST: A new player attempting to join game. Username: "
+                                    + username + ", Address: "
+                                    + udpAddress + ":" + udpPort);
+
+                            int _playerId = mServerHandle.getGame().addPlayer(username, udpAddress, udpPort);
+
                             switch (_playerId) {
                                 case -1:    // existing user
+                                    System.out.println("FAILED: Client username already exists. Sending fail response...");
                                     ServerSender.sendJoinGameResponseFailUserExist(os);
                                     break;
                                 case -2:    // game is running: join game is unable
+                                    System.out.println("FAILED: Game is running. Sending fail response...");
                                     ServerSender.sendJoinGameResponseFailGameRunning(os);
                                     break;
                                 default:
+                                    System.out.println("SUCCESS: Client successfully join the game with Player ID: " + _playerId);
                                     playerId = _playerId;
                                     mServerHandle.mapPlayerClient(this);
                                     ServerSender.sendJoinGameResponseOK(playerId, os);
@@ -111,46 +122,60 @@ public class ClientHandler implements Runnable {
                             }
                             break;
 
-                        case Identification.METHOD_LEAVE :
+                        case Identification.METHOD_LEAVE:
+                            System.out.println("REQUEST: Player with ID: " + playerId + " attempting to leave the game.");
                             isConnected = false;
                             // TODO ini remove player return sesuatu aja ya, biar ada fail response nya
                             mServerHandle.getGame().removePlayer(playerId);
                             if (true) // stub
+                            {
                                 ServerSender.sendResponseOK(os);
-                            else
+                            } else {
                                 ServerSender.sendResponseFail(os);
+                            }
                             break;
 
-                        case Identification.METHOD_READY :
+                        case Identification.METHOD_READY:
+                            System.out.println("REQUEST: Player with ID: " + playerId + " sending ready.");
                             mServerHandle.getGame().increaseReady();
                             ServerSender.sendResponseReadyUpOK(os);
                             break;
 
-                        case Identification.METHOD_CLIENTADDR :
-                            ServerSender.sendResponseClientList(mServerHandle.getGame().getPlayersList(),os);
+                        case Identification.METHOD_CLIENTADDR:
+                            System.out.println("REQUEST: Player with ID: " + playerId + " asking for client list.");
+                            ServerSender.sendResponseClientList(mServerHandle.getGame().getPlayersList(), os);
                             break;
 
-                        case Identification.METHOD_ACCEPTPROPOSAL :
+                        case Identification.METHOD_ACCEPTPROPOSAL:
                             int kpuId = requestObj.getInt(Identification.PRM_KPUID);
+                            System.out.println("REQUEST: Player with ID: " + playerId + " accepting proposal from user with ID: " + kpuId);
                             mServerHandle.getGame().addKpuProposal(kpuId);
                             ServerSender.sendResponseOK(os);
                             break;
 
-                        case Identification.METHOD_VOTERESULT_WEREWOLF_KILLED :
-                        case Identification.METHOD_VOTERESULT_CIVILIAN_KILLED :
-                        case Identification.METHOD_VOTERESULT :
-                            if (playerId==mServerHandle.getGame().getSelectedKpu()) {
-                              int status = requestObj.getInt(Identification.PRM_STATUS);
-                              if (status==1) {
-                                int killedId = requestObj.getInt(Identification.PRM_PLAYERKILLED);
-                                mServerHandle.getGame().killPlayer(killedId);
-                              } else if (status==-1) {
-                                mServerHandle.getGame().tieVote();
-                              } else {
-                                ServerSender.sendResponseError(os);
-                              }
+                        case Identification.METHOD_VOTERESULT_WEREWOLF_KILLED:
+                            System.out.println("GAME INFO: Civilians are about to capture a player...");
+                            
+                        case Identification.METHOD_VOTERESULT_CIVILIAN_KILLED:
+                            System.out.println("GAME INFO: A civilian is about to get captured...");
+                            
+                        case Identification.METHOD_VOTERESULT:
+                            if (playerId == mServerHandle.getGame().getSelectedKpu()) {
+                                int status = requestObj.getInt(Identification.PRM_STATUS);
+                                switch (status) {
+                                    case 1:
+                                        int killedId = requestObj.getInt(Identification.PRM_PLAYERKILLED);
+                                        mServerHandle.getGame().killPlayer(killedId);
+                                        break;
+                                    case -1:
+                                        mServerHandle.getGame().tieVote();
+                                        break;
+                                    default:
+                                        ServerSender.sendResponseError(os);
+                                        break;
+                                }
                             } else {
-                              ServerSender.sendResponseError(os);
+                                ServerSender.sendResponseError(os);
                             }
                             break;
 
@@ -167,14 +192,18 @@ public class ClientHandler implements Runnable {
             }
 
             // Closing all the sockets and streams
-            if (os != null)
+            if (os != null) {
                 os.close();
-            if (is != null)
+            }
+            if (is != null) {
                 is.close();
-            if (mSocket != null)
+            }
+            if (mSocket != null) {
                 mSocket.close();
+            }
 
         } catch (IOException ex) {
+            System.err.println(ex);
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
