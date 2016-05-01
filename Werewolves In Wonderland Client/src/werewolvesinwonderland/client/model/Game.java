@@ -17,14 +17,23 @@ import werewolvesinwonderland.protocol.model.Player;
 public class Game {
     private String time;
     private int days;
-    
+
     private boolean isStarted = false;
+    private Player currentPlayer;
     private Map<Integer, Player> listPlayers = new HashMap<>();
-    
+
     public Game() {
-        time = "night";
-        days = 0;
+
     }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
 
     /**
      * @return the time
@@ -81,7 +90,7 @@ public class Game {
     public void setListPlayers(Map<Integer, Player> listPlayers) {
         this.listPlayers = listPlayers;
     }
-    
+
     /**
      * Get all the dead players from the player list
      * @return the list of dead players
@@ -92,10 +101,10 @@ public class Game {
                 .forEach((Entry<Integer, Player> entry) -> {
             listDeadPlayers.put(entry.getKey(), entry.getValue());
         });
-        
+
         return listDeadPlayers;
     }
-    
+
     /**
      * Get all the alive players from the player list
      * @return the list of alive players
@@ -106,8 +115,12 @@ public class Game {
                 .forEach((Entry<Integer, Player> entry) -> {
             listAlivePlayers.put(entry.getKey(), entry.getValue());
         });
-        
+
         return listAlivePlayers;
     }
-    
+
+    public Player getPlayer(int id) {
+      return listPlayers.get(id);
+    }
+
 }

@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
@@ -139,7 +139,7 @@ public class ClientSender {
      * @param os
      * @return 
      */
-    public static int sendInfoWerewolfKilled(int playerKilled, String voteResult, DataOutputStream os) {
+    public static int sendInfoWerewolfKilled(int playerKilled, ArrayList<ArrayList<Integer> > voteResult, DataOutputStream os) {
         try {
             String requestStr = ClientMessageBuilder.createRequestInfoWerewolfKilled(playerKilled, voteResult);
             os.writeUTF(requestStr);
@@ -161,7 +161,7 @@ public class ClientSender {
      * @param os
      * @return 
      */
-    public static int sendInfoWerewolfNotKilled(String voteResult, DataOutputStream os) {
+    public static int sendInfoWerewolfNotKilled(ArrayList<ArrayList<Integer> > voteResult, DataOutputStream os) {
         try {
             String requestStr = ClientMessageBuilder.createRequestInfoWerewolfNotKilled(voteResult);
             os.writeUTF(requestStr);
@@ -184,7 +184,7 @@ public class ClientSender {
      * @param os
      * @return 
      */
-    public static int sendInfoCivilianKilled(int playerKilled, String voteResult, DataOutputStream os) {
+    public static int sendInfoCivilianKilled(int playerKilled, ArrayList<ArrayList<Integer> > voteResult, DataOutputStream os) {
         try {
             String requestStr = ClientMessageBuilder.createRequestInfoCivilianKilled(playerKilled, voteResult);
             os.writeUTF(requestStr);
@@ -206,7 +206,7 @@ public class ClientSender {
      * @param os
      * @return 
      */
-    public static int sendInfoCivilianNotKilled(String voteResult, DataOutputStream os) {
+    public static int sendInfoCivilianNotKilled(ArrayList<ArrayList<Integer> > voteResult, DataOutputStream os) {
         try {
             String requestStr = ClientMessageBuilder.createRequestInfoCivilianNotKilled(voteResult);
             os.writeUTF(requestStr);
@@ -294,10 +294,10 @@ public class ClientSender {
      * @param destPort
      * @return 
      */
-    public static int sendVoteKillWerewolf(int playerId, DatagramSocket datagramSocket, InetAddress destAddr, int destPort) {
+    public static int sendVoteKillWerewolf(int playerId, DatagramSocket datagramSocket, String destAddr, int destPort) {
         try {
             String requestStr = ClientMessageBuilder.createRequestKillWerewolfVote(playerId);
-            DatagramPacket packet = buildDatagramPacket(requestStr, destAddr, destPort);
+            DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
             UnreliableSender sender = new UnreliableSender(datagramSocket);
             sender.send(packet);
             
@@ -321,10 +321,10 @@ public class ClientSender {
      * @param destPort
      * @return 
      */
-    public static int sendVoteKillCivilian(int playerId, DatagramSocket datagramSocket, InetAddress destAddr, int destPort) {
+    public static int sendVoteKillCivilian(int playerId, DatagramSocket datagramSocket, String destAddr, int destPort) {
         try {
             String requestStr = ClientMessageBuilder.createRequestKillCivilianVote(playerId);
-            DatagramPacket packet = buildDatagramPacket(requestStr, destAddr, destPort);
+            DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
             UnreliableSender sender = new UnreliableSender(datagramSocket);
             sender.send(packet);
             

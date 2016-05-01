@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import werewolvesinwonderland.client.controller.GameController;
 import werewolvesinwonderland.protocol.Identification;
 
 /**
@@ -23,19 +24,20 @@ import werewolvesinwonderland.protocol.Identification;
 public class ClientController {
     private Socket socket;
     private DatagramSocket udpSocket;
-    
+
     private String serverHostName;
     private String clientHostName;
     private int serverPort;
     private int listenPort;
-    
+
     private DataOutputStream os;
-            
+
     private ClientListenerTCP clientListenerTcpHandle = null;
     private ClientListenerUDP clientListenerUdpHandle = null;
-    
+    private GameController gameHandler;
+
     public static String lastSentMethod = "";
-    
+
     /**
      * Constructor for Client Controller
      * Precondition: hostName is not an empty string, or port is defined
@@ -47,11 +49,10 @@ public class ClientController {
         serverHostName = hostName;
         serverPort = port;
         listenPort = listenport;
-        initClientConnection();
     }
-    
+
     /**
-     * 
+     *
      */
     public void initClientConnection() {
         try {
@@ -60,14 +61,14 @@ public class ClientController {
                 System.err.println("Address " + serverHostName + " is unreachable.");
                 return;
             }
-            
+
             socket = new Socket(inetAddr, serverPort);
             clientListenerTcpHandle = new ClientListenerTCP(socket, this);
-            os = (DataOutputStream) socket.getOutputStream();
-            
+            os = new DataOutputStream(socket.getOutputStream());
+
             udpSocket = new DatagramSocket(listenPort);
-            clientListenerUdpHandle = new ClientListenerUDP(udpSocket, this);   
-            
+            clientListenerUdpHandle = new ClientListenerUDP(udpSocket, this);
+
             InetAddress inetAddress = InetAddress.getLocalHost();
             clientHostName = inetAddress.getHostAddress();
         } catch (UnknownHostException ex) {
@@ -106,7 +107,7 @@ public class ClientController {
     public void setServerPort(int port) {
         this.serverPort = port;
     }
-    
+
     /**
      * @return the port
      */
@@ -124,4 +125,27 @@ public class ClientController {
     public String getClientHostName() {
         return clientHostName;
     }
+
+    public DatagramSocket getUdpSocket() {
+        return udpSocket;
+    }
+
+    public DataOutputStream getOutputStream() {
+        return os;
+    }
+
+    /**
+     * @return the gameHandler
+     */
+    public GameController getGameHandler() {
+        return gameHandler;
+    }
+
+    /**
+     * @param gameHandler the gameHandler to set
+     */
+    public void setGameHandler(GameController gameHandler) {
+        this.gameHandler = gameHandler;
+    }
+
 }
