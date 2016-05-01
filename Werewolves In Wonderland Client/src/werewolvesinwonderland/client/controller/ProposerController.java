@@ -5,9 +5,13 @@
  */
 package werewolvesinwonderland.client.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import werewolvesinwonderland.client.ClientSender;
+import werewolvesinwonderland.protocol.Identification;
 import werewolvesinwonderland.protocol.model.Player;
 
 /**
@@ -97,11 +101,11 @@ public class ProposerController {
             }
           }
       }
-      if (!tie) sendInfoKilled(maxId)
+      if (!tie) sendInfoKilled(maxId);
       else sendInfoKilled(-1);
     }
 
-    private startVote() {
+    public void startVote() {
       if (gameHandle.getGame().getTime().equals(Identification.TIME_DAY))
         alivePlayersCount = gameHandle.getGame().getAlivePlayers().size();
       else
@@ -109,9 +113,9 @@ public class ProposerController {
     }
 
     private void countAliveWerewolves() {
-      aliveWerewolves = (acceptorList.size()+2)/3;
+      aliveWerewolvesCount = (acceptorList.size()+2)/3;
       for (Entry<Integer, Player> e : gameHandle.getGame().getListPlayers().entrySet()) {
-          if (e.getValue().getRole().equals(Identification.ROLE_WEREWOLF)) aliveWerewolves--;
+          if (e.getValue().getRole().equals(Identification.ROLE_WEREWOLF)) aliveWerewolvesCount--;
       }
     }
 

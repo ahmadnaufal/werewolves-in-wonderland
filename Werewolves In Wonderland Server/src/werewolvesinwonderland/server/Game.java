@@ -29,6 +29,7 @@ public class Game {
     private boolean dayVoted = false;
     private int selectedKpu = -1;
     private ServerController mServerHandle;
+    private int kpuProposalCount;
 
     public Game(ServerController mServerHandle) {
         this.mServerHandle = mServerHandle;
