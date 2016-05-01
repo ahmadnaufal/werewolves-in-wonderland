@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+import werewolvesinwonderland.client.controller.GameController;
 import werewolvesinwonderland.protocol.Identification;
 
 /**
@@ -34,7 +35,6 @@ public class ClientListenerTCP extends Observable implements Runnable {
 
     /**
      * Constructors for ClientListenerTCP
-     *
      * @param socket
      * @param handler
      */
@@ -103,45 +103,47 @@ public class ClientListenerTCP extends Observable implements Runnable {
       }
 
     private void handleResponse(JSONObject messageObj) {
-      /* try {
-        String status = messageObj.getString(Identification.PRM_STATUS);
-        if (messageObj.has(Identification.PRM_DESCRIPTION)) {
-            String description = messageObj.getString(Identification.PRM_DESCRIPTION);
-            handler.showDialog(description);
-        }
-        switch (status) {
-          case Identification.STATUS_OK :
-            switch (ClientController.lastSentMethod) {
-              case Identification.METHOD_CLIENTADDR:
-                //TODO: get player objects from json array
-                //handle.updatePlayers(players);
-                break;
-              case Identification.METHOD_JOIN:
-                int playerId = messageObj.getInt(Identification.PRM_PLAYERID);
-                //handle.createPlayer(playerId);
-                break;
-              case Identification.METHOD_LEAVE:
-                //handle.leaveGame();
-                break;
-              default:
-                break;
+        try {
+            String status = messageObj.getString(Identification.PRM_STATUS);
+            String description = "";
+            if (messageObj.has(Identification.PRM_DESCRIPTION)) {
+                description = messageObj.getString(Identification.PRM_DESCRIPTION);
+                handler.getGameHandler().showDialog(description);
             }
-            break;
-          case Identification.STATUS_FAIL :
-            switch (ClientController.lastSentMethod) {
-              case Identification.METHOD_JOIN:
-                if (description.equals(Identification.DESC_USEREXISTS)) {
-                  //handle.userExists();
-                } else {
-                  //ga bisa main
-                }
-                break;
+            switch (status) {
+                case Identification.STATUS_OK:
+                    switch (ClientController.lastSentMethod) {
+                        case Identification.METHOD_CLIENTADDR:
+                            //TODO: get player objects from json array
+
+                            //handle.updatePlayers(players);
+                            break;
+                        case Identification.METHOD_JOIN:
+                            int playerId = messageObj.getInt(Identification.PRM_PLAYERID);
+                            //handle.createPlayer(playerId);
+                            break;
+                        case Identification.METHOD_LEAVE:
+                            //handle.leaveGame();
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case Identification.STATUS_FAIL:
+                    switch (ClientController.lastSentMethod) {
+                        case Identification.METHOD_JOIN:
+                            if (description.equals(Identification.DESC_USEREXISTS)) {
+                                //handle.userExists();
+                            } else {
+                                //ga bisa main
+                            }
+                            break;
+                    }
             }
-          }
         } catch (JSONException ex) {
             System.err.println(ex);
             Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
     }
 
     @Override

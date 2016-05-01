@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import werewolvesinwonderland.client.controller.GameController;
 import werewolvesinwonderland.protocol.Identification;
 
 /**
@@ -33,6 +34,7 @@ public class ClientController {
 
     private ClientListenerTCP clientListenerTcpHandle = null;
     private ClientListenerUDP clientListenerUdpHandle = null;
+    private GameController gameHandler;
 
     public static String lastSentMethod = "";
 
@@ -130,6 +132,20 @@ public class ClientController {
 
     public DataOutputStream getOutputStream() {
         return os;
+    }
+
+    /**
+     * @return the gameHandler
+     */
+    public GameController getGameHandler() {
+        return gameHandler;
+    }
+
+    /**
+     * @param gameHandler the gameHandler to set
+     */
+    public void setGameHandler(GameController gameHandler) {
+        this.gameHandler = gameHandler;
     }
 
 }

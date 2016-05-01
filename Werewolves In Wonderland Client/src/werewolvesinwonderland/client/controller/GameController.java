@@ -22,6 +22,14 @@ public class GameController {
     public GameController() {
         mGame = new Game();
     }
+    
+    public ClientController getClientHandle() {
+        return clientHandle;
+    }
+    
+    public void setClientHandle(ClientController clientHandle) {
+        this.clientHandle = clientHandle;
+    }
 
     public void updatePlayers(ArrayList<Player> players) {
         HashMap<Integer, Player> playersMap = new HashMap<>();
