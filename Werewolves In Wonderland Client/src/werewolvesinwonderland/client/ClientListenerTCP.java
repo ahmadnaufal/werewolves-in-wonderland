@@ -57,7 +57,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
     }
 
     private void handleRequest(JSONObject messageObj) {
-      try {
+      /* try {
         String messageMethod = messageObj.getString(Identification.PRM_METHOD);
         String messageDescription = messageObj.getString(Identification.PRM_DESCRIPTION);
         //TODO: alert description
@@ -98,11 +98,11 @@ public class ClientListenerTCP extends Observable implements Runnable {
         } catch (JSONException ex) {
               System.err.println(ex);
               Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
 
     private void handleResponse(JSONObject messageObj) {
-      try {
+      /* try {
         String status = messageObj.getString(Identification.PRM_STATUS);
         String description = messageObj.getString(Identification.PRM_DESCRIPTION);
         //TODO: alert description
@@ -140,7 +140,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
       } catch (JSONException ex) {
           System.err.println(ex);
           Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
-      }
+      }*/
     }
 
     @Override

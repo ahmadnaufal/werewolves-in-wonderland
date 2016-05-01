@@ -14,16 +14,22 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import werewolvesinwonderland.protocol.Identification;
 
 /**
  *
  * @author Ahmad Naufal Farhan
  */
 public class ClientController {
+    private Socket socket;
+    private DatagramSocket udpSocket;
     
     private String serverHostName;
+    private String clientHostName;
     private int serverPort;
     private int listenPort;
+    
+    private DataOutputStream os;
             
     private ClientListenerTCP clientListenerTcpHandle = null;
     private ClientListenerUDP clientListenerUdpHandle = null;
@@ -48,7 +54,6 @@ public class ClientController {
      * 
      */
     public void initClientConnection() {
-        
         try {
             InetAddress inetAddr = InetAddress.getByName(serverHostName);
             if (!inetAddr.isReachable(10000)) {
@@ -56,12 +61,15 @@ public class ClientController {
                 return;
             }
             
-            Socket socket = new Socket(inetAddr, serverPort);
+            socket = new Socket(inetAddr, serverPort);
             clientListenerTcpHandle = new ClientListenerTCP(socket, this);
+            os = (DataOutputStream) socket.getOutputStream();
             
-            DatagramSocket udpSocket = new DatagramSocket(listenPort);
-            clientListenerUdpHandle = new ClientListenerUDP(udpSocket, this);
+            udpSocket = new DatagramSocket(listenPort);
+            clientListenerUdpHandle = new ClientListenerUDP(udpSocket, this);   
             
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            clientHostName = inetAddress.getHostAddress();
         } catch (UnknownHostException ex) {
             System.err.println(ex);
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
@@ -69,7 +77,6 @@ public class ClientController {
             System.err.println(ex);
             Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
 
     /**
@@ -113,6 +120,8 @@ public class ClientController {
     public void setListenPort(int listenPort) {
         this.listenPort = listenPort;
     }
-    
-    
+
+    public String getClientHostName() {
+        return clientHostName;
+    }
 }

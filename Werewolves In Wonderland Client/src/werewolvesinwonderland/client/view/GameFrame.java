@@ -5,20 +5,31 @@
  */
 package werewolvesinwonderland.client.view;
 
+import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingWorker;
 import werewolvesinwonderland.client.ClientController;
+import werewolvesinwonderland.client.ClientSender;
+import werewolvesinwonderland.client.view.NewGameDialog.NewGameDialogListener;
 /**
  *
  * @author Tifani
  */
-public class GameFrame extends javax.swing.JFrame {
+public class GameFrame extends javax.swing.JFrame implements NewGameDialogListener {
 
     /**
      * Creates new form GameFrame
      */
     public GameFrame() {
         initComponents();
+        ImageIcon img = new ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/icon_werewolf.png"));
+        this.setIconImage(img.getImage());
         this.setTitle("Werewolf in Wonderland");
     }
 
@@ -42,7 +53,7 @@ public class GameFrame extends javax.swing.JFrame {
 
         homePanel.setLayout(null);
 
-        btnStart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/button_start.png"))); // NOI18N
+        btnStart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/btn_start.png"))); // NOI18N
         btnStart.setBorder(null);
         btnStart.setBorderPainted(false);
         btnStart.setContentAreaFilled(false);
@@ -75,7 +86,7 @@ public class GameFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnStartMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnStartMouseClicked
-        new NewGameDialog();
+        new NewGameDialog(this);
     }//GEN-LAST:event_btnStartMouseClicked
 
     private ClientController clientController = null;
@@ -86,4 +97,52 @@ public class GameFrame extends javax.swing.JFrame {
     private javax.swing.JPanel homePanel;
     private javax.swing.JPanel mainPanel;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onJoinGameButtonClicked(String username, String serverAddress, int serverPort, int clientPort) {
+        System.out.println(NewGameDialog.class.getSimpleName() +
+                    ": [Join Game] " +
+                    "Username: " + username + ", " +
+                    "Server Address: " + serverAddress + ", " +
+                    "Server Port: " + serverPort + ", " +
+                    "Client Port: " + clientPort);
+        
+        clientController = new ClientController(serverAddress, serverPort, clientPort);
+        clientController.initClientConnection();
+
+        JDialog dlgProgress = createProgressDialog();
+
+        SwingWorker<Void, Void> sw = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                // TODO: Request join game
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                dlgProgress.dispose();//close the modal dialog
+            }
+        };
+
+        sw.execute(); // this will start the processing on a separate thread
+        dlgProgress.setVisible(true); //this will block user input as long as the processing task is working
+    }
+    
+    private JDialog createProgressDialog() {
+        JDialog dlgProgress = new JDialog(this, "Please wait...", true);//true means that the dialog created is modal
+        JLabel lblStatus = new JLabel("Working..."); // this is just a label in which you can indicate the state of the processing
+        dlgProgress.setLocationRelativeTo(null);
+        dlgProgress.setUndecorated(true);
+
+        JProgressBar pbProgress = new JProgressBar(0, 100);
+        pbProgress.setIndeterminate(true); //we'll use an indeterminate progress bar
+
+        dlgProgress.add(BorderLayout.NORTH, lblStatus);
+        dlgProgress.add(BorderLayout.CENTER, pbProgress);
+        dlgProgress.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE); // prevent the user from closing the dialog
+        dlgProgress.setSize(300, 90);
+        return dlgProgress;
+    }
+    
 }

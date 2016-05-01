@@ -5,24 +5,45 @@
  */
 package werewolvesinwonderland.client.view;
 
+import com.sun.deploy.uitoolkit.impl.fx.ui.FXUIFactory;
+import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.awt.Dimension;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JLayer;
+import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingWorker;
 
 /**
  *
  * @author Tifani
  */
 public class NewGameDialog extends JFrame {
+    
+    public interface NewGameDialogListener {
+        void onJoinGameButtonClicked(String username, String serverAddress, int serverPort, int clientPort);
+    }
 
     /**
      * Creates new form NewGameFrame
      */
-    public NewGameDialog() {
+    public NewGameDialog(GameFrame gameFrame) {
         super();
+        try {
+            dialogListener = (NewGameDialogListener) gameFrame;
+        } catch (Exception e) {
+            System.out.println("Game Frame must implements New Game Dialog Listener");
+            e.printStackTrace();
+        }
         initComponents();
+        ImageIcon img = new ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/icon_werewolf.png"));
+        this.setIconImage(img.getImage());
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setTitle("Werewolf in Wonderland: New Game");
         this.setSize(new Dimension(585, 440));
@@ -47,7 +68,7 @@ public class NewGameDialog extends JFrame {
         tfServerPort = new javax.swing.JTextField();
         tfServerAddr = new javax.swing.JTextField();
         tfClientPort = new javax.swing.JTextField();
-        btnStartGame = new javax.swing.JButton();
+        btnJoinGame = new javax.swing.JButton();
         bgStatGameDialog = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -93,17 +114,17 @@ public class NewGameDialog extends JFrame {
         getContentPane().add(tfClientPort);
         tfClientPort.setBounds(191, 267, 230, 30);
 
-        btnStartGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/btn_startgame.png"))); // NOI18N
-        btnStartGame.setToolTipText("");
-        btnStartGame.setBorderPainted(false);
-        btnStartGame.setContentAreaFilled(false);
-        btnStartGame.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnJoinGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/btn_joingame.png"))); // NOI18N
+        btnJoinGame.setToolTipText("");
+        btnJoinGame.setBorderPainted(false);
+        btnJoinGame.setContentAreaFilled(false);
+        btnJoinGame.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnStartGameMouseClicked(evt);
+                btnJoinGameMouseClicked(evt);
             }
         });
-        getContentPane().add(btnStartGame);
-        btnStartGame.setBounds(180, 320, 209, 47);
+        getContentPane().add(btnJoinGame);
+        btnJoinGame.setBounds(180, 320, 209, 47);
 
         bgStatGameDialog.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/bg_startgame_dialog.png"))); // NOI18N
         getContentPane().add(bgStatGameDialog);
@@ -112,7 +133,7 @@ public class NewGameDialog extends JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnStartGameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnStartGameMouseClicked
+    private void btnJoinGameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnJoinGameMouseClicked
         String username = tfUsername.getText();
         String serverAddress = tfServerAddr.getText();
         if (username != null && !username.equals("") &&
@@ -122,39 +143,22 @@ public class NewGameDialog extends JFrame {
             try {                
                 int serverPort = Integer.parseInt(tfServerPort.getText());
                 int clientPort = Integer.parseInt(tfClientPort.getText());
-                System.out.println(NewGameDialog.class.getSimpleName() +
-                    ": [Join Game] " +
-                    "Username: " + username + ", " +
-                    "Server Address: " + serverAddress + ", " +
-                    "Server Port: " + serverPort + ", " +
-                    "Client Port: " + clientPort);
-
-                LoadingUI layerUI = new LoadingUI();
-                JPanel panel = new JPanel() {
-
-                    @Override
-                    public Dimension getPreferredSize() {
-                        return new Dimension(400, 300);
-                    }
-                };
-                JLayer<JPanel> jlayer = new JLayer<>(panel, layerUI);
-                this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                this.add(jlayer);
-                this.pack();
-                this.setVisible(true);
-                layerUI.start();
+                this.setVisible(false);
+                dialogListener.onJoinGameButtonClicked(username, serverAddress, serverPort, clientPort);
+                this.dispose();
             } catch (Exception e) {
-                 showMessageDialog(null, "Please fill in all fields!!");
+                showMessageDialog(null, "Please fill in all of the fields in properly!!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            showMessageDialog(null, "Please fill in all fields!!");
+            showMessageDialog(null, "Please fill in all of the fields!!", "Error", JOptionPane.ERROR_MESSAGE);
         }
         
-    }//GEN-LAST:event_btnStartGameMouseClicked
+    }//GEN-LAST:event_btnJoinGameMouseClicked
 
+    private NewGameDialogListener dialogListener;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel bgStatGameDialog;
-    private javax.swing.JButton btnStartGame;
+    private javax.swing.JButton btnJoinGame;
     private javax.swing.JLabel lbClientPort;
     private javax.swing.JLabel lbServerAddr;
     private javax.swing.JLabel lbServerPort;
