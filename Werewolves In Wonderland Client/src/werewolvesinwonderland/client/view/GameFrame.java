@@ -47,10 +47,10 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         ImageIcon img = new ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/icon_werewolf.png"));
         this.setIconImage(img.getImage());
         this.setTitle("Werewolf in Wonderland");
-        changeScreen("gamePanel");
-        Player currentPlayer = new Player(1, true, "123", 8080, "Tifani", Identification.ROLE_CIVILIAN); //TEST
-        PlayerAvatarMaker.addPlayer(currentPlayer);
-        setPlayerInfo(currentPlayer);
+        changeScreen("homePanel");
+//        Player currentPlayer = new Player(1, true, "123", 8080, "Tifani", Identification.ROLE_CIVILIAN); //TEST
+//        PlayerAvatarMaker.addPlayer(currentPlayer);
+//        setPlayerInfo(currentPlayer);
     }
 
     /**
@@ -268,13 +268,12 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
             int col = tblPlayerList.getSelectedColumn();
             int playerPos = (row * 4) + col;
             // TODO: Vote kill
+            System.out.println("row: " + row + " col:" + col);
         }
     }//GEN-LAST:event_tblPlayerListMouseClicked
 
     private final GameController gameController = new GameController(this);
     private JFrame newGameDialog;
-    private int[] werewolfPic = {1,2};
-    private int[] civilianPic = {1,2,3,4};
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel bgGame;
