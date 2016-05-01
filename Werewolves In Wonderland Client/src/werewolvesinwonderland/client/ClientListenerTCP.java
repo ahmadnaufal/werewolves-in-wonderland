@@ -60,36 +60,39 @@ public class ClientListenerTCP extends Observable implements Runnable {
       /* try {
         String messageMethod = messageObj.getString(Identification.PRM_METHOD);
         String messageDescription = messageObj.getString(Identification.PRM_DESCRIPTION);
-        //TODO: alert description
+        //handle.showDialog(description);
         switch (messageMethod) {
           case Identification.METHOD_STARTGAME:
             String time = messageObj.getString(Identification.PRM_TIME);
             String role = messageObj.getString(Identification.PRM_ROLE);
             if (role.equals(Identification.ROLE_WEREWOLF)) {
-            //TODO: get array list of werewolf friends from json array if role
+              //TODO: get array list of werewolf friends from json array
+              handler.startGame(time,role,werewolfFriends);
             }
-            //TODO: set game variables
+             else {
+             handle.startGame(time,role);
+           }
             ClientSender.requestListClients(os);
             break;
           case Identification.METHOD_VOTENOW:
             String phase = messageObj.getString(Identification.PRM_PHASE);
             ClientSender.requestListClients(os);
-            //TODO: ask user to vote next victim then send to kpu
+            //handler.startVote();
             break;
           case Identification.METHOD_CHANGEPHASE:
             time = messageObj.getString(Identification.PRM_TIME);
             int days = messageObj.getInt(Identification.PRM_DAYS);
-            //TODO: set game variables
+            //handler.changePhase(time,days);
             ClientSender.requestListClients(os);
             break;
           case Identification.METHOD_KPUSELECTED:
             int selectedKpu = messageObj.getInt(Identification.PRM_KPUID);
-            //TODO: set kpu variable (in controller?)
+            //handler.setKpu(selectedKpu);
             break;
           case Identification.METHOD_GAMEOVER:
             String winner = messageObj.getString(Identification.PRM_WINNER);
             ClientSender.requestListClients(os);
-            //TODO: alert game over, show winner, ask to play again
+            //handler.gameOver(winner);
             break;
           default:
             // No valid actions: send error response: invalid request
@@ -105,19 +108,20 @@ public class ClientListenerTCP extends Observable implements Runnable {
       /* try {
         String status = messageObj.getString(Identification.PRM_STATUS);
         String description = messageObj.getString(Identification.PRM_DESCRIPTION);
-        //TODO: alert description
+        //handle.showDialog(description);
         switch (status) {
           case Identification.STATUS_OK :
             switch (ClientController.lastSentMethod) {
               case Identification.METHOD_CLIENTADDR:
-                //TODO: get player objects from json array, pass to controller
+                //TODO: get player objects from json array
+                //handle.updatePlayers(players);
                 break;
               case Identification.METHOD_JOIN:
                 int playerId = messageObj.getInt(Identification.PRM_PLAYERID);
-                //TODO: set player id of client
+                //handle.createPlayer(playerId);
                 break;
               case Identification.METHOD_LEAVE:
-                //TODO: quit game
+                //handle.leaveGame();
                 break;
               default:
                 break;
@@ -127,7 +131,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
             switch (ClientController.lastSentMethod) {
               case Identification.METHOD_JOIN:
                 if (description.equals(Identification.DESC_USEREXISTS)) {
-                  //TODO: minta username lagi
+                  //handle.userExists();
                 } else {
                   //ga bisa main
                 }
@@ -153,11 +157,10 @@ public class ClientListenerTCP extends Observable implements Runnable {
                     message += is.readUTF();
                     try {
                         JSONObject messageObj = new JSONObject(message);
-                        String messageMethod = messageObj.getString(Identification.PRM_METHOD);
-                        if (messageMethod==null) { //response
-                            handleResponse(messageObj);
-                        } else { //request
+                        if (messageObj.has(Identification.PRM_METHOD)) {
                             handleRequest(messageObj);
+                        } else {
+                            handleResponse(messageObj);
                         }
                     } catch (JSONException ex) {
                         System.err.println(ex);

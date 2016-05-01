@@ -124,4 +124,24 @@ public class ClientController {
     public String getClientHostName() {
         return clientHostName;
     }
+
+    public DatagramSocket getUdpSocket() {
+        return udpSocket;
+    }
+
+    public void setUdpSocket(DatagramSocket udpSocket) {
+        this.udpSocket = udpSocket;
+    }
+
+    public DataOutputStream getOutputStream() {
+        return os;
+    }
+
+    public void setOutputStream(DataOutputStream os) {
+        this.os = os;
+    }
+    
+    
+    
+    
 }
