@@ -47,7 +47,6 @@ public class ClientController {
         serverHostName = hostName;
         serverPort = port;
         listenPort = listenport;
-        initClientConnection();
     }
     
     /**
@@ -63,7 +62,7 @@ public class ClientController {
             
             socket = new Socket(inetAddr, serverPort);
             clientListenerTcpHandle = new ClientListenerTCP(socket, this);
-            os = (DataOutputStream) socket.getOutputStream();
+            os = new DataOutputStream(socket.getOutputStream());
             
             udpSocket = new DatagramSocket(listenPort);
             clientListenerUdpHandle = new ClientListenerUDP(udpSocket, this);   
@@ -123,5 +122,9 @@ public class ClientController {
 
     public String getClientHostName() {
         return clientHostName;
+    }
+    
+    public DataOutputStream getOutputStream() {
+        return os;
     }
 }

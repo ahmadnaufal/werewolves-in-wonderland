@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package werewolvesinwonderland.server;
+
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,14 +17,15 @@ import werewolvesinwonderland.protocol.model.Player;
  * @author ASUS X202E
  */
 public class Game {
-    private HashMap<Integer,Player> players = new HashMap<>();
+
+    private HashMap<Integer, Player> players = new HashMap<>();
     private ArrayList<Player> aliveWerewolves = new ArrayList<>();
     private ArrayList<Player> aliveCivilians = new ArrayList<>();
     private String time = Identification.TIME_DAY;
     private boolean started = false;
     private int days = 0;
     private int readyCount = 0;
-    private HashMap<Integer,Integer> kpuProposals = new HashMap<>();
+    private HashMap<Integer, Integer> kpuProposals = new HashMap<>();
     private int kpuProposalCount = 0;
     private boolean dayVoted = false;
     private int selectedKpu = -1;
@@ -47,64 +49,66 @@ public class Game {
     }
 
     public void removePlayer(int id) {
-      Player player = getPlayer(id);
-      if ((player.getRole()).equals(Identification.ROLE_WEREWOLF)) {
-          aliveWerewolves.remove(player);
-      } else {
-          aliveCivilians.remove(player);
-      }
-      players.remove(id);
-      if (checkWinner()!=null) {
-        mServerHandle.sendGameOver(checkWinner());
-        restartGame();
-      }
+        Player player = getPlayer(id);
+        if ((player.getRole()).equals(Identification.ROLE_WEREWOLF)) {
+            aliveWerewolves.remove(player);
+        } else {
+            aliveCivilians.remove(player);
+        }
+        players.remove(id);
+        if (checkWinner() != null) {
+            mServerHandle.sendGameOver(checkWinner());
+            restartGame();
+        }
     }
 
     private boolean userExists(String username) {
-      for(Entry<Integer, Player> entry : players.entrySet()) {
-        if (entry.getValue().getUsername().equals(username)) return true;
-      }
-      return false;
+        for (Entry<Integer, Player> entry : players.entrySet()) {
+            if (entry.getValue().getUsername().equals(username)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public int addPlayer(String username, String udpAddress, int udpPort) {
         if (started) {
-          return -2;
+            return -2;
         } else if (userExists(username)) {
-          return -1;
+            return -1;
         } else {
             int id = players.size();
             Player player = new Player(id, username, udpAddress, udpPort);
-            players.put(id,player);
+            players.put(id, player);
             return id;
         }
     }
 
     public void increaseReady() {
         readyCount++;
-        if (readyCount==players.size()) {
+        if (readyCount == players.size()) {
             startGame();
         }
     }
 
     private void startGame() {
-      assignRoles();
-      started = true;
-      mServerHandle.sendStartGame();
+        assignRoles();
+        started = true;
+        mServerHandle.sendStartGame();
     }
 
     private void assignRoles() {
-        int werewolfCount = players.size()/3;
+        int werewolfCount = players.size() / 3;
 
         ArrayList<Integer> list = new ArrayList<>();
         for (Integer id : players.keySet()) {
             list.add(id);
         }
         Collections.shuffle(list);
-        for (int i=0;i<werewolfCount;i++) {
+        for (int i = 0; i < werewolfCount; i++) {
             setWerewolf(list.get(i));
         }
-        for (int i=werewolfCount;i<list.size();i++) {
+        for (int i = werewolfCount; i < list.size(); i++) {
             setCivilian(list.get(i));
         }
     }
@@ -124,16 +128,21 @@ public class Game {
     private String checkWinner() {
         if (aliveWerewolves.isEmpty()) {
             return Identification.ROLE_CIVILIAN;
-        } else if (aliveWerewolves.size()==aliveCivilians.size()) {
+        } else if (aliveWerewolves.size() == aliveCivilians.size()) {
             return Identification.ROLE_WEREWOLF;
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
     public void addKpuProposal(int id) {
-        if (kpuProposals.containsKey(id)) kpuProposals.put(id,kpuProposals.get(id)+1);
-        else kpuProposals.put(id,1);
+        if (kpuProposals.containsKey(id)) {
+            kpuProposals.put(id, kpuProposals.get(id) + 1);
+        } else {
+            kpuProposals.put(id, 1);
+        }
         kpuProposalCount++;
-        if (kpuProposalCount==aliveWerewolves.size()+aliveCivilians.size()-2) {
+        if (kpuProposalCount == aliveWerewolves.size() + aliveCivilians.size() - 2) {
             kpuProposalCount = 0;
             kpuProposals.clear();
             countKpuProposals();
@@ -141,24 +150,23 @@ public class Game {
     }
 
     private void countKpuProposals() {
-      Integer max = Collections.max(kpuProposals.values());
+        Integer max = Collections.max(kpuProposals.values());
 
-      for(Entry<Integer, Integer> entry : kpuProposals.entrySet()) {
-        Integer value = entry.getValue();
+        for (Entry<Integer, Integer> entry : kpuProposals.entrySet()) {
+            Integer value = entry.getValue();
 
-          if(max == value) {
-            selectedKpu = entry.getKey();
-          }
-      }
+            if (max == value) {
+                selectedKpu = entry.getKey();
+            }
+        }
 
-      mServerHandle.sendKpuSelected(selectedKpu);
+        mServerHandle.sendKpuSelected(selectedKpu);
 
     }
 
     public int getSelectedKpu() {
-      return selectedKpu;
+        return selectedKpu;
     }
-
 
     public void killPlayer(int id) {
         Player player = getPlayer(id);
@@ -169,11 +177,11 @@ public class Game {
             aliveCivilians.remove(player);
         }
 
-        if (checkWinner()!=null) {
-          mServerHandle.sendGameOver(checkWinner());
-          restartGame();
+        if (checkWinner() != null) {
+            mServerHandle.sendGameOver(checkWinner());
+            restartGame();
         } else {
-          changePhase();
+            changePhase();
         }
     }
 
@@ -196,11 +204,11 @@ public class Game {
     }
 
     public ArrayList<String> getWerewolvesUsernames() {
-      ArrayList<String> usernames = new ArrayList<>();
-      for (Player werewolf : aliveWerewolves) {
-        usernames.add(werewolf.getUsername());
-      }
-      return usernames;
+        ArrayList<String> usernames = new ArrayList<>();
+        for (Player werewolf : aliveWerewolves) {
+            usernames.add(werewolf.getUsername());
+        }
+        return usernames;
     }
 
     public ArrayList<Player> getAliveWerewolves() {
@@ -208,33 +216,32 @@ public class Game {
     }
 
     public ArrayList<Player> getAlivePlayers() {
-      ArrayList<Player> alivePlayers = new ArrayList<>(aliveCivilians);
-      alivePlayers.addAll(aliveWerewolves);
-      return alivePlayers;
+        ArrayList<Player> alivePlayers = new ArrayList<>(aliveCivilians);
+        alivePlayers.addAll(aliveWerewolves);
+        return alivePlayers;
     }
 
     public ArrayList<Player> getPlayersList() {
-      ArrayList<Player> playersList = new ArrayList<>(players.values());
-      return playersList;
+        ArrayList<Player> playersList = new ArrayList<>(players.values());
+        return playersList;
     }
 
     public void tieVote() {
-      if (time.equals(Identification.TIME_DAY)) {
-        if (dayVoted) {
-          dayVoted = false;
-          changePhase();
+        if (time.equals(Identification.TIME_DAY)) {
+            if (dayVoted) {
+                dayVoted = false;
+                changePhase();
+            } else {
+                dayVoted = true;
+                mServerHandle.sendVoteDay();
+            }
         } else {
-          dayVoted = true;
-          mServerHandle.sendVoteDay();
+            mServerHandle.sendVoteNight();
         }
-      }
-      else {
-        mServerHandle.sendVoteNight();
-      }
     }
 
     public Player getPlayer(int id) {
-      return players.get(id);
+        return players.get(id);
     }
 
 }
