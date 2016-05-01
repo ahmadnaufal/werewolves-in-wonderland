@@ -116,8 +116,7 @@ public class PlayerPanel extends javax.swing.JPanel implements TableCellRenderer
         if (player.isAlive()) {
             i = random.nextInt(civilianPic.length - 1 + 1) + 1;
             icPlayer.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-                createStringPicture(player.getRole(),
-                        i, "132", true))));
+                PlayerAvatarMaker.createStringImageResource(player, "132"))));
             lbRole.setText("?");
         } else {
             if (player.getRole().equals(Identification.ROLE_WEREWOLF))
@@ -125,8 +124,7 @@ public class PlayerPanel extends javax.swing.JPanel implements TableCellRenderer
             else
                 i = random.nextInt(civilianPic.length - 1 + 1) + 1;
             icPlayer.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-                     createStringPicture(player.getRole(),
-                            i, "132", player.isAlive()))));
+                PlayerAvatarMaker.createStringImageResource(player, "132"))));
             lbRole.setText(player.getRole().substring(0, 1).toUpperCase()
                 + player.getRole().substring(1));
         }            
@@ -144,11 +142,4 @@ public class PlayerPanel extends javax.swing.JPanel implements TableCellRenderer
         return this;
     }
     
-    /* Asset things */
-    private String createStringPicture(String role, int i, String size, boolean isAlive) {
-        if (isAlive)
-            return "/werewolvesinwonderland/client/assets/ic_player" + size + "_" + role + i + ".png";
-        else
-            return "/werewolvesinwonderland/client/assets/ic_player" + size + "_" + role + i + "_died.png";
-    }
 }

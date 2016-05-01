@@ -142,6 +142,9 @@
                       <Connection code="new Color(0,0,0,0)" type="code"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblPlayerListMouseClicked"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>

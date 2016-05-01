@@ -48,7 +48,9 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         this.setIconImage(img.getImage());
         this.setTitle("Werewolf in Wonderland");
         changeScreen("gamePanel");
-        setPlayerInfo(new Player(1, true, "123", 8080, "Tifani", Identification.ROLE_CIVILIAN));
+        Player currentPlayer = new Player(1, true, "123", 8080, "Tifani", Identification.ROLE_CIVILIAN); //TEST
+        PlayerAvatarMaker.addPlayer(currentPlayer);
+        setPlayerInfo(currentPlayer);
     }
 
     /**
@@ -133,6 +135,11 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         tblPlayerList.setRowSelectionAllowed(false);
         tblPlayerList.setSelectionBackground(new Color(0,0,0,0));
         tblPlayerList.setSelectionForeground(new Color(0,0,0,0));
+        tblPlayerList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblPlayerListMouseClicked(evt);
+            }
+        });
         spTable.setViewportView(tblPlayerList);
 
         gamePanel.add(spTable);
@@ -255,6 +262,15 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         changeScreen("homePanel");
     }//GEN-LAST:event_btnLeaveGameMouseClicked
 
+    private void tblPlayerListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPlayerListMouseClicked
+        if (tblPlayerList.isEnabled()) {
+            int row = tblPlayerList.getSelectedRow();
+            int col = tblPlayerList.getSelectedColumn();
+            int playerPos = (row * 4) + col;
+            // TODO: Vote kill
+        }
+    }//GEN-LAST:event_tblPlayerListMouseClicked
+
     private final GameController gameController = new GameController(this);
     private JFrame newGameDialog;
     private int[] werewolfPic = {1,2};
@@ -322,25 +338,31 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     }
     
     private void initPlayerListBoard () {
+        // TEST
         ArrayList<Player> players = new ArrayList<>();
         players.add(new Player(2, true, "123", 8080, "Nilta", Identification.ROLE_CIVILIAN));
-        Player player = new Player(2, true, "123", 8080, "Yoru", Identification.ROLE_CIVILIAN);
+        Player player = new Player(3, true, "123", 8080, "Yoru", Identification.ROLE_CIVILIAN);
         player.setAlive(false);
         players.add(player);
-        player = new Player(3, true, "123", 8080, "Nami", Identification.ROLE_WEREWOLF);
+        player = new Player(4, true, "123", 8080, "Nami", Identification.ROLE_WEREWOLF);
         player.setAlive(false);
         players.add(player);
-        players.add(new Player(4, true, "123", 8080, "Ahmad", Identification.ROLE_CIVILIAN));
-        players.add(new Player(5, true, "123", 8080, "Inochhi", Identification.ROLE_CIVILIAN));
-        players.add(new Player(6, true, "123", 8080, "Snowball", Identification.ROLE_CIVILIAN));
-        players.add(new Player(1, true, "123", 8080, "Quincy", Identification.ROLE_CIVILIAN));
+        players.add(new Player(5, true, "123", 8080, "Ahmad", Identification.ROLE_CIVILIAN));
+        players.add(new Player(6, true, "123", 8080, "Inocchi", Identification.ROLE_CIVILIAN));
+        players.add(new Player(7, true, "123", 8080, "Snowball", Identification.ROLE_CIVILIAN));
+        players.add(new Player(8, true, "123", 8080, "Quincy", Identification.ROLE_CIVILIAN));
+        players.add(new Player(9, true, "123", 8080, "Sakamoto", Identification.ROLE_CIVILIAN));
+        players.add(new Player(10, true, "123", 8080, "Moci", Identification.ROLE_CIVILIAN));
+        players.add(new Player(11, true, "123", 8080, "Tanpopo", Identification.ROLE_CIVILIAN));
         
         tblPlayerList.setModel(new DefaultTableModel(2, 4));
         for(int i=0; i<3; i++) {
             tblPlayerList.setRowHeight(i, 232);
             for (int j=0; j<4; j++) {
-                Random random = new Random();
-                int x = random.nextInt(players.size() - 1 - 0 + 1) + 0;
+                int x = (i * 4 + j) % 10;
+                PlayerAvatarMaker.addPlayer(players.get(x));
+                if (!players.get(x).isAlive())
+                    PlayerAvatarMaker.setPlayerHasDied(players.get(x));
                 tblPlayerList.getColumnModel().getColumn(j).setCellRenderer(new PlayerPanel(this, players.get(x)));
             }
         }
@@ -392,28 +414,13 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     }
     
     public void setPlayerInfo(Player currentPlayer) {
-        Random random = new Random();
-        int i;
-        if (currentPlayer.getRole().equals(Identification.ROLE_WEREWOLF))
-            i = random.nextInt(werewolfPic.length - 1 + 1) + 1;
-        else
-            i = random.nextInt(civilianPic.length - 1 + 1) + 1;
         icPlayer.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-                createStringPicture(currentPlayer.getRole(),
-                        i, "110", currentPlayer.isAlive()))));
+                PlayerAvatarMaker.createStringImageResource(currentPlayer, "110"))));
         lbUsername.setText(currentPlayer.getUsername());
         lbRole.setText(currentPlayer.getRole().substring(0, 1).toUpperCase()
                 + currentPlayer.getRole().substring(1));
         if (currentPlayer.isAlive()) lbStatus.setText("Alive");
             else lbStatus.setText("Died");
-    }
-        
-    /* Asset things */
-    private String createStringPicture(String role, int i, String size, boolean isAlive) {
-        if (isAlive)
-            return "/werewolvesinwonderland/client/assets/ic_player" + size + "_" + role + i + ".png";
-        else
-            return "/werewolvesinwonderland/client/assets/ic_player" + size + "_" + role + i + "_died.png";
     }
     
 }

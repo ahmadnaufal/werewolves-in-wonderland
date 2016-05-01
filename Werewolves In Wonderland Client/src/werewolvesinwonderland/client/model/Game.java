@@ -21,7 +21,7 @@ public class Game {
     private boolean isStarted = false;
     private Player currentPlayer;
     private Map<Integer, Player> listPlayers = new HashMap<>();
-
+    
     public Game() {
 
     }
