@@ -42,7 +42,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         spTable.setOpaque(false);
         spTable.getViewport().setOpaque(false);
         spTable.setColumnHeaderView(null);
-        initPlayerListBoard();
+        // initPlayerListBoard(); //dummy
         
         ImageIcon img = new ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/icon_werewolf.png"));
         this.setIconImage(img.getImage());
@@ -240,7 +240,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1339, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -317,8 +317,9 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
             protected Void doInBackground() throws Exception {
                 int ret = gameController.joinGame(username, serverAddress, serverPort, clientPort);
                 System.out.println("Do in background join game");
-                while (gameController.getClientHandle().isWaitingResponse()) {
+                while (ClientController.isWaitingResponse()) {
                     // Waiting
+                    Thread.sleep(1000);
                 }
                 // if (ret != 0) showErrorMessage("Error joining game");
                 System.out.println("Game is connected.");
@@ -387,8 +388,9 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         return dlgProgress;
     }
     
-    public void joinGameSuccess() {
+    public void joinGameSuccess(Player currentPlayer) {
         changeScreen("gamePanel");
+        setPlayerInfo(currentPlayer);
     }
     
     public void joinGameFailed(String message) {
@@ -416,8 +418,12 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         icPlayer.setIcon(new javax.swing.ImageIcon(getClass().getResource(
                 PlayerAvatarMaker.createStringImageResource(currentPlayer, "110"))));
         lbUsername.setText(currentPlayer.getUsername());
-        lbRole.setText(currentPlayer.getRole().substring(0, 1).toUpperCase()
+        if (currentPlayer.getRole() == null) {
+            lbRole.setText("-");
+        } else {
+            lbRole.setText(currentPlayer.getRole().substring(0, 1).toUpperCase()
                 + currentPlayer.getRole().substring(1));
+        }
         if (currentPlayer.isAlive()) lbStatus.setText("Alive");
             else lbStatus.setText("Died");
     }

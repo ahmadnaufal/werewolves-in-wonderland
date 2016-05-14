@@ -64,7 +64,7 @@ public class GameController {
     public void createPlayer(int id) {
         mGame.setCurrentPlayer(new Player(id, username, clientHandle.getClientHostName(), clientHandle.getListenPort()));
         proposerController.setPlayerId();
-        frame.joinGameSuccess();
+        frame.joinGameSuccess(mGame.getCurrentPlayer());
     }
 
     public int joinGame(String username, String serverAddress, int serverPort, int clientPort) {
@@ -76,6 +76,8 @@ public class GameController {
                 clientHandle.getListenPort(),
                 clientHandle.getOutputStream()) != 1) {
                 clientHandle.setResponseHasArrived();
+            } else {
+                this.username = username;
             }
         }
         return ret;

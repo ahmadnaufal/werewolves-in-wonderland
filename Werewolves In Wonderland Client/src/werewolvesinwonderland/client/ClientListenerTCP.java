@@ -166,7 +166,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
             System.err.println(ex);
             Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
         }
-        clientHandle.setResponseHasArrived();
+        ClientController.setResponseHasArrived();
     }
 
     @Override

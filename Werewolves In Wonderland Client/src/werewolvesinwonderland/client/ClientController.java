@@ -153,11 +153,11 @@ public class ClientController {
         this.gameHandler = gameHandler;
     }
     
-    public boolean isWaitingResponse() {
+    public static boolean isWaitingResponse() {
         return !lastSentMethod.equals("");
     }
     
-    public void setResponseHasArrived() {
+    public static void setResponseHasArrived() {
         lastSentMethod = "";
     }
 }

@@ -64,7 +64,8 @@ public class PlayerAvatarMaker {
     }
     
     public static String createStringImageResource(Player player, String size) {
-        if (player.isAlive()) {
+        if (player.getRole() != null) {
+            if (player.isAlive()) {
             
             System.out.println("/werewolvesinwonderland/client/assets/ic_player" + size +
                     "_" + player.getRole() + getPlayerImageId(player) + ".png");
@@ -77,7 +78,12 @@ public class PlayerAvatarMaker {
         
             return "/werewolvesinwonderland/client/assets/ic_player" + size +
                     "_" + player.getRole() + getPlayerImageId(player) + "_died.png";
+            }
+        } else {
+            return "/werewolvesinwonderland/client/assets/ic_player" + size +
+                    "_" + "civilian" + getPlayerImageId(player) + "_died.png"; // dummy
         }
+        
     }
     
 }
