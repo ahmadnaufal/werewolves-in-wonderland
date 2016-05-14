@@ -121,7 +121,7 @@ public class ServerMessageBuilder {
 
         return new JSONObject()
                 .put(Identification.PRM_STATUS, Identification.STATUS_OK)
-                .put(Identification.PRM_CLIENTS, clientListArray.toString())
+                .put(Identification.PRM_CLIENTS, clientListArray)
                 .put(Identification.PRM_DESCRIPTION, Identification.DESC_LISTCLIENT)
                 .toString();
     }
@@ -134,13 +134,14 @@ public class ServerMessageBuilder {
         for (String f : friend) {
             friends.put(f);
         }
-        return new JSONObject()
+        JSONObject obj =  new JSONObject()
                 .put(Identification.PRM_METHOD, Identification.METHOD_STARTGAME)
                 .put(Identification.PRM_TIME, time)
                 .put(Identification.PRM_ROLE, role)
-                .put(Identification.PRM_FRIEND, friends.toString()) //TODO: Array friend
-                .put(Identification.PRM_DESCRIPTION, Identification.DESC_GAMESTARTED)
-                .toString();
+                .put(Identification.PRM_DESCRIPTION, Identification.DESC_GAMESTARTED);
+        if (role.equals(Identification.ROLE_WEREWOLF))
+            obj.put(Identification.PRM_FRIEND, friends);
+        return obj.toString();
     }
 
     /**

@@ -17,6 +17,8 @@ import werewolvesinwonderland.protocol.model.Player;
  * @author ASUS X202E
  */
 public class Game {
+    
+    private static final int PLAYER_MIN = 3;
 
     private HashMap<Integer, Player> players = new HashMap<>();
     private ArrayList<Player> aliveWerewolves = new ArrayList<>();
@@ -88,7 +90,7 @@ public class Game {
 
     public void increaseReady() {
         readyCount++;
-        if (readyCount == players.size() && players.size() >= 6) {
+        if (readyCount == players.size() && players.size() >= PLAYER_MIN) {
             startGame();
         }
     }

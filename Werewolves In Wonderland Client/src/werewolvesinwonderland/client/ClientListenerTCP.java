@@ -118,6 +118,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
     private void handleResponse(JSONObject messageObj) {
         System.out.println(ClientListenerTCP.class.getSimpleName() + ": " + messageObj);
         String description = "";
+        boolean needToDismissDialog = true;
         try {
             String status = messageObj.getString(Identification.PRM_STATUS);
             switch (status) {
@@ -137,6 +138,9 @@ public class ClientListenerTCP extends Observable implements Runnable {
                             clientHandle.getGameHandler().createPlayer(playerId);
                             System.out.println("Successfully Connected to Server." + 
                                                 " My player id is: " + playerId);
+                            break;
+                        case Identification.METHOD_READY:
+                            needToDismissDialog = false;
                             break;
                         case Identification.METHOD_LEAVE:
                             clientHandle.getGameHandler().getGameFrame().leaveGameSuccess();
@@ -167,7 +171,8 @@ public class ClientListenerTCP extends Observable implements Runnable {
             Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
         }
         ClientController.setResponseHasArrived();
-        clientHandle.getGameHandler().getGameFrame().dismissProgressDialog();
+        if (needToDismissDialog)
+            clientHandle.getGameHandler().getGameFrame().dismissProgressDialog();
     }
 
     @Override
