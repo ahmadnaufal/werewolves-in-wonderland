@@ -81,8 +81,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
                                 werewolfFriends.add(werewolfArray.getString(i));
                         }
                         clientHandle.getGameHandler().startGame(time, role, werewolfFriends);
-                    }
-                    else {
+                    } else {
                         clientHandle.getGameHandler().startGame(time, role);
                     }
                     ClientSender.requestListClients(os);

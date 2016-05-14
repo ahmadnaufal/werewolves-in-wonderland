@@ -137,8 +137,8 @@ public class ClientHandler implements Runnable {
 
                         case Identification.METHOD_READY:
                             System.out.println("REQUEST: Player with ID: " + playerId + " sending ready.");
-                            mServerHandle.getGame().increaseReady();
                             ServerSender.sendResponseReadyUpOK(os);
+                            mServerHandle.getGame().increaseReady();
                             break;
 
                         case Identification.METHOD_CLIENTADDR:
