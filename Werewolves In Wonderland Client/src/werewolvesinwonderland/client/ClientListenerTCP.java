@@ -139,7 +139,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
                                                 " My player id is: " + playerId);
                             break;
                         case Identification.METHOD_LEAVE:
-                            //handle.leaveGame();
+                            clientHandle.getGameHandler().getGameFrame().leaveGameSuccess();
                             break;
                         default:
                             break;

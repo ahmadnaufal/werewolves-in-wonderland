@@ -259,7 +259,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     }//GEN-LAST:event_btnReadyUpMouseClicked
 
     private void btnLeaveGameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLeaveGameMouseClicked
-        changeScreen("homePanel");
+        gameController.leaveGame();
     }//GEN-LAST:event_btnLeaveGameMouseClicked
 
     private void tblPlayerListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPlayerListMouseClicked
@@ -426,6 +426,10 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         }
         if (currentPlayer.isAlive()) lbStatus.setText("Alive");
             else lbStatus.setText("Died");
+    }
+    
+    public void leaveGameSuccess() {
+        changeScreen("homePanel");
     }
     
 }

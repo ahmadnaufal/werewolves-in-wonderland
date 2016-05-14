@@ -50,10 +50,12 @@ public class Game {
 
     public void removePlayer(int id) {
         Player player = getPlayer(id);
-        if ((player.getRole()).equals(Identification.ROLE_WEREWOLF)) {
-            aliveWerewolves.remove(player);
-        } else {
-            aliveCivilians.remove(player);
+        if (player.getRole() != null) {
+            if ((player.getRole()).equals(Identification.ROLE_WEREWOLF)) {
+                aliveWerewolves.remove(player);
+            } else {
+                aliveCivilians.remove(player);
+            }
         }
         players.remove(id);
         if (checkWinner() != null) {

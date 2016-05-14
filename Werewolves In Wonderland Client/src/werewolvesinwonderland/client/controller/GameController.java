@@ -37,6 +37,10 @@ public class GameController {
     public ClientController getClientHandle() {
         return clientHandle;
     }
+    
+    public GameFrame getGameFrame() {
+        return frame;
+    }
 
     public void setClientHandle(ClientController clientHandle) {
         this.clientHandle = clientHandle;
