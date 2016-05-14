@@ -144,6 +144,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
                             break;
                         case Identification.METHOD_LEAVE:
                             clientHandle.getGameHandler().getGameFrame().leaveGameSuccess();
+                            running = false;
                             break;
                         default:
                             break;
@@ -197,7 +198,10 @@ public class ClientListenerTCP extends Observable implements Runnable {
                     Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            socket.close();
+            if (os != null)
+                os.close();
+            if (socket != null)
+                socket.close();
           } catch (IOException ex) {
             System.err.println(ex);
             Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
