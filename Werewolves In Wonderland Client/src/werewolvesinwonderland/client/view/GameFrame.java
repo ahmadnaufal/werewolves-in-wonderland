@@ -273,6 +273,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     }//GEN-LAST:event_tblPlayerListMouseClicked
 
     private final GameController gameController = new GameController(this);
+    private ClientController clientController;
     private JFrame newGameDialog;
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -309,18 +310,18 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
                     "Server Port: " + serverPort + ", " +
                     "Client Port: " + clientPort);
         
-        
-
         JDialog dlgProgress = createProgressDialog();
 
         SwingWorker<Void, Void> sw = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
                 int ret = gameController.joinGame(username, serverAddress, serverPort, clientPort);
+                System.out.println("Do in background join game");
                 while (gameController.getClientHandle().isWaitingResponse()) {
                     // Waiting
                 }
                 // if (ret != 0) showErrorMessage("Error joining game");
+                System.out.println("Game is connected.");
                 return null;
             }
 

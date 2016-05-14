@@ -147,6 +147,7 @@ public class NewGameDialog extends JFrame {
                 dialogListener.onJoinGameButtonClicked(username, serverAddress, serverPort, clientPort);
             } catch (Exception e) {
                 showMessageDialog(null, "Please fill in all of the fields in properly!!", "Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
         } else {
             showMessageDialog(null, "Please fill in all of the fields!!", "Error", JOptionPane.ERROR_MESSAGE);

@@ -37,7 +37,8 @@ public class ClientListenerTCP extends Observable implements Runnable {
     /**
      * Constructors for ClientListenerTCP
      * @param socket
-     * @param handler
+     * @param clientHandle
+     * @param os
      */
     public ClientListenerTCP(Socket socket, ClientController clientHandle, DataOutputStream os) {
         this.socket = socket;
@@ -115,6 +116,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
     }
 
     private void handleResponse(JSONObject messageObj) {
+        System.out.println(ClientListenerTCP.class.getSimpleName() + ": " + messageObj);
         String description = "";
         try {
             String status = messageObj.getString(Identification.PRM_STATUS);
@@ -133,6 +135,8 @@ public class ClientListenerTCP extends Observable implements Runnable {
                         case Identification.METHOD_JOIN:
                             int playerId = messageObj.getInt(Identification.PRM_PLAYERID);
                             clientHandle.getGameHandler().createPlayer(playerId);
+                            System.out.println("Successfully Connected to Server." + 
+                                                " My player id is: " + playerId);
                             break;
                         case Identification.METHOD_LEAVE:
                             //handle.leaveGame();
@@ -173,6 +177,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
                 String message = "";
                 while (is.available() <= 0);
                 message += is.readUTF();
+                System.out.println(message);
                 
                 try {
                     JSONObject messageObj = new JSONObject(message);

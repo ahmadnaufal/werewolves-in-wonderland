@@ -15,7 +15,6 @@ import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import werewolvesinwonderland.client.controller.GameController;
-import werewolvesinwonderland.protocol.Identification;
 
 /**
  *
@@ -44,11 +43,13 @@ public class ClientController {
      * @param hostName the host name
      * @param port the port number
      * @param listenport the port for udp connection
+     * @param gameController
      */
-    public ClientController(String hostName, int port, int listenport) {
+    public ClientController(String hostName, int port, int listenport, GameController gameController) {
         serverHostName = hostName;
         serverPort = port;
         listenPort = listenport;
+        gameHandler = gameController;
     }
 
     /**
@@ -64,7 +65,7 @@ public class ClientController {
 
             socket = new Socket(inetAddr, serverPort);
             clientListenerTcpHandle = new ClientListenerTCP(socket, this,
-                    (DataOutputStream) socket.getOutputStream());
+                    new DataOutputStream(socket.getOutputStream()));
             os = new DataOutputStream(socket.getOutputStream());
 
             udpSocket = new DatagramSocket(listenPort);

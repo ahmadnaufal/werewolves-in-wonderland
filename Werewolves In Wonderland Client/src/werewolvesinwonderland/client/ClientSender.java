@@ -53,6 +53,7 @@ public class ClientSender {
      * @return 
      */
     public static int requestJoinGame(String username, String address, int port, DataOutputStream os) {
+        System.out.println("Request join game");
         try {
             String requestStr = ClientMessageBuilder.createRequestJoinGame(username, address, port);
             os.writeUTF(requestStr);

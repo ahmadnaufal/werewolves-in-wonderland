@@ -12,8 +12,9 @@ package werewolvesinwonderland.client.controller;
 public class AcceptorController {
     
     private GameController gameHandle;
-    private int acceptedProposalNumber = 0;
-    private int acceptedProposerId = 0;
+    private int promisedProposalNumber = 0;
+    private int promisedProposerId = -1;
+    private int kpuId = -1;
     
     public AcceptorController(GameController gameController) {
         gameHandle = gameController;
@@ -29,25 +30,44 @@ public class AcceptorController {
      * -1 if rejected
      */
     public int promiseProposal(int proposalNumber, int proposerId) {
-        if (proposalNumber > acceptedProposalNumber ||
-                (proposalNumber == acceptedProposalNumber &&
-                proposerId > acceptedProposerId)) {
+        if (proposalNumber > promisedProposalNumber ||
+                (proposalNumber == promisedProposalNumber &&
+                proposerId > promisedProposerId)) {
             
-            int previousAccepted = acceptedProposalNumber;
-            acceptedProposalNumber = proposalNumber;
-            acceptedProposerId = proposerId;
+            int previousAccepted = promisedProposalNumber;
+            promisedProposalNumber = proposalNumber;
+            promisedProposerId = proposerId;
             if (previousAccepted == 0)
                 return 1;
             else
                 return previousAccepted + 1;
             
-        } else if (proposalNumber < acceptedProposalNumber ||
-                (proposalNumber == acceptedProposalNumber &&
-                proposerId < acceptedProposerId)) {
+        } else if (proposalNumber < promisedProposalNumber ||
+                (proposalNumber == promisedProposalNumber &&
+                proposerId < promisedProposerId)) {
             
             return -1;
         }
         // else: equal
         return 0;
     }
+    
+    public int acceptProposal(int proposalNumber, int proposerId, int kpuId) {
+        if (this.kpuId == -1) {
+            if (proposalNumber >= promisedProposalNumber && proposerId >= promisedProposerId) {
+                this.kpuId = kpuId;
+
+            } else if (proposalNumber < promisedProposalNumber ||
+                    (proposalNumber == promisedProposalNumber &&
+                    proposerId < promisedProposerId)) {
+
+                return -1;
+            }
+        } else {
+            
+        }
+        
+        return 1;
+    }
+    
 }

@@ -68,7 +68,7 @@ public class GameController {
     }
 
     public int joinGame(String username, String serverAddress, int serverPort, int clientPort) {
-        clientHandle = new ClientController(serverAddress, serverPort, clientPort);
+        clientHandle = new ClientController(serverAddress, serverPort, clientPort, this);
         int ret = clientHandle.initClientConnection();
         if (ret == 1) {
             if (ClientSender.requestJoinGame(username,
