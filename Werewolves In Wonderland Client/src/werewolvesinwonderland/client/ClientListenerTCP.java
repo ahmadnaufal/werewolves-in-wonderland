@@ -107,7 +107,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
                     ClientSender.requestListClients(os);
                     //handler.gameOver(winner);
                     break;
-                    default:
+                default:
                     // No valid actions: send error response: invalid request
                     ClientSender.sendResponseError(os);
             }

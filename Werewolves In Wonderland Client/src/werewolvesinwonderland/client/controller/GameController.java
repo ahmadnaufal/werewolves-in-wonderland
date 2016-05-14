@@ -60,6 +60,8 @@ public class GameController {
         mGame.setTime(time);
         mGame.getCurrentPlayer().setRole(role);
         frame.setPlayerInfo(mGame.getCurrentPlayer());
+        
+        // startPaxos();
     }
 
     public void startGame(String time, String role, ArrayList<String> werewolfFriends) {
@@ -67,6 +69,8 @@ public class GameController {
         mGame.getCurrentPlayer().setRole(role);
         this.werewolfFriends = werewolfFriends;
         frame.setPlayerInfo(mGame.getCurrentPlayer());
+
+        // startPaxos();
     }
 
     public void createPlayer(int id) {
@@ -146,12 +150,14 @@ public class GameController {
 
     private void startPaxos() {
         Set<Integer> playerIds = new HashSet<>(mGame.getListPlayers().keySet());
+        System.out.println(playerIds.toString());
         int proposer1 = Collections.max(playerIds);
         playerIds.remove(proposer1);
         int proposer2 = Collections.max(playerIds);
 
         if (mGame.getCurrentPlayer().getPlayerId() == proposer1
           || mGame.getCurrentPlayer().getPlayerId() == proposer2) {
+            System.out.println("I am a proposer!");
             Map<Integer, Player> acceptors = new HashMap<>(mGame.getListPlayers());
             acceptors.remove(proposer1);
             acceptors.remove(proposer2);

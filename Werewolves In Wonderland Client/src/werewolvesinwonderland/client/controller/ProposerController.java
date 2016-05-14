@@ -26,7 +26,7 @@ public class ProposerController {
     private int quorum = 0;
     private int kpuId;
     private Map<Integer, Player> acceptorList;
-    private Map<Integer, Integer> killVotes = new HashMap<Integer,Integer>();
+    private Map<Integer, Integer> killVotes = new HashMap<>();
     private int voteCount = 0;
     private int aliveWerewolvesCount;
     private int alivePlayersCount;
@@ -48,11 +48,11 @@ public class ProposerController {
 
     public void prepareProposal() {
         for (Entry<Integer, Player> e : acceptorList.entrySet()) {
+            System.out.println("PROPOSAL: To " + e.getValue().getPlayerId() + ", Value: (" + proposalNumber + ", " + playerId + ")");
             ClientSender.sendPaxosPrepareProposal(proposalNumber, playerId,
                     gameHandle.getClientHandle().getUdpSocket(),
                     e.getValue().getUdpAddress(), e.getValue().getUdpPort());
         }
-
         proposalNumber++;
     }
 
