@@ -256,9 +256,11 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
 
     private void btnReadyUpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReadyUpMouseClicked
         gameController.readyUp();
+        showProgressDialog();
     }//GEN-LAST:event_btnReadyUpMouseClicked
 
     private void btnLeaveGameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLeaveGameMouseClicked
+        showProgressDialog();
         gameController.leaveGame();
     }//GEN-LAST:event_btnLeaveGameMouseClicked
 
@@ -275,6 +277,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     private final GameController gameController = new GameController(this);
     private ClientController clientController;
     private JFrame newGameDialog;
+    private JDialog progressDialog = createProgressDialog();
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel bgGame;
@@ -432,4 +435,12 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         changeScreen("homePanel");
     }
     
+    public void showProgressDialog() {
+        progressDialog.setVisible(true);
+    }
+    
+    public void dismissProgressDialog() {
+        if (progressDialog != null)
+            progressDialog.dispose();
+    }
 }

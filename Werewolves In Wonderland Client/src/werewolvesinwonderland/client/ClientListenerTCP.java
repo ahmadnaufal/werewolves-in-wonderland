@@ -167,6 +167,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
             Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
         }
         ClientController.setResponseHasArrived();
+        clientHandle.getGameHandler().getGameFrame().dismissProgressDialog();
     }
 
     @Override

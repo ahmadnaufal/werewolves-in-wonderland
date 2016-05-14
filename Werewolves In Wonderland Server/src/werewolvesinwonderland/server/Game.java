@@ -88,7 +88,7 @@ public class Game {
 
     public void increaseReady() {
         readyCount++;
-        if (readyCount == players.size()) {
+        if (readyCount == players.size() && players.size() >= 6) {
             startGame();
         }
     }
