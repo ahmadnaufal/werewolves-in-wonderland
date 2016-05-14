@@ -31,7 +31,7 @@ public class ClientHandler implements Runnable {
     private DataOutputStream os;
 
     private int playerId = -1;
-    private boolean isConnected = false;
+    private boolean running = false;
 
     /**
      * The main constructor for client handlers
@@ -48,7 +48,7 @@ public class ClientHandler implements Runnable {
             is = new DataInputStream(mSocket.getInputStream());
             os = new DataOutputStream(mSocket.getOutputStream());
 
-            isConnected = true;
+            running = true;
 
             mThread = new Thread(this);
             start();
@@ -83,7 +83,7 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
-            while (isConnected) {
+            while (running) {
                 String request = "";
                 while (is.available() <= 0);
                 request += is.readUTF();
@@ -124,11 +124,11 @@ public class ClientHandler implements Runnable {
 
                         case Identification.METHOD_LEAVE:
                             System.out.println("REQUEST: Player with ID: " + playerId + " attempting to leave the game.");
-                            isConnected = false;
                             // TODO ini remove player return sesuatu aja ya, biar ada fail response nya
                             mServerHandle.getGame().removePlayer(playerId);
-                            if (true) // stub
-                            {
+                            // stub
+                            if (true) {
+                                running = false;
                                 ServerSender.sendResponseOK(os);
                             } else {
                                 ServerSender.sendResponseFail(os);
@@ -152,12 +152,14 @@ public class ClientHandler implements Runnable {
                             mServerHandle.getGame().addKpuProposal(kpuId);
                             ServerSender.sendResponseOK(os);
                             break;
-
+                            
                         case Identification.METHOD_VOTERESULT_WEREWOLF_KILLED:
                             System.out.println("GAME INFO: Civilians are about to capture a player...");
+                            // Ini emang sengaja gaada break ya
                             
                         case Identification.METHOD_VOTERESULT_CIVILIAN_KILLED:
                             System.out.println("GAME INFO: A civilian is about to get captured...");
+                            // Ini sengaja emang gaada break ya
                             
                         case Identification.METHOD_VOTERESULT:
                             if (playerId == mServerHandle.getGame().getSelectedKpu()) {
@@ -166,21 +168,25 @@ public class ClientHandler implements Runnable {
                                     case 1:
                                         int killedId = requestObj.getInt(Identification.PRM_PLAYERKILLED);
                                         mServerHandle.getGame().killPlayer(killedId);
+                                        System.out.println("VOTE RESULT: Player " + killedId + " has been brought to its doom...");
                                         break;
                                     case -1:
                                         mServerHandle.getGame().tieVote();
+                                        System.out.println("VOTE RESULT: Tie! Nobody is gonna be killed this time.");
                                         break;
                                     default:
                                         ServerSender.sendResponseError(os);
                                         break;
                                 }
                             } else {
+                                System.out.println("ERROR: Sending Vote Error Result...");
                                 ServerSender.sendResponseError(os);
                             }
                             break;
 
                         default:
                             // No valid actions: send error response: invalid request
+                            System.out.println("ERROR: Invalid Request Detected. Sending Error Result...");
                             ServerSender.sendResponseError(os);
                     }
                 } catch (JSONException ex) {
@@ -203,6 +209,7 @@ public class ClientHandler implements Runnable {
             }
 
         } catch (IOException ex) {
+            running = false;
             System.err.println(ex);
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
