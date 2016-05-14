@@ -71,17 +71,17 @@ public class PlayerAvatarMaker {
                     "_" + player.getRole() + getPlayerImageId(player) + ".png");
             return "/werewolvesinwonderland/client/assets/ic_player" + size +
                     "_" + player.getRole() + getPlayerImageId(player) + ".png";
-        }
-        else {
-            System.out.println("/werewolvesinwonderland/client/assets/ic_player" + size +
-                    "_" + player.getRole() + getPlayerImageId(player) + "_died.png");
-        
-            return "/werewolvesinwonderland/client/assets/ic_player" + size +
-                    "_" + player.getRole() + getPlayerImageId(player) + "_died.png";
+            } else {
+                System.out.println("/werewolvesinwonderland/client/assets/ic_player" + size +
+                        "_" + player.getRole() + getPlayerImageId(player) + "_died.png");
+
+                return "/werewolvesinwonderland/client/assets/ic_player" + size +
+                        "_" + player.getRole() + getPlayerImageId(player) + "_died.png";
             }
         } else {
+            System.out.println("Role null");
             return "/werewolvesinwonderland/client/assets/ic_player" + size +
-                    "_" + "civilian" + getPlayerImageId(player) + "_died.png"; // dummy
+                    "_" + "civilian" + getPlayerImageId(player) + ".png"; // dummy
         }
         
     }

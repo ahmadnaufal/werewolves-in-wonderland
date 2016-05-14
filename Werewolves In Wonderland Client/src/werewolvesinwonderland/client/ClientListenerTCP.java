@@ -10,6 +10,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -18,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import werewolvesinwonderland.protocol.Identification;
+import werewolvesinwonderland.protocol.model.Player;
 
 /**
  *
@@ -130,8 +132,26 @@ public class ClientListenerTCP extends Observable implements Runnable {
                     switch (ClientController.lastSentMethod) {
                         case Identification.METHOD_CLIENTADDR:
                             //TODO: get player objects from json array
-
-                            //handle.updatePlayers(players);
+                            JSONArray clientArray = messageObj.getJSONArray(Identification.PRM_CLIENTS);
+                            ArrayList<Player> playerList = new ArrayList<>();
+                            for(int i=0; i<clientArray.length(); i++) {
+                                JSONObject clientObject = clientArray.getJSONObject(i);
+                                if (clientObject.getInt(Identification.PRM_PLAYERID) !=
+                                        clientHandle.getGameHandler().getGame().getCurrentPlayer().getPlayerId()) {
+                                    String role = null;
+                                    if (clientObject.has(Identification.PRM_ROLE))
+                                        role = clientObject.getString(Identification.PRM_ROLE);
+                                    playerList.add(new Player(
+                                            clientObject.getInt(Identification.PRM_PLAYERID),
+                                            clientObject.getBoolean(Identification.PRM_ISALIVE),
+                                            clientObject.getString(Identification.PRM_ADDR),
+                                            clientObject.getInt(Identification.PRM_PORT),
+                                            clientObject.getString(Identification.PRM_USERNAME),
+                                            role));
+                                }
+                            }
+                            clientHandle.getGameHandler().updatePlayers(playerList);
+                            clientHandle.getGameHandler().getGameFrame().updateBoard();
                             break;
                         case Identification.METHOD_JOIN:
                             int playerId = messageObj.getInt(Identification.PRM_PLAYERID);

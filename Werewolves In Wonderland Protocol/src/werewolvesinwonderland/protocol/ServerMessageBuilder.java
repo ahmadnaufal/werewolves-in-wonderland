@@ -116,7 +116,7 @@ public class ServerMessageBuilder {
             if (!client.isAlive())
                 clientObject.put(Identification.PRM_ROLE, client.getRole());
 
-            clientListArray.put(client.toString());
+            clientListArray.put(clientObject);
         }
 
         return new JSONObject()

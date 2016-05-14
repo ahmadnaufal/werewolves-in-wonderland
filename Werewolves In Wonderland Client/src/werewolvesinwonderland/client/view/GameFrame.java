@@ -11,6 +11,7 @@ import java.awt.Dialog;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -130,6 +131,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
                 "", "", "", ""
             }
         ));
+        tblPlayerList.setColumnSelectionAllowed(true);
         tblPlayerList.setFocusable(false);
         tblPlayerList.setOpaque(false);
         tblPlayerList.setRowSelectionAllowed(false);
@@ -369,6 +371,39 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
                 tblPlayerList.getColumnModel().getColumn(j).setCellRenderer(new PlayerPanel(this, players.get(x)));
             }
         }
+    }
+    
+    public void updateBoard() {
+        int size = gameController.getGame().getListPlayers().size();
+        tblPlayerList.setModel(new DefaultTableModel(size/4 + 1, 4));
+        int columnCount = 0;
+        int counter = 0;
+        for (int i=0; i<size/4 + 1; i++) {
+            tblPlayerList.setRowHeight(i, 232);
+        }
+        for (Map.Entry<Integer, Player> entry : gameController.getGame().getListPlayers().entrySet()) {
+            PlayerAvatarMaker.addPlayer(entry.getValue()); // harusnya ga di sini
+            if (!entry.getValue().isAlive())
+                PlayerAvatarMaker.setPlayerHasDied(entry.getValue());
+            tblPlayerList.getColumnModel().getColumn(columnCount).setCellRenderer(new PlayerPanel(this, entry.getValue()));
+            counter++;
+            if (counter >= 4) {
+                counter = 0;
+                columnCount++;
+            }
+        }
+//        int size = gameController.getGame().getListPlayers().size();
+//        tblPlayerList.setModel(new DefaultTableModel(size/4 + 1, 4));
+//        for(int i=0; i<3; i++) {
+//            tblPlayerList.setRowHeight(i, 232);
+//            for (int j=0; j<4; j++) {
+//                int x = (i * 4 + j) % 10;
+//                PlayerAvatarMaker.addPlayer(gameController.getGame().getPlayer(x));
+//                if (!players.get(x).isAlive())
+//                    PlayerAvatarMaker.setPlayerHasDied(players.get(x));
+//                tblPlayerList.getColumnModel().getColumn(j).setCellRenderer(new PlayerPanel(this, players.get(x)));
+//            }
+//        }
     }
     
     private void changeScreen(String screenName) {

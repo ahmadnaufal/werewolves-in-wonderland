@@ -132,6 +132,7 @@
                         <Column editable="true" title="" type="java.lang.Object"/>
                       </Table>
                     </Property>
+                    <Property name="columnSelectionAllowed" type="boolean" value="true"/>
                     <Property name="focusable" type="boolean" value="false"/>
                     <Property name="opaque" type="boolean" value="false"/>
                     <Property name="rowSelectionAllowed" type="boolean" value="false"/>

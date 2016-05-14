@@ -17,8 +17,7 @@ import werewolvesinwonderland.protocol.model.Player;
  * @author ASUS X202E
  */
 public class Game {
-    
-    private static final int PLAYER_MIN = 3;
+    private static final int PLAYER_MIN = 2;
 
     private HashMap<Integer, Player> players = new HashMap<>();
     private ArrayList<Player> aliveWerewolves = new ArrayList<>();

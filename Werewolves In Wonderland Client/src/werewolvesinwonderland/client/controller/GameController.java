@@ -22,7 +22,7 @@ public class GameController {
     private ClientController clientHandle;
     private String username;
     private int selectedKpu;
-    private ArrayList<String> werewolfFriends;
+    private ArrayList<String> werewolfFriends = new ArrayList<>();
 
     private AcceptorController acceptorController;
     private ProposerController proposerController;
@@ -49,6 +49,8 @@ public class GameController {
     public void updatePlayers(ArrayList<Player> players) {
         HashMap<Integer, Player> playersMap = new HashMap<>();
         for (Player player : players) {
+            if (werewolfFriends.contains(player.getUsername()))
+                player.setRole(Identification.ROLE_WEREWOLF);
             playersMap.put(player.getPlayerId(), player);
         }
         mGame.setListPlayers(playersMap);
@@ -57,12 +59,14 @@ public class GameController {
     public void startGame(String time, String role) {
         mGame.setTime(time);
         mGame.getCurrentPlayer().setRole(role);
+        frame.setPlayerInfo(mGame.getCurrentPlayer());
     }
 
     public void startGame(String time, String role, ArrayList<String> werewolfFriends) {
         mGame.setTime(time);
         mGame.getCurrentPlayer().setRole(role);
         this.werewolfFriends = werewolfFriends;
+        frame.setPlayerInfo(mGame.getCurrentPlayer());
     }
 
     public void createPlayer(int id) {
