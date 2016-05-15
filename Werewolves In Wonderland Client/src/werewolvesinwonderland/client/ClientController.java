@@ -5,7 +5,6 @@
  */
 package werewolvesinwonderland.client;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.DatagramSocket;
@@ -36,6 +35,7 @@ public class ClientController {
     private GameController gameHandler;
 
     public static String lastSentMethod = "";
+    public static String lastSentUdpMethod = "";
 
     /**
      * Constructor for Client Controller

@@ -48,7 +48,7 @@ public class ProposerController {
 
     public void prepareProposal() {
         for (Entry<Integer, Player> e : acceptorList.entrySet()) {
-            System.out.println("PROPOSAL: To " + e.getValue().getPlayerId() + ", Value: (" + proposalNumber + ", " + playerId + ")");
+            System.out.println("CONSENSUS PROPOSAL: To " + e.getValue().getPlayerId() + ", Value: (" + proposalNumber + ", " + playerId + ")");
             ClientSender.sendPaxosPrepareProposal(proposalNumber, playerId,
                     gameHandle.getClientHandle().getUdpSocket(),
                     e.getValue().getUdpAddress(), e.getValue().getUdpPort());
@@ -57,91 +57,98 @@ public class ProposerController {
     }
 
     public void receiveOK(int previousAccepted) {
-      quorum++;
-      if (previousAccepted!=-1 && previousAccepted > kpuId) kpuId = previousAccepted;
-      if (quorum >= acceptorList.size()/2) {
-        requestAcceptProposal();
-      }
+        quorum++;
+        if (previousAccepted != -1 && previousAccepted > kpuId) {
+            kpuId = previousAccepted;
+        }
+        if (quorum >= acceptorList.size() / 2) {
+            requestAcceptProposal();
+        }
     }
 
     public void requestAcceptProposal() {
-      for (Entry<Integer, Player> e : acceptorList.entrySet()) {
-          ClientSender.sendPaxosAcceptProposal(proposalNumber, playerId, kpuId,
-                  gameHandle.getClientHandle().getUdpSocket(),
-                  e.getValue().getUdpAddress(), e.getValue().getUdpPort());
-      }
+        for (Entry<Integer, Player> e : acceptorList.entrySet()) {
+            ClientSender.sendPaxosAcceptProposal(proposalNumber, playerId, kpuId,
+                    gameHandle.getClientHandle().getUdpSocket(),
+                    e.getValue().getUdpAddress(), e.getValue().getUdpPort());
+        }
     }
 
     public void addKillVote(int id) {
-      if (killVotes.containsKey(id)) {
-          killVotes.put(id, killVotes.get(id) + 1);
-      } else {
-          killVotes.put(id, 1);
-      }
-      voteCount++;
-      if (gameHandle.getGame().getTime().equals(Identification.TIME_DAY) && voteCount == alivePlayersCount
-        || gameHandle.getGame().getTime().equals(Identification.TIME_NIGHT) && voteCount == aliveWerewolvesCount) {
-          voteCount = 0;
-          killVotes.clear();
-          countKillVotes();
-      }
+        if (killVotes.containsKey(id)) {
+            killVotes.put(id, killVotes.get(id) + 1);
+        } else {
+            killVotes.put(id, 1);
+        }
+        voteCount++;
+        if (gameHandle.getGame().getTime().equals(Identification.TIME_DAY) && voteCount == alivePlayersCount
+                || gameHandle.getGame().getTime().equals(Identification.TIME_NIGHT) && voteCount == aliveWerewolvesCount) {
+            voteCount = 0;
+            killVotes.clear();
+            countKillVotes();
+        }
     }
 
     private void countKillVotes() {
-      Integer max = Collections.max(killVotes.values());
-      Integer maxId = null;
-      boolean tie = true;
+        Integer max = Collections.max(killVotes.values());
+        Integer maxId = null;
+        boolean tie = true;
 
-      for (Entry<Integer, Integer> entry : killVotes.entrySet()) {
-          Integer value = entry.getValue();
+        for (Entry<Integer, Integer> entry : killVotes.entrySet()) {
+            Integer value = entry.getValue();
 
-          if (max == value) {
-            if (maxId == null)
-              maxId = entry.getKey();
-            else {
-              tie = true;
-              break;
+            if (max == value) {
+                if (maxId == null) {
+                    maxId = entry.getKey();
+                } else {
+                    tie = true;
+                    break;
+                }
             }
-          }
-      }
-      if (!tie) sendInfoKilled(maxId);
-      else sendInfoKilled(-1);
+        }
+        if (!tie) {
+            sendInfoKilled(maxId);
+        } else {
+            sendInfoKilled(-1);
+        }
     }
 
     public void startVote() {
-      if (gameHandle.getGame().getTime().equals(Identification.TIME_DAY))
-        alivePlayersCount = gameHandle.getGame().getAlivePlayers().size();
-      else
-        countAliveWerewolves();
+        if (gameHandle.getGame().getTime().equals(Identification.TIME_DAY)) {
+            alivePlayersCount = gameHandle.getGame().getAlivePlayers().size();
+        } else {
+            countAliveWerewolves();
+        }
     }
 
     private void countAliveWerewolves() {
-      aliveWerewolvesCount = (acceptorList.size()+2)/3;
-      for (Entry<Integer, Player> e : gameHandle.getGame().getListPlayers().entrySet()) {
-          if (e.getValue().getRole().equals(Identification.ROLE_WEREWOLF)) aliveWerewolvesCount--;
-      }
+        aliveWerewolvesCount = (acceptorList.size() + 2) / 3;
+        for (Entry<Integer, Player> e : gameHandle.getGame().getListPlayers().entrySet()) {
+            if (e.getValue().getRole().equals(Identification.ROLE_WEREWOLF)) {
+                aliveWerewolvesCount--;
+            }
+        }
     }
 
     private void sendInfoKilled(int playerKilled) {
-      ArrayList<ArrayList<Integer>> killVotesArrayList = new ArrayList<ArrayList<Integer>>();
-      for (Entry<Integer, Integer> entry : killVotes.entrySet()) {
-        ArrayList<Integer> temp = new ArrayList<Integer>();
-        temp.add(entry.getKey());
-        temp.add(entry.getValue());
-        killVotesArrayList.add(temp);
-      }
-      if (gameHandle.getGame().getTime().equals(Identification.TIME_DAY)) {
-        if (playerKilled==-1)
-          ClientSender.sendInfoWerewolfNotKilled(killVotesArrayList,gameHandle.getClientHandle().getOutputStream());
-        else
-          ClientSender.sendInfoWerewolfKilled(playerKilled,killVotesArrayList,gameHandle.getClientHandle().getOutputStream());
-      }
-      else {
-        if (playerKilled==-1)
-          ClientSender.sendInfoCivilianNotKilled(killVotesArrayList,gameHandle.getClientHandle().getOutputStream());
-        else
-          ClientSender.sendInfoCivilianKilled(playerKilled,killVotesArrayList,gameHandle.getClientHandle().getOutputStream());
-      }
+        ArrayList<ArrayList<Integer>> killVotesArrayList = new ArrayList<ArrayList<Integer>>();
+        for (Entry<Integer, Integer> entry : killVotes.entrySet()) {
+            ArrayList<Integer> temp = new ArrayList<Integer>();
+            temp.add(entry.getKey());
+            temp.add(entry.getValue());
+            killVotesArrayList.add(temp);
+        }
+        if (gameHandle.getGame().getTime().equals(Identification.TIME_DAY)) {
+            if (playerKilled == -1) {
+                ClientSender.sendInfoWerewolfNotKilled(killVotesArrayList, gameHandle.getClientHandle().getOutputStream());
+            } else {
+                ClientSender.sendInfoWerewolfKilled(playerKilled, killVotesArrayList, gameHandle.getClientHandle().getOutputStream());
+            }
+        } else if (playerKilled == -1) {
+            ClientSender.sendInfoCivilianNotKilled(killVotesArrayList, gameHandle.getClientHandle().getOutputStream());
+        } else {
+            ClientSender.sendInfoCivilianKilled(playerKilled, killVotesArrayList, gameHandle.getClientHandle().getOutputStream());
+        }
     }
 
 

@@ -84,6 +84,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
                     } else {
                         clientHandle.getGameHandler().startGame(time, role);
                     }
+                    clientHandle.getGameHandler().voteKpu = true;
                     ClientSender.requestListClients(os);
                     break;
                 case Identification.METHOD_VOTENOW:
@@ -95,6 +96,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
                     time = messageObj.getString(Identification.PRM_TIME);
                     int days = messageObj.getInt(Identification.PRM_DAYS);
                     clientHandle.getGameHandler().changePhase(time,days);
+                    clientHandle.getGameHandler().voteKpu = true;
                     ClientSender.requestListClients(os);
                     break;
                 case Identification.METHOD_KPUSELECTED:
@@ -135,22 +137,23 @@ public class ClientListenerTCP extends Observable implements Runnable {
                             ArrayList<Player> playerList = new ArrayList<>();
                             for(int i=0; i<clientArray.length(); i++) {
                                 JSONObject clientObject = clientArray.getJSONObject(i);
-                                if (clientObject.getInt(Identification.PRM_PLAYERID) !=
-                                        clientHandle.getGameHandler().getGame().getCurrentPlayer().getPlayerId()) {
-                                    String role = null;
-                                    if (clientObject.has(Identification.PRM_ROLE))
-                                        role = clientObject.getString(Identification.PRM_ROLE);
-                                    playerList.add(new Player(
-                                            clientObject.getInt(Identification.PRM_PLAYERID),
-                                            clientObject.getBoolean(Identification.PRM_ISALIVE),
-                                            clientObject.getString(Identification.PRM_ADDR),
-                                            clientObject.getInt(Identification.PRM_PORT),
-                                            clientObject.getString(Identification.PRM_USERNAME),
-                                            role));
-                                }
+                                String role = null;
+                                if (clientObject.has(Identification.PRM_ROLE))
+                                    role = clientObject.getString(Identification.PRM_ROLE);
+                                playerList.add(new Player(
+                                        clientObject.getInt(Identification.PRM_PLAYERID),
+                                        clientObject.getBoolean(Identification.PRM_ISALIVE),
+                                        clientObject.getString(Identification.PRM_ADDR),
+                                        clientObject.getInt(Identification.PRM_PORT),
+                                        clientObject.getString(Identification.PRM_USERNAME),
+                                        role));
                             }
                             clientHandle.getGameHandler().updatePlayers(playerList);
                             clientHandle.getGameHandler().getGameFrame().updateBoard();
+                            if (clientHandle.getGameHandler().voteKpu) {
+                                clientHandle.getGameHandler().startPaxos();
+                                clientHandle.getGameHandler().voteKpu = false;
+                            }
                             break;
                         case Identification.METHOD_JOIN:
                             int playerId = messageObj.getInt(Identification.PRM_PLAYERID);

@@ -122,11 +122,12 @@ public class ClientListenerUDP extends Observable implements Runnable {
                         description = messageObj.getString(Identification.PRM_DESCRIPTION);
                         clientHandle.getGameHandler().showInformationDialog(description);
                     }
-                    switch (ClientController.lastSentMethod) {
+                    String lastMethod = ClientController.lastSentUdpMethod;
+                    switch (lastMethod) {
                         case Identification.METHOD_PREPAREPROPOSAL:
-                            //TODO: get player objects from json array
-
-                            //handle.updatePlayers(players);
+                            System.out.println("CONSENSUS: Receving a proposal accept promise!");
+                            if (messageObj.has(Identification.PRM_PREVACC))
+                                System.out.println("CONSENSUS: Receiving promise with a previously accepted number: "+ messageObj.getInt(Identification.PRM_PREVACC));
                             break;
                         case Identification.METHOD_ACCEPTPROPOSAL:
                             //TODO: get player objects from json array
@@ -200,7 +201,7 @@ public class ClientListenerUDP extends Observable implements Runnable {
             System.err.println(ex);
             Logger.getLogger(ClientListenerTCP.class.getName()).log(Level.SEVERE, null, ex);
         }
-        clientHandle.setResponseHasArrived();
+        ClientController.setResponseHasArrived();
     }
 
     @Override

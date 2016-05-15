@@ -97,6 +97,7 @@ public class Game {
     private void startGame() {
         assignRoles();
         started = true;
+        System.out.println("GAME INFO: The game has been started!");
         mServerHandle.sendStartGame();
     }
 

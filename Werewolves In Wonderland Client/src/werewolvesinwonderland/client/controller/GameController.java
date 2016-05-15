@@ -23,6 +23,8 @@ public class GameController {
     private String username;
     private int selectedKpu;
     private ArrayList<String> werewolfFriends = new ArrayList<>();
+    
+    public boolean voteKpu = false;
 
     private AcceptorController acceptorController;
     private ProposerController proposerController;
@@ -60,8 +62,6 @@ public class GameController {
         mGame.setTime(time);
         mGame.getCurrentPlayer().setRole(role);
         frame.setPlayerInfo(mGame.getCurrentPlayer());
-        
-        // startPaxos();
     }
 
     public void startGame(String time, String role, ArrayList<String> werewolfFriends) {
@@ -69,8 +69,6 @@ public class GameController {
         mGame.getCurrentPlayer().setRole(role);
         this.werewolfFriends = werewolfFriends;
         frame.setPlayerInfo(mGame.getCurrentPlayer());
-
-        // startPaxos();
     }
 
     public void createPlayer(int id) {
@@ -122,8 +120,6 @@ public class GameController {
         mGame.setTime(time);
         mGame.setDays(days);
         //update view
-
-        startPaxos();
     }
 
     public void setKpu(int kpuId) {
@@ -148,22 +144,23 @@ public class GameController {
         frame.showErrorMessage(message);
     }
 
-    private void startPaxos() {
+    public void startPaxos() {
+        System.out.println("CONSENSUS: Paxos is started.");
         Set<Integer> playerIds = new HashSet<>(mGame.getListPlayers().keySet());
-        System.out.println(playerIds.toString());
         int proposer1 = Collections.max(playerIds);
         playerIds.remove(proposer1);
-        int proposer2 = Collections.max(playerIds);
+        //int proposer2 = Collections.max(playerIds);
 
         if (mGame.getCurrentPlayer().getPlayerId() == proposer1
-          || mGame.getCurrentPlayer().getPlayerId() == proposer2) {
-            System.out.println("I am a proposer!");
+          /*|| mGame.getCurrentPlayer().getPlayerId() == proposer2*/) {
+            System.out.println("CONSENSUS: I am a proposer!");
             Map<Integer, Player> acceptors = new HashMap<>(mGame.getListPlayers());
             acceptors.remove(proposer1);
-            acceptors.remove(proposer2);
+            //acceptors.remove(proposer2);
             getProposerController().startRound(acceptors);
         } else {
             // This is an acceptor
+            System.out.println("CONSENSUS: I am an acceptor!");
         }
     }
 
