@@ -17,7 +17,7 @@ import werewolvesinwonderland.protocol.model.Player;
  * @author ASUS X202E
  */
 public class Game {
-    private static final int PLAYER_MIN = 2;
+    private static final int PLAYER_MIN = 3;
 
     private HashMap<Integer, Player> players = new HashMap<>();
     private ArrayList<Player> aliveWerewolves = new ArrayList<>();
@@ -145,7 +145,7 @@ public class Game {
         } else {
             kpuProposals.put(id, 1);
         }
-        if (kpuProposals.get(id)>=players.size()-2) {
+        if (kpuProposals.get(id)>(players.size()-2)/2) {
             selectedKpu = id;
             mServerHandle.sendKpuSelected(id);
             mServerHandle.sendVoteDay();

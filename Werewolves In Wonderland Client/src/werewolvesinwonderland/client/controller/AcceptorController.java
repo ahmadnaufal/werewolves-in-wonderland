@@ -10,18 +10,18 @@ package werewolvesinwonderland.client.controller;
  * @author Ahmad Naufal Farhan
  */
 public class AcceptorController {
-    
+
     private GameController gameHandle;
     private int promisedProposalNumber = 0;
     private int promisedProposerId = -1;
     private int kpuId = -1;
-    
+
     public AcceptorController(GameController gameController) {
         gameHandle = gameController;
     }
-    
+
     /**
-     * 
+     *
      * @param proposalNumber
      * @param proposerId
      * @return 1 if the acceptor hasn't seen any proposal before
@@ -33,7 +33,7 @@ public class AcceptorController {
         if (proposalNumber > promisedProposalNumber ||
                 (proposalNumber == promisedProposalNumber &&
                 proposerId > promisedProposerId)) {
-            
+
             int previousAccepted = promisedProposalNumber;
             promisedProposalNumber = proposalNumber;
             promisedProposerId = proposerId;
@@ -41,17 +41,17 @@ public class AcceptorController {
                 return 1;
             else
                 return previousAccepted + 1;
-            
+
         } else if (proposalNumber < promisedProposalNumber ||
                 (proposalNumber == promisedProposalNumber &&
                 proposerId < promisedProposerId)) {
-            
+
             return -1;
         }
         // else: equal
         return 0;
     }
-    
+
     public int acceptProposal(int proposalNumber, int proposerId, int kpuId) {
         if (this.kpuId == -1) {
             if (proposalNumber >= promisedProposalNumber && proposerId >= promisedProposerId) {
@@ -64,10 +64,10 @@ public class AcceptorController {
                 return -1;
             }
         } else {
-            
+          return -1;
         }
-        
+        System.out.println("ACCEPT PROPOSAL: Proposal ID: (" + proposalNumber + ", " + proposerId + "), Kpu ID: "+kpuId);
         return 1;
     }
-    
+
 }

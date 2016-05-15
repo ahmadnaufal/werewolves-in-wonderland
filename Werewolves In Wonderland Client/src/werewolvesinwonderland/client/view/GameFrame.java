@@ -48,7 +48,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         spTable.getViewport().setOpaque(false);
         spTable.setColumnHeaderView(null);
         // initPlayerListBoard(); //dummy
-        
+
         ImageIcon img = new ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/icon_werewolf.png"));
         this.setIconImage(img.getImage());
         this.setTitle("Werewolf in Wonderland");
@@ -288,7 +288,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     private ClientController clientController;
     private JFrame newGameDialog;
     private JDialog progressDialog = createProgressDialog();
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel bgGame;
     private javax.swing.JLabel bgHome;
@@ -322,7 +322,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
                     "Server Address: " + serverAddress + ", " +
                     "Server Port: " + serverPort + ", " +
                     "Client Port: " + clientPort);
-        
+
         JDialog dlgProgress = createProgressDialog();
 
         SwingWorker<Void, Void> sw = new SwingWorker<Void, Void>() {
@@ -349,7 +349,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         sw.execute(); // this will start the processing on a separate thread
         dlgProgress.setVisible(true); //this will block user input as long as the processing task is working
     }
-    
+
     private void initPlayerListBoard () {
         // TEST
         ArrayList<Player> players = new ArrayList<>();
@@ -367,7 +367,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         players.add(new Player(9, true, "123", 8080, "Sakamoto", Identification.ROLE_CIVILIAN));
         players.add(new Player(10, true, "123", 8080, "Moci", Identification.ROLE_CIVILIAN));
         players.add(new Player(11, true, "123", 8080, "Tanpopo", Identification.ROLE_CIVILIAN));
-        
+
         tblPlayerList.setModel(new DefaultTableModel(2, 4));
         for(int i=0; i<3; i++) {
             tblPlayerList.setRowHeight(i, 232);
@@ -380,7 +380,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
             }
         }
     }
-    
+
     public void updateBoard() {
         int size = gameController.getGame().getListPlayers().size();
         tblPlayerList.setModel(new DefaultTableModel(size/4 + 1, 4){
@@ -397,21 +397,17 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
             tblPlayerList.getColumnModel().getColumn(i).setCellRenderer(new PlayerPanel());
         }
         for (Map.Entry<Integer, Player> entry : gameController.getGame().getListPlayers().entrySet()) {
-            PlayerAvatarMaker.addPlayer(entry.getValue()); // harusnya ga di sini
-            if (!entry.getValue().isAlive())
-                PlayerAvatarMaker.setPlayerHasDied(entry.getValue());
-            //tblPlayerList.getColumnModel().getColumn(columnCount).setCellRenderer(new PlayerPanel(this, entry.getValue()));
-            tblPlayerList.setValueAt(entry.getValue(),rowCount,columnCount);
-            columnCount++;
-            if (columnCount == 4) {
-                columnCount = 0;
-                rowCount++;
+            if (entry.getValue().getPlayerId()!=gameController.getGame().getCurrentPlayer().getPlayerId()) {
+              PlayerAvatarMaker.addPlayer(entry.getValue()); // harusnya ga di sini
+              if (!entry.getValue().isAlive())
+                  PlayerAvatarMaker.setPlayerHasDied(entry.getValue());
+              tblPlayerList.setValueAt(entry.getValue(),rowCount,columnCount);
+              columnCount++;
+              if (columnCount == 4) {
+                  columnCount = 0;
+                  rowCount++;
+              }
             }
-            /*counter++;
-            if (counter >= 4) {
-                counter = 0;
-                columnCount++;
-            }*/
         }
         gamePanel.revalidate();
 //        int size = gameController.getGame().getListPlayers().size();
@@ -427,11 +423,11 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
 //            }
 //        }
     }
-    
+
     private void changeScreen(String screenName) {
         ((java.awt.CardLayout)mainPanel.getLayout()).show(mainPanel,screenName);
     }
-    
+
     private JDialog createProgressDialog() {
         JDialog dlgProgress = new JDialog(this, "Please wait...", true);//true means that the dialog created is modal
         JLabel lblStatus = new JLabel("Working..."); // this is just a label in which you can indicate the state of the processing
@@ -447,25 +443,25 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         dlgProgress.setSize(300, 90);
         return dlgProgress;
     }
-    
+
     public void joinGameSuccess(Player currentPlayer) {
         changeScreen("gamePanel");
         setPlayerInfo(currentPlayer);
     }
-    
+
     public void joinGameFailed(String message) {
         newGameDialog.setVisible(true);
         showErrorMessage(message);
     }
-    
+
     public void showInformationMessage(String message) {
         showMessageDialog(null, message, "Information", JOptionPane.INFORMATION_MESSAGE);
     }
-    
+
     public void showErrorMessage(String message) {
         showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
-    
+
     public void setBackground(String time) {
         if (time.equals(Identification.TIME_DAY)) {
             bgGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/bg_game_day.png")));
@@ -473,7 +469,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
             bgGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/bg_game_night.png")));
         }
     }
-    
+
     public void setPlayerInfo(Player currentPlayer) {
         icPlayer.setIcon(new javax.swing.ImageIcon(getClass().getResource(
                 PlayerAvatarMaker.createStringImageResource(currentPlayer, "110"))));
@@ -487,15 +483,15 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         if (currentPlayer.isAlive()) lbStatus.setText("Alive");
             else lbStatus.setText("Died");
     }
-    
+
     public void leaveGameSuccess() {
         changeScreen("homePanel");
     }
-    
+
     public void showProgressDialog() {
         progressDialog.setVisible(true);
     }
-    
+
     public void dismissProgressDialog() {
         if (progressDialog != null)
             progressDialog.dispose();

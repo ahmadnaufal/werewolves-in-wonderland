@@ -149,18 +149,18 @@ public class ClientHandler implements Runnable {
                         case Identification.METHOD_ACCEPTPROPOSAL:
                             int kpuId = requestObj.getInt(Identification.PRM_KPUID);
                             System.out.println("REQUEST: Player with ID: " + playerId + " accepting proposal from user with ID: " + kpuId);
-                            mServerHandle.getGame().addKpuProposal(kpuId);
                             ServerSender.sendResponseOK(os);
+                            mServerHandle.getGame().addKpuProposal(kpuId);
                             break;
-                            
+
                         case Identification.METHOD_VOTERESULT_WEREWOLF_KILLED:
                             System.out.println("GAME INFO: Civilians are about to capture a player...");
                             // Ini emang sengaja gaada break ya
-                            
+
                         case Identification.METHOD_VOTERESULT_CIVILIAN_KILLED:
                             System.out.println("GAME INFO: A civilian is about to get captured...");
                             // Ini sengaja emang gaada break ya
-                            
+
                         case Identification.METHOD_VOTERESULT:
                             if (playerId == mServerHandle.getGame().getSelectedKpu()) {
                                 int status = requestObj.getInt(Identification.PRM_STATUS);

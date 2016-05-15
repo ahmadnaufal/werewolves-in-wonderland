@@ -149,14 +149,14 @@ public class GameController {
         Set<Integer> playerIds = new HashSet<>(mGame.getListPlayers().keySet());
         int proposer1 = Collections.max(playerIds);
         playerIds.remove(proposer1);
-        //int proposer2 = Collections.max(playerIds);
+        int proposer2 = Collections.max(playerIds);
 
         if (mGame.getCurrentPlayer().getPlayerId() == proposer1
-          /*|| mGame.getCurrentPlayer().getPlayerId() == proposer2*/) {
+          || mGame.getCurrentPlayer().getPlayerId() == proposer2) {
             System.out.println("CONSENSUS: I am a proposer!");
             Map<Integer, Player> acceptors = new HashMap<>(mGame.getListPlayers());
             acceptors.remove(proposer1);
-            //acceptors.remove(proposer2);
+            acceptors.remove(proposer2);
             getProposerController().startRound(acceptors);
         } else {
             // This is an acceptor

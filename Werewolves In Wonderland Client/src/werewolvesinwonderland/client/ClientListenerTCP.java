@@ -65,7 +65,9 @@ public class ClientListenerTCP extends Observable implements Runnable {
     private void handleRequest(JSONObject messageObj) {
         try {
             String messageMethod = messageObj.getString(Identification.PRM_METHOD);
-            String messageDescription = messageObj.getString(Identification.PRM_DESCRIPTION);
+            String messageDescription = "";
+            if (messageObj.has(Identification.PRM_DESCRIPTION))
+                messageDescription = messageObj.getString(Identification.PRM_DESCRIPTION);
             //handler.showDialog(description);
             switch (messageMethod) {
                 case Identification.METHOD_STARTGAME:

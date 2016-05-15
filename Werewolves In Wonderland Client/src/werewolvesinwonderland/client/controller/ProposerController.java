@@ -22,7 +22,7 @@ public class ProposerController {
 
     private GameController gameHandle;
     private int playerId;
-    private int proposalNumber = 1;
+    private int proposalNumber = 0;
     private int quorum = 0;
     private int kpuId;
     private Map<Integer, Player> acceptorList;
@@ -30,11 +30,12 @@ public class ProposerController {
     private int voteCount = 0;
     private int aliveWerewolvesCount;
     private int alivePlayersCount;
+    private boolean sentAcceptProposal = false;
 
     public ProposerController(GameController gameController) {
         gameHandle = gameController;
     }
-    
+
     public void setPlayerId() {
         playerId = gameHandle.getGame().getCurrentPlayer().getPlayerId();
     }
@@ -43,34 +44,39 @@ public class ProposerController {
       this.acceptorList = acceptorList;
       quorum = 0;
       kpuId = playerId;
+      sentAcceptProposal = false;
       prepareProposal();
     }
 
     public void prepareProposal() {
+      proposalNumber++;
         for (Entry<Integer, Player> e : acceptorList.entrySet()) {
             System.out.println("CONSENSUS PROPOSAL: To " + e.getValue().getPlayerId() + ", Value: (" + proposalNumber + ", " + playerId + ")");
             ClientSender.sendPaxosPrepareProposal(proposalNumber, playerId,
                     gameHandle.getClientHandle().getUdpSocket(),
                     e.getValue().getUdpAddress(), e.getValue().getUdpPort());
         }
-        proposalNumber++;
     }
 
     public void receiveOK(int previousAccepted) {
-        quorum++;
-        if (previousAccepted != -1 && previousAccepted > kpuId) {
-            kpuId = previousAccepted;
-        }
-        if (quorum >= acceptorList.size() / 2) {
-            requestAcceptProposal();
+        if (!sentAcceptProposal) {
+          quorum++;
+          if (previousAccepted != -1 && previousAccepted > kpuId) {
+              kpuId = previousAccepted;
+          }
+          if (quorum > acceptorList.size() / 2) {
+              requestAcceptProposal();
+          }
         }
     }
 
     public void requestAcceptProposal() {
+        sentAcceptProposal = true;
         for (Entry<Integer, Player> e : acceptorList.entrySet()) {
             ClientSender.sendPaxosAcceptProposal(proposalNumber, playerId, kpuId,
                     gameHandle.getClientHandle().getUdpSocket(),
                     e.getValue().getUdpAddress(), e.getValue().getUdpPort());
+            System.out.println("ACCEPT PROPOSAL: To " + e.getValue().getPlayerId() + ", Proposal ID: (" + proposalNumber + ", " + playerId + "), Kpu ID: "+kpuId);
         }
     }
 
