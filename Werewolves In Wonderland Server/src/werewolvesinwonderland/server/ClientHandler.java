@@ -149,7 +149,6 @@ public class ClientHandler implements Runnable {
                         case Identification.METHOD_ACCEPTPROPOSAL:
                             int kpuId = requestObj.getInt(Identification.PRM_KPUID);
                             System.out.println("REQUEST: Player with ID: " + playerId + " accepting proposal from user with ID: " + kpuId);
-                            ServerSender.sendResponseOK(os);
                             mServerHandle.getGame().addKpuProposal(kpuId);
                             break;
 

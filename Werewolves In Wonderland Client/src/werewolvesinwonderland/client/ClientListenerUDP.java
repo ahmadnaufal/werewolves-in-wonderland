@@ -133,7 +133,6 @@ public class ClientListenerUDP extends Observable implements Runnable {
                 case Identification.STATUS_OK:
                     if (messageObj.has(Identification.PRM_DESCRIPTION)) {
                         description = messageObj.getString(Identification.PRM_DESCRIPTION);
-                        clientHandle.getGameHandler().showInformationDialog(description);
                     }
                     String lastMethod = ClientController.lastSentUdpMethod;
                     switch (lastMethod) {

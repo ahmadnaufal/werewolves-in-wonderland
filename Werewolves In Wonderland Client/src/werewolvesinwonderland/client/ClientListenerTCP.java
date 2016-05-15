@@ -130,7 +130,6 @@ public class ClientListenerTCP extends Observable implements Runnable {
                 case Identification.STATUS_OK:
                     if (messageObj.has(Identification.PRM_DESCRIPTION)) {
                         description = messageObj.getString(Identification.PRM_DESCRIPTION);
-                        clientHandle.getGameHandler().showInformationDialog(description);
                     }
                     switch (ClientController.lastSentMethod) {
                         case Identification.METHOD_CLIENTADDR:

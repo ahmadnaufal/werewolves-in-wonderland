@@ -23,7 +23,7 @@ public class GameController {
     private String username;
     private int selectedKpu;
     private ArrayList<String> werewolfFriends = new ArrayList<>();
-    
+
     public boolean voteKpu = false;
 
     private AcceptorController acceptorController;
@@ -39,7 +39,7 @@ public class GameController {
     public ClientController getClientHandle() {
         return clientHandle;
     }
-    
+
     public GameFrame getGameFrame() {
         return frame;
     }
@@ -146,7 +146,10 @@ public class GameController {
 
     public void startPaxos() {
         System.out.println("CONSENSUS: Paxos is started.");
-        Set<Integer> playerIds = new HashSet<>(mGame.getListPlayers().keySet());
+        Set<Integer> playerIds = new HashSet<>();
+        for (Integer id : mGame.getListPlayers().keySet()) {
+          playerIds.add(id);
+        }
         int proposer1 = Collections.max(playerIds);
         playerIds.remove(proposer1);
         int proposer2 = Collections.max(playerIds);
@@ -154,9 +157,11 @@ public class GameController {
         if (mGame.getCurrentPlayer().getPlayerId() == proposer1
           || mGame.getCurrentPlayer().getPlayerId() == proposer2) {
             System.out.println("CONSENSUS: I am a proposer!");
-            Map<Integer, Player> acceptors = new HashMap<>(mGame.getListPlayers());
-            acceptors.remove(proposer1);
-            acceptors.remove(proposer2);
+            Map<Integer, Player> acceptors = new HashMap<>();
+            for (Entry<Integer,Player> entry : mGame.getListPlayers().entrySet()) {
+              if (entry.getValue().getPlayerId()!=proposer1 && entry.getValue().getPlayerId()!=proposer2)
+                acceptors.put(entry.getValue.getPlayerId(),entry.getValue());
+            }
             getProposerController().startRound(acceptors);
         } else {
             // This is an acceptor

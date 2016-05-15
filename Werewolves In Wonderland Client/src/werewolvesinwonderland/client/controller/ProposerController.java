@@ -81,6 +81,7 @@ public class ProposerController {
     }
 
     public void addKillVote(int id) {
+        System.out.println("Vote to kill:" + id);
         if (killVotes.containsKey(id)) {
             killVotes.put(id, killVotes.get(id) + 1);
         } else {
@@ -103,7 +104,7 @@ public class ProposerController {
         for (Entry<Integer, Integer> entry : killVotes.entrySet()) {
             Integer value = entry.getValue();
 
-            if (max == value) {
+            if (max.equals(value)) {
                 if (maxId == null) {
                     maxId = entry.getKey();
                 } else {
