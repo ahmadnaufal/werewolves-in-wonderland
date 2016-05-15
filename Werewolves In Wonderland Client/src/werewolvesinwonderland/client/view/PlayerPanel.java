@@ -23,11 +23,15 @@ public class PlayerPanel extends javax.swing.JPanel implements TableCellRenderer
     /**
      * Creates new form PlayerPanel
      */    
-    public PlayerPanel(GameFrame frame, Player player) {
+    /*public PlayerPanel(GameFrame frame, Player player) {
         this.frame = frame;
         this.player = player;
         initComponents();
         initPlayerStyle();
+    }*/
+    
+    public PlayerPanel() {
+        initComponents();
     }
 
     /**
@@ -97,9 +101,9 @@ public class PlayerPanel extends javax.swing.JPanel implements TableCellRenderer
 
     private int[] werewolfPic = {1,2};
     private int[] civilianPic = {1,2,3,4};
-    
+    /*
     private GameFrame frame;
-    private Player player;
+    private Player player;*/
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnKill;
@@ -108,37 +112,56 @@ public class PlayerPanel extends javax.swing.JPanel implements TableCellRenderer
     private javax.swing.JLabel lbUsername;
     // End of variables declaration//GEN-END:variables
 
-    private void initPlayerStyle() {
-        Random random = new Random();
-        int i;
+    private void initPlayerStyle(Player player) {
+        //Random random = new Random();
+        //int i;
+        
+        this.setVisible(true);
+        /*
+        icPlayer.setVisible(true);
+        lbUsername.setVisible(true);
+        lbRole.setVisible(true);
+        btnKill.setVisible(true);*/
         
         lbUsername.setText(player.getUsername());
         if (player.isAlive()) {
-            i = random.nextInt(civilianPic.length - 1 + 1) + 1;
+            //i = random.nextInt(civilianPic.length - 1 + 1) + 1;
             icPlayer.setIcon(new javax.swing.ImageIcon(getClass().getResource(
                 PlayerAvatarMaker.createStringImageResource(player, "132"))));
             lbRole.setText("?");
         } else {
+            /*
             if (player.getRole().equals(Identification.ROLE_WEREWOLF))
                 i = random.nextInt(werewolfPic.length - 1 + 1) + 1;
             else
-                i = random.nextInt(civilianPic.length - 1 + 1) + 1;
+                i = random.nextInt(civilianPic.length - 1 + 1) + 1;*/
             icPlayer.setIcon(new javax.swing.ImageIcon(getClass().getResource(
                 PlayerAvatarMaker.createStringImageResource(player, "132"))));
             lbRole.setText(player.getRole().substring(0, 1).toUpperCase()
                 + player.getRole().substring(1));
         }            
         
+        /*
         btnKill.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 System.out.println("MIAW");
                 frame.showErrorMessage("BERHASIL CLICK");
             }
-        });
+        }); */
     }
     
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        if (value!=null) {
+            initPlayerStyle((Player)value);
+        } else {
+            setOpaque(false);
+            setBorder(javax.swing.BorderFactory.createEmptyBorder(3,3,3,3));
+            icPlayer.setVisible(false);
+            lbUsername.setVisible(false);
+            lbRole.setVisible(false);
+            btnKill.setVisible(false);
+        }
         return this;
     }
     

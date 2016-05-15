@@ -7,11 +7,13 @@ package werewolvesinwonderland.client.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dialog;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -20,7 +22,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JProgressBar;
+import javax.swing.JTable;
 import javax.swing.SwingWorker;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import werewolvesinwonderland.client.ClientController;
@@ -270,9 +274,13 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         if (tblPlayerList.isEnabled()) {
             int row = tblPlayerList.getSelectedRow();
             int col = tblPlayerList.getSelectedColumn();
-            int playerPos = (row * 4) + col;
-            // TODO: Vote kill
-            System.out.println("row: " + row + " col:" + col);
+            //int playerPos = (row * 4) + col;
+            if (tblPlayerList.getValueAt(row,col)!=null) {
+                Player player = (Player)tblPlayerList.getValueAt(row,col);
+                gameController.voteVictim(player.getPlayerId());
+                System.out.println("row: " + row + " col:" + col);
+                System.out.println("Selected player:" + player.getUsername());
+            }
         }
     }//GEN-LAST:event_tblPlayerListMouseClicked
 
@@ -368,30 +376,44 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
                 PlayerAvatarMaker.addPlayer(players.get(x));
                 if (!players.get(x).isAlive())
                     PlayerAvatarMaker.setPlayerHasDied(players.get(x));
-                tblPlayerList.getColumnModel().getColumn(j).setCellRenderer(new PlayerPanel(this, players.get(x)));
+//                tblPlayerList.getColumnModel().getColumn(j).setCellRenderer(new PlayerPanel(this, players.get(x)));
             }
         }
     }
     
     public void updateBoard() {
         int size = gameController.getGame().getListPlayers().size();
-        tblPlayerList.setModel(new DefaultTableModel(size/4 + 1, 4));
+        tblPlayerList.setModel(new DefaultTableModel(size/4 + 1, 4){
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }
+        });
         int columnCount = 0;
-        int counter = 0;
+        int rowCount = 0;
         for (int i=0; i<size/4 + 1; i++) {
             tblPlayerList.setRowHeight(i, 232);
+        }
+        for (int i=0;i<4;i++) {
+            tblPlayerList.getColumnModel().getColumn(i).setCellRenderer(new PlayerPanel());
         }
         for (Map.Entry<Integer, Player> entry : gameController.getGame().getListPlayers().entrySet()) {
             PlayerAvatarMaker.addPlayer(entry.getValue()); // harusnya ga di sini
             if (!entry.getValue().isAlive())
                 PlayerAvatarMaker.setPlayerHasDied(entry.getValue());
-            tblPlayerList.getColumnModel().getColumn(columnCount).setCellRenderer(new PlayerPanel(this, entry.getValue()));
-            counter++;
+            //tblPlayerList.getColumnModel().getColumn(columnCount).setCellRenderer(new PlayerPanel(this, entry.getValue()));
+            tblPlayerList.setValueAt(entry.getValue(),rowCount,columnCount);
+            columnCount++;
+            if (columnCount == 4) {
+                columnCount = 0;
+                rowCount++;
+            }
+            /*counter++;
             if (counter >= 4) {
                 counter = 0;
                 columnCount++;
-            }
+            }*/
         }
+        gamePanel.revalidate();
 //        int size = gameController.getGame().getListPlayers().size();
 //        tblPlayerList.setModel(new DefaultTableModel(size/4 + 1, 4));
 //        for(int i=0; i<3; i++) {
