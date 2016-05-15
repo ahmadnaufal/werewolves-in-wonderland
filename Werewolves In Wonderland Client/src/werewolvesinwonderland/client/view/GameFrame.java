@@ -29,6 +29,10 @@ import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import werewolvesinwonderland.client.ClientController;
 import werewolvesinwonderland.client.ClientSender;
 import werewolvesinwonderland.client.controller.GameController;
@@ -74,6 +78,8 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         btnStart = new javax.swing.JButton();
         bgHome = new javax.swing.JLabel();
         gamePanel = new javax.swing.JPanel();
+        coloredInfoScrollPane = new javax.swing.JScrollPane();
+        coloredInfoTextArea = new javax.swing.JTextPane();
         infoScrollPane = new javax.swing.JScrollPane();
         infoTextArea = new javax.swing.JTextArea();
         spTable = new javax.swing.JScrollPane();
@@ -125,6 +131,11 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         mainPanel.add(homePanel, "homePanel");
 
         gamePanel.setLayout(null);
+
+        coloredInfoScrollPane.setViewportView(coloredInfoTextArea);
+
+        gamePanel.add(coloredInfoScrollPane);
+        coloredInfoScrollPane.setBounds(1050, 420, 230, 240);
 
         infoScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         infoScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -352,6 +363,8 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     private javax.swing.JButton btnLeaveGame;
     private javax.swing.JButton btnReadyUp;
     private javax.swing.JButton btnStart;
+    private javax.swing.JScrollPane coloredInfoScrollPane;
+    private javax.swing.JTextPane coloredInfoTextArea;
     private javax.swing.JPanel gamePanel;
     private javax.swing.JPanel homePanel;
     private javax.swing.JLabel icPlayer;
@@ -567,6 +580,8 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         lbDeadPlayers.setVisible(false);
         infoScrollPane.setVisible(false);
         infoTextArea.setVisible(false);
+        coloredInfoScrollPane.setVisible(false);
+        coloredInfoTextArea.setVisible(false);
     }
     
     public void initializePhaseInfoReady(String phase, int alivePlayer) {
@@ -578,6 +593,8 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         lbDeadPlayers.setVisible(true);
         infoScrollPane.setVisible(true);
         infoTextArea.setVisible(true);
+        coloredInfoScrollPane.setVisible(true);
+        coloredInfoTextArea.setVisible(true);
         changePhaseInfo(phase, 1, alivePlayer, 0);
     }
     
@@ -612,7 +629,49 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy:hh:mm");
         String currentTime = dateFormat.format(date);
-        textInfo = "[" + currentTime + "] " + info + "\n" + textInfo;
-        infoTextArea.setText(textInfo);
+//        textInfo = "[" + currentTime + "] " + info + "\n" + textInfo;
+//        infoTextArea.setText(textInfo);
+        
+        StyledDocument doc = coloredInfoTextArea.getStyledDocument();
+        Style style = coloredInfoTextArea.addStyle("I'm a Style", null);
+        StyleConstants.setForeground(style, new Color(46, 158, 105));
+        try {
+            doc.insertString(0, "[" + currentTime + "] ", style);
+        }
+        catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+        int size = (new String("[" + currentTime + "] ")).length();
+        StyleConstants.setForeground(style, Color.black);
+        try {
+            doc.insertString(size, info + "\n", style);
+        }
+        catch (BadLocationException e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void addErrorToInfoPane(String error) {
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy:hh:mm");
+        String currentTime = dateFormat.format(date);
+        
+        StyledDocument doc = coloredInfoTextArea.getStyledDocument();
+        Style style = coloredInfoTextArea.addStyle("I'm a Style", null);
+        StyleConstants.setForeground(style, new Color(46, 158, 105));
+        try {
+            doc.insertString(0, "[" + currentTime + "] ", style);
+        }
+        catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+        int size = (new String("[" + currentTime + "] ")).length();
+        StyleConstants.setForeground(style, Color.red);
+        try {
+            doc.insertString(size, error + "\n", style);
+        }
+        catch (BadLocationException e){
+            e.printStackTrace();
+        }
     }
 }
