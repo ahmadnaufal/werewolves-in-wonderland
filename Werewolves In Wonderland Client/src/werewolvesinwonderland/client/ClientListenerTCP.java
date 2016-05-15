@@ -74,7 +74,6 @@ public class ClientListenerTCP extends Observable implements Runnable {
                     String time = messageObj.getString(Identification.PRM_TIME);
                     String role = messageObj.getString(Identification.PRM_ROLE);
                     if (role.equals(Identification.ROLE_WEREWOLF)) {
-                        //TODO: get array list of werewolf friends from json array
                         ArrayList<String> werewolfFriends = new ArrayList<>();
                         JSONArray werewolfArray = (JSONArray) messageObj.getJSONArray(Identification.PRM_FRIEND);
                         if (werewolfArray != null) {
@@ -92,7 +91,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
                 case Identification.METHOD_VOTENOW:
                     String phase = messageObj.getString(Identification.PRM_PHASE);
                     ClientSender.requestListClients(os);
-                    //handler.startVote();
+                    clientHandle.getGameHandler().startVote(phase);
                     break;
                 case Identification.METHOD_CHANGEPHASE:
                     time = messageObj.getString(Identification.PRM_TIME);
@@ -103,12 +102,12 @@ public class ClientListenerTCP extends Observable implements Runnable {
                     break;
                 case Identification.METHOD_KPUSELECTED:
                     int selectedKpu = messageObj.getInt(Identification.PRM_KPUID);
-                    //handler.setKpu(selectedKpu);
+                    clientHandle.getGameHandler().setKpu(selectedKpu);
                     break;
                 case Identification.METHOD_GAMEOVER:
                     String winner = messageObj.getString(Identification.PRM_WINNER);
                     ClientSender.requestListClients(os);
-                    //handler.gameOver(winner);
+                    clientHandle.getGameHandler().gameOver(winner);
                     break;
                 default:
                     // No valid actions: send error response: invalid request
@@ -133,7 +132,6 @@ public class ClientListenerTCP extends Observable implements Runnable {
                     }
                     switch (ClientController.lastSentMethod) {
                         case Identification.METHOD_CLIENTADDR:
-                            //TODO: get player objects from json array
                             JSONArray clientArray = messageObj.getJSONArray(Identification.PRM_CLIENTS);
                             ArrayList<Player> playerList = new ArrayList<>();
                             for(int i=0; i<clientArray.length(); i++) {

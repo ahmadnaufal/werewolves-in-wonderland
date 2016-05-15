@@ -99,12 +99,12 @@ public class GameController {
         ClientSender.requestReadyUp(clientHandle.getOutputStream());
     }
 
-    public void startVote() {
+    public void startVote(String phase) {
         if (mGame.getCurrentPlayer().getPlayerId()==selectedKpu) proposerController.startVote();
-        if (mGame.getCurrentPlayer().getRole().equals(Identification.ROLE_WEREWOLF) && mGame.getTime().equals(Identification.TIME_NIGHT)) {
-            //enable cells berisi civilians u/ divoting
-        } else if (mGame.getTime().equals(Identification.TIME_DAY)) {
-            //enable cells berisi semua player yg alive u/ divoting
+        if (mGame.getCurrentPlayer().getRole().equals(Identification.ROLE_WEREWOLF) && phase.equals(Identification.TIME_NIGHT)) {
+            //TODO: enable semua cells civilian u/ divoting
+        } else if (phase.equals(Identification.TIME_DAY)) {
+            //TODO: enable cells berisi semua player yg alive u/ divoting
         }
     }
 
