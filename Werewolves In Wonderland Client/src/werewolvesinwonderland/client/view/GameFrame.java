@@ -11,7 +11,9 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Random;
@@ -72,10 +74,16 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         btnStart = new javax.swing.JButton();
         bgHome = new javax.swing.JLabel();
         gamePanel = new javax.swing.JPanel();
+        infoScrollPane = new javax.swing.JScrollPane();
+        infoTextArea = new javax.swing.JTextArea();
         spTable = new javax.swing.JScrollPane();
         tblPlayerList = new javax.swing.JTable();
         btnReadyUp = new javax.swing.JButton();
         btnLeaveGame = new javax.swing.JButton();
+        imgPhase = new javax.swing.JLabel();
+        lbDeadPlayers = new javax.swing.JLabel();
+        lbAlivePlayers = new javax.swing.JLabel();
+        lbDay = new javax.swing.JLabel();
         lbStatus = new javax.swing.JLabel();
         lbRole = new javax.swing.JLabel();
         lbUsername = new javax.swing.JLabel();
@@ -84,6 +92,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         lbR = new javax.swing.JLabel();
         lbS = new javax.swing.JLabel();
         iconTitle = new javax.swing.JLabel();
+        bgInfoWhite = new javax.swing.JLabel();
         bgTable = new javax.swing.JLabel();
         bgProfile = new javax.swing.JLabel();
         bgInfo = new javax.swing.JLabel();
@@ -117,6 +126,21 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
 
         gamePanel.setLayout(null);
 
+        infoScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        infoScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        infoScrollPane.setPreferredSize(new java.awt.Dimension(273, 323));
+
+        infoTextArea.setEditable(false);
+        infoTextArea.setColumns(20);
+        infoTextArea.setLineWrap(true);
+        infoTextArea.setRows(5);
+        infoTextArea.setWrapStyleWord(true);
+        infoTextArea.setPreferredSize(null);
+        infoScrollPane.setViewportView(infoTextArea);
+
+        gamePanel.add(infoScrollPane);
+        infoScrollPane.setBounds(1050, 420, 230, 240);
+
         spTable.setBackground(new Color(0,0,0,0));
         spTable.setBorder(null);
         spTable.setForeground(new Color(0,0,0,0));
@@ -141,6 +165,8 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         tblPlayerList.setRowSelectionAllowed(false);
         tblPlayerList.setSelectionBackground(new Color(0,0,0,0));
         tblPlayerList.setSelectionForeground(new Color(0,0,0,0));
+        tblPlayerList.setShowHorizontalLines(false);
+        tblPlayerList.setShowVerticalLines(false);
         tblPlayerList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblPlayerListMouseClicked(evt);
@@ -176,6 +202,27 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         });
         gamePanel.add(btnLeaveGame);
         btnLeaveGame.setBounds(1070, 70, 192, 41);
+
+        imgPhase.setBackground(new java.awt.Color(255, 255, 255));
+        imgPhase.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/phase_night.png"))); // NOI18N
+        gamePanel.add(imgPhase);
+        imgPhase.setBounds(1060, 320, 72, 72);
+
+        lbDeadPlayers.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
+        lbDeadPlayers.setText("0 players dead");
+        gamePanel.add(lbDeadPlayers);
+        lbDeadPlayers.setBounds(1150, 370, 120, 19);
+
+        lbAlivePlayers.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
+        lbAlivePlayers.setText("0 players alive");
+        gamePanel.add(lbAlivePlayers);
+        lbAlivePlayers.setBounds(1150, 350, 120, 19);
+
+        lbDay.setFont(new java.awt.Font("Abel", 1, 18)); // NOI18N
+        lbDay.setForeground(new java.awt.Color(102, 51, 0));
+        lbDay.setText("Day 0");
+        gamePanel.add(lbDay);
+        lbDay.setBounds(1150, 320, 60, 24);
 
         lbStatus.setFont(new java.awt.Font("Abel", 0, 14)); // NOI18N
         lbStatus.setText("Alive");
@@ -217,6 +264,11 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         iconTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/icon_title.png"))); // NOI18N
         gamePanel.add(iconTitle);
         iconTitle.setBounds(50, 20, 947, 100);
+
+        bgInfoWhite.setBackground(new java.awt.Color(255, 255, 255));
+        bgInfoWhite.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/bg_white.png"))); // NOI18N
+        gamePanel.add(bgInfoWhite);
+        bgInfoWhite.setBounds(1050, 310, 232, 92);
 
         bgTable.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/bg_table1.png"))); // NOI18N
         gamePanel.add(bgTable);
@@ -266,8 +318,8 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     }//GEN-LAST:event_btnReadyUpMouseClicked
 
     private void btnLeaveGameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLeaveGameMouseClicked
-        showProgressDialog();
         gameController.leaveGame();
+        showProgressDialog();
     }//GEN-LAST:event_btnLeaveGameMouseClicked
 
     private void tblPlayerListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPlayerListMouseClicked
@@ -288,11 +340,13 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     private ClientController clientController;
     private JFrame newGameDialog;
     private JDialog progressDialog = createProgressDialog();
+    private String textInfo = "";
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel bgGame;
     private javax.swing.JLabel bgHome;
     private javax.swing.JLabel bgInfo;
+    private javax.swing.JLabel bgInfoWhite;
     private javax.swing.JLabel bgProfile;
     private javax.swing.JLabel bgTable;
     private javax.swing.JButton btnLeaveGame;
@@ -302,6 +356,12 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     private javax.swing.JPanel homePanel;
     private javax.swing.JLabel icPlayer;
     private javax.swing.JLabel iconTitle;
+    private javax.swing.JLabel imgPhase;
+    private javax.swing.JScrollPane infoScrollPane;
+    private javax.swing.JTextArea infoTextArea;
+    private javax.swing.JLabel lbAlivePlayers;
+    private javax.swing.JLabel lbDay;
+    private javax.swing.JLabel lbDeadPlayers;
     private javax.swing.JLabel lbR;
     private javax.swing.JLabel lbRole;
     private javax.swing.JLabel lbS;
@@ -444,8 +504,9 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         return dlgProgress;
     }
 
-    public void joinGameSuccess(Player currentPlayer) {
+    public void joinGameSuccess(Player currentPlayer)  {
         changeScreen("gamePanel");
+        initializePhaseInfo();
         setPlayerInfo(currentPlayer);
     }
 
@@ -495,5 +556,63 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     public void dismissProgressDialog() {
         if (progressDialog != null)
             progressDialog.dispose();
+    }
+    
+    public void initializePhaseInfo() {
+        bgInfo.setVisible(false);
+        bgInfoWhite.setVisible(false);
+        imgPhase.setVisible(false);
+        lbDay.setVisible(false);
+        lbAlivePlayers.setVisible(false);
+        lbDeadPlayers.setVisible(false);
+        infoScrollPane.setVisible(false);
+        infoTextArea.setVisible(false);
+    }
+    
+    public void initializePhaseInfoReady(String phase, int alivePlayer) {
+        bgInfo.setVisible(true);
+        bgInfoWhite.setVisible(true);
+        imgPhase.setVisible(true);
+        lbDay.setVisible(true);
+        lbAlivePlayers.setVisible(true);
+        lbDeadPlayers.setVisible(true);
+        infoScrollPane.setVisible(true);
+        infoTextArea.setVisible(true);
+        changePhaseInfo(phase, 1, alivePlayer, 0);
+    }
+    
+    public void changePhaseInfo(String phase, int day) {
+        setBackground(phase);
+        if (phase.equals(Identification.TIME_DAY)) {
+            imgPhase.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/phase_day.png")));
+        } else {
+            imgPhase.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/phase_night.png")));
+        }
+        lbDay.setText("Day " + day);
+    }
+    
+    public void changeNumberOfPlayersInfo(int alivePlayers, int deadPlayers) {
+        lbAlivePlayers.setText(alivePlayers + " players alive");
+        lbDeadPlayers.setText(deadPlayers + " players dead");
+    }
+    
+    public void changePhaseInfo(String phase, int day, int alivePlayers, int deadPlayers) {
+        setBackground(phase);
+        if (phase.equals(Identification.TIME_DAY)) {
+            imgPhase.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/phase_day.png")));
+        } else {
+            imgPhase.setIcon(new javax.swing.ImageIcon(getClass().getResource("/werewolvesinwonderland/client/assets/phase_night.png")));
+        }
+        lbDay.setText("Day " + day);
+        lbAlivePlayers.setText(alivePlayers + " players alive");
+        lbDeadPlayers.setText(deadPlayers + " players dead");
+    }
+    
+    public void addInfoToPane(String info) {
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy:hh:mm");
+        String currentTime = dateFormat.format(date);
+        textInfo = "[" + currentTime + "] " + info + "\n" + textInfo;
+        infoTextArea.setText(textInfo);
     }
 }

@@ -116,12 +116,12 @@ public class PlayerPanel extends javax.swing.JPanel implements TableCellRenderer
         //Random random = new Random();
         //int i;
         
-        this.setVisible(true);
-        /*
+        setOpaque(true);
+        setBorder(javax.swing.BorderFactory.createMatteBorder(3, 3, 3, 3, new java.awt.Color(255, 255, 255)));
         icPlayer.setVisible(true);
         lbUsername.setVisible(true);
         lbRole.setVisible(true);
-        btnKill.setVisible(true);*/
+        btnKill.setVisible(true);
         
         lbUsername.setText(player.getUsername());
         if (player.isAlive()) {
