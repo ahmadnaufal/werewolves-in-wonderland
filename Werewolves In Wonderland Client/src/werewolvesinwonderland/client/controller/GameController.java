@@ -161,9 +161,9 @@ public class GameController {
           || mGame.getCurrentPlayer().getPlayerId() == proposer2) {
             System.out.println("CONSENSUS: I am a proposer!");
             Map<Integer, Player> acceptors = new HashMap<>();
-            for (Entry<Integer,Player> entry : mGame.getListPlayers().entrySet()) {
+            for (Map.Entry<Integer,Player> entry : mGame.getListPlayers().entrySet()) {
               if (entry.getValue().getPlayerId()!=proposer1 && entry.getValue().getPlayerId()!=proposer2)
-                acceptors.put(entry.getValue.getPlayerId(),entry.getValue());
+                acceptors.put(entry.getValue().getPlayerId(),entry.getValue());
             }
             getProposerController().startRound(acceptors);
         } else {
