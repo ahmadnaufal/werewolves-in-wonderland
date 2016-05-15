@@ -152,6 +152,9 @@ public class ClientListenerTCP extends Observable implements Runnable {
                             }
                             clientHandle.getGameHandler().updatePlayers(playerList);
                             clientHandle.getGameHandler().getGameFrame().updateBoard();
+                            clientHandle.getGameHandler().getGameFrame().changeNumberOfPlayersInfo(
+                                    clientHandle.getGameHandler().getGame().getAlivePlayers().size(),
+                                    clientHandle.getGameHandler().getGame().getDeadPlayers().size());
                             if (clientHandle.getGameHandler().voteKpu) {
                                 clientHandle.getGameHandler().startPaxos();
                                 clientHandle.getGameHandler().voteKpu = false;
