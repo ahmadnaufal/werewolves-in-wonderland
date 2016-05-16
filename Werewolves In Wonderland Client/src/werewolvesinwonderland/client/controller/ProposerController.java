@@ -31,6 +31,7 @@ public class ProposerController {
     private int aliveWerewolvesCount;
     private int alivePlayersCount;
     private boolean sentAcceptProposal = false;
+    private int reject = 0;
 
     public ProposerController(GameController gameController) {
         gameHandle = gameController;
@@ -49,7 +50,7 @@ public class ProposerController {
     }
 
     public void prepareProposal() {
-      proposalNumber++;
+        proposalNumber++;
         for (Entry<Integer, Player> e : acceptorList.entrySet()) {
             System.out.println("CONSENSUS PROPOSAL: To " + e.getValue().getPlayerId() + ", Value: (" + proposalNumber + ", " + playerId + ")");
             ClientSender.sendPaxosPrepareProposal(proposalNumber, playerId,
@@ -67,6 +68,13 @@ public class ProposerController {
           if (quorum > acceptorList.size() / 2) {
               requestAcceptProposal();
           }
+        }
+    }
+    
+    public void receiveReject() {
+        reject++;
+        if (reject > acceptorList.size()/2) {
+            
         }
     }
 

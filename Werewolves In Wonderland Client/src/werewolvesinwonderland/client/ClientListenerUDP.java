@@ -162,13 +162,11 @@ public class ClientListenerUDP extends Observable implements Runnable {
                 case Identification.STATUS_FAIL:
                     if (messageObj.has(Identification.PRM_DESCRIPTION)) {
                         description = messageObj.getString(Identification.PRM_DESCRIPTION);
-                        clientHandle.getGameHandler().showInformationDialog(description);
+                        //clientHandle.getGameHandler().showInformationDialog(description);
                     }
                     switch (ClientController.lastSentMethod) {
                         case Identification.METHOD_PREPAREPROPOSAL:
-                            //TODO: get player objects from json array
-
-                            //handle.updatePlayers(players);
+                            //clientHandle.getGameHandler().getProposerController().receiveReject();
                             break;
                         case Identification.METHOD_ACCEPTPROPOSAL:
                             //TODO: get player objects from json array

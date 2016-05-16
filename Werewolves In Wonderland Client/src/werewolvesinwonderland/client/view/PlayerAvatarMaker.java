@@ -7,6 +7,7 @@ package werewolvesinwonderland.client.view;
 
 import java.util.HashMap;
 import java.util.Map;
+import werewolvesinwonderland.protocol.Identification;
 import werewolvesinwonderland.protocol.model.Player;
 
 /**
@@ -66,17 +67,33 @@ public class PlayerAvatarMaker {
     public static String createStringImageResource(Player player, String size) {
         if (player.getRole() != null) {
             if (player.isAlive()) {
-            
-            System.out.println("/werewolvesinwonderland/client/assets/ic_player" + size +
-                    "_" + player.getRole() + getPlayerImageId(player) + ".png");
-            return "/werewolvesinwonderland/client/assets/ic_player" + size +
-                    "_" + player.getRole() + getPlayerImageId(player) + ".png";
+                if (player.getRole().equals(Identification.ROLE_WEREWOLF)) {
+                    System.out.println("/werewolvesinwonderland/client/assets/ic_player" + size +
+                        "_" + player.getRole() + getPlayerImageId(player) + ".png");
+                    return "/werewolvesinwonderland/client/assets/ic_player" + size +
+                            "_" + player.getRole() + 1 + ".png";
+                } else {
+                    System.out.println("/werewolvesinwonderland/client/assets/ic_player" + size +
+                        "_" + player.getRole() + getPlayerImageId(player) + ".png");
+                    return "/werewolvesinwonderland/client/assets/ic_player" + size +
+                            "_" + player.getRole() + getPlayerImageId(player) + ".png";
+                }
             } else {
-                System.out.println("/werewolvesinwonderland/client/assets/ic_player" + size +
+                if (player.getRole().equals(Identification.ROLE_WEREWOLF)) {
+                    System.out.println("/werewolvesinwonderland/client/assets/ic_player" + size +
+                        "_" + player.getRole() + 2 + "_died.png");
+
+                    return "/werewolvesinwonderland/client/assets/ic_player" + size +
+                            "_" + player.getRole() + 2 + "_died.png";
+                    
+                } else {
+                    System.out.println("/werewolvesinwonderland/client/assets/ic_player" + size +
                         "_" + player.getRole() + getPlayerImageId(player) + "_died.png");
 
-                return "/werewolvesinwonderland/client/assets/ic_player" + size +
-                        "_" + player.getRole() + getPlayerImageId(player) + "_died.png";
+                    return "/werewolvesinwonderland/client/assets/ic_player" + size +
+                            "_" + player.getRole() + getPlayerImageId(player) + "_died.png";
+                }
+                
             }
         } else {
             return "/werewolvesinwonderland/client/assets/ic_player" + size +

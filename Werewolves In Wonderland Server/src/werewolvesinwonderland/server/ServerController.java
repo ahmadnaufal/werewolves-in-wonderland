@@ -46,7 +46,7 @@ public class ServerController {
         System.out.println("Initializing Server...");
         try {
             mServerSocket = new ServerSocket(mPort, 0, InetAddress.getLocalHost());
-            System.out.println("Server is now connected at " + InetAddress.getLocalHost() + ":" + mPort);
+            System.out.println("Server is now connected at " + InetAddress.getLocalHost().getHostAddress() + ":" + mPort);
 
             while (true) {
                 Socket socket = mServerSocket.accept();
