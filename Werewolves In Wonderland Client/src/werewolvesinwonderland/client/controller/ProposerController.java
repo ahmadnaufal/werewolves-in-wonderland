@@ -43,13 +43,14 @@ public class ProposerController {
 
     public void startRound(Map<Integer, Player> acceptorList) {
       this.acceptorList = acceptorList;
-      quorum = 0;
-      kpuId = playerId;
-      sentAcceptProposal = false;
       prepareProposal();
     }
 
     public void prepareProposal() {
+        quorum = 0;
+        reject = 0;
+        kpuId = playerId;
+        sentAcceptProposal = false;
         proposalNumber++;
         for (Entry<Integer, Player> e : acceptorList.entrySet()) {
             System.out.println("CONSENSUS PROPOSAL: To " + e.getValue().getPlayerId() + ", Value: (" + proposalNumber + ", " + playerId + ")");
@@ -74,7 +75,7 @@ public class ProposerController {
     public void receiveReject() {
         reject++;
         if (reject > acceptorList.size()/2) {
-            
+            prepareProposal();
         }
     }
 

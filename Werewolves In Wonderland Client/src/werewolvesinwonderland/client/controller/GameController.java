@@ -61,6 +61,7 @@ public class GameController {
         frame.setPlayerInfo(mGame.getCurrentPlayer());
         frame.updateBoard(voteNow);
         frame.changeNumberOfPlayersInfo(mGame.getAlivePlayers().size(),mGame.getDeadPlayers().size());
+        if (voteNow && mGame.getCurrentPlayer().getPlayerId()==selectedKpu) proposerController.startVote();
     }
 
     public void startGame(String time, String role) {
@@ -105,12 +106,11 @@ public class GameController {
     }
 
     public void startVote(String phase) {
-        if (mGame.getCurrentPlayer().getPlayerId()==selectedKpu) proposerController.startVote();
-        if (mGame.getCurrentPlayer().getRole().equals(Identification.ROLE_WEREWOLF) && phase.equals(Identification.TIME_NIGHT)) {
+        /*if (mGame.getCurrentPlayer().getRole().equals(Identification.ROLE_WEREWOLF) && phase.equals(Identification.TIME_NIGHT)) {
             //TODO: enable semua cells civilian u/ divoting
         } else if (phase.equals(Identification.TIME_DAY)) {
             //TODO: enable cells berisi semua player yg alive u/ divoting
-        }
+        }*/
         voteNow = true;
         frame.updateBoard(voteNow);
     }
