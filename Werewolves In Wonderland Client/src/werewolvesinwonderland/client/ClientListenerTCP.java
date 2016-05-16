@@ -117,6 +117,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
                     String winner = messageObj.getString(Identification.PRM_WINNER);
                     ClientSender.requestListClients(os);
                     clientHandle.getGameHandler().gameOver(winner);
+                    clientHandle.getGameHandler().getGameFrame().addInfoToInfoPane("Game over! The winner is " + winner);
                     break;
                 default:
                     // No valid actions: send error response: invalid request
@@ -188,6 +189,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
                     if (messageObj.has(Identification.PRM_DESCRIPTION)) {
                         description = messageObj.getString(Identification.PRM_DESCRIPTION);
                         clientHandle.getGameHandler().showErrorDialog(description);
+                        clientHandle.getGameHandler().getGameFrame().addErrorToInfoPane("Failed: " + description);
                     }
                     switch (ClientController.lastSentMethod) {
                         case Identification.METHOD_JOIN:
@@ -198,6 +200,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
                     if (messageObj.has(Identification.PRM_DESCRIPTION)) {
                         description = messageObj.getString(Identification.PRM_DESCRIPTION);
                         clientHandle.getGameHandler().showErrorDialog(description);
+                        clientHandle.getGameHandler().getGameFrame().addErrorToInfoPane("An error occured: " + description);
                     }
                     break;
             }

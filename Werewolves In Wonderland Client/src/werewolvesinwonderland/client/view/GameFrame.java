@@ -596,6 +596,8 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         infoTextArea.setVisible(true);
         coloredInfoScrollPane.setVisible(true);
         coloredInfoTextArea.setVisible(true);
+        changePhaseInfo(Identification.PHASE_DAY, 0);
+        changeNumberOfPlayersInfo(1, 0);
     }
     
     public void changePhaseInfo(String phase, int day) {
