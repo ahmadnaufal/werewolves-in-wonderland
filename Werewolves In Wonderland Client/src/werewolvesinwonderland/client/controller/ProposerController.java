@@ -99,18 +99,14 @@ public class ProposerController {
     private void countKillVotes() {
         Integer max = Collections.max(killVotes.values());
         Integer maxId = null;
-        boolean tie = true;
-        
-        System.out.print(max + " ");
+        boolean tie = false;
 
         for (Entry<Integer, Integer> entry : killVotes.entrySet()) {
             Integer value = entry.getValue();
-            System.out.print(value + " ");
             
             if (max.equals(value)) {
                 if (maxId == null) {
                     maxId = entry.getKey();
-                    System.out.println(maxId);
                 } else {
                     tie = true;
                     break;
