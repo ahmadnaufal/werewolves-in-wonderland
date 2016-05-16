@@ -26,6 +26,7 @@ public class GameController {
 
     public boolean voteKpu = false;
     public boolean voteNow = false;
+    public boolean voteNight = false;
 
     private AcceptorController acceptorController;
     private ProposerController proposerController;
@@ -61,7 +62,7 @@ public class GameController {
         frame.setPlayerInfo(mGame.getCurrentPlayer());
         frame.updateBoard(voteNow);
         frame.changeNumberOfPlayersInfo(mGame.getAlivePlayers().size(),mGame.getDeadPlayers().size());
-        if (voteNow && mGame.getCurrentPlayer().getPlayerId()==selectedKpu) proposerController.startVote();
+        if ((voteNight || voteNow) && mGame.getCurrentPlayer().getPlayerId()==selectedKpu) proposerController.startVote();
     }
 
     public void startGame(String time, String role) {
@@ -130,7 +131,11 @@ public class GameController {
         mGame.setDays(days);
         //update view
         frame.changePhaseInfo(time, days);
-        if (time.equals(Identification.TIME_NIGHT) && mGame.getCurrentPlayer().getPlayerId()==selectedKpu) voteNow=true;
+        if (time.equals(Identification.TIME_NIGHT)) {
+            voteNight=true;
+        } else {
+            voteNight=false;
+        }
     }
 
     public void setKpu(int kpuId) {
