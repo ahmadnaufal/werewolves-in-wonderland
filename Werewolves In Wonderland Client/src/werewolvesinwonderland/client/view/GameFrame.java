@@ -625,7 +625,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         lbDeadPlayers.setText(deadPlayers + " players dead");
     }
     
-    public void addInfoToPane(String info) {
+    public void addInfoToInfoPane(String info) {
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy:hh:mm");
         String currentTime = dateFormat.format(date);

@@ -87,11 +87,16 @@ public class ClientListenerTCP extends Observable implements Runnable {
                     }
                     clientHandle.getGameHandler().voteKpu = true;
                     ClientSender.requestListClients(os);
+                    clientHandle.getGameHandler().getGameFrame().addInfoToInfoPane("Game has been started...");
                     break;
                 case Identification.METHOD_VOTENOW:
                     String phase = messageObj.getString(Identification.PRM_PHASE);
                     ClientSender.requestListClients(os);
                     clientHandle.getGameHandler().startVote(phase);
+                    if (phase.equals(Identification.TIME_DAY))
+                        clientHandle.getGameHandler().getGameFrame().addInfoToInfoPane("Vote your suspected werewolf");
+                    else
+                        clientHandle.getGameHandler().getGameFrame().addInfoToInfoPane("Vote to kill civilian");
                     break;
                 case Identification.METHOD_CHANGEPHASE:
                     time = messageObj.getString(Identification.PRM_TIME);
