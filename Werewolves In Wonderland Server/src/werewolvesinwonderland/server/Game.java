@@ -61,7 +61,7 @@ public class Game {
         players.remove(id);
         if (checkWinner() != null) {
             mServerHandle.sendGameOver(checkWinner());
-            restartGame();
+            //restartGame();
         }
     }
 
