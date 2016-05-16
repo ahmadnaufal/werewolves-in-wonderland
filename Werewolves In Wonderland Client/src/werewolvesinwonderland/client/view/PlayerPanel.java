@@ -129,6 +129,10 @@ public class PlayerPanel extends javax.swing.JPanel implements TableCellRenderer
             icPlayer.setIcon(new javax.swing.ImageIcon(getClass().getResource(
                 PlayerAvatarMaker.createStringImageResource(player, "132"))));
             lbRole.setText("?");
+            if (player.getRole() != null) {
+                lbRole.setText(player.getRole().substring(0, 1).toUpperCase()
+                + player.getRole().substring(1));
+            }
         } else {
             /*
             if (player.getRole().equals(Identification.ROLE_WEREWOLF))
