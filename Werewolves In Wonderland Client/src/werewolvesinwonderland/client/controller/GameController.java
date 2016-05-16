@@ -62,7 +62,7 @@ public class GameController {
         frame.setPlayerInfo(mGame.getCurrentPlayer());
         frame.updateBoard(voteNow);
         frame.changeNumberOfPlayersInfo(mGame.getAlivePlayers().size(),mGame.getDeadPlayers().size());
-        if (voteNight && mGame.getCurrentPlayer().getPlayerId()==selectedKpu) proposerController.startVote();
+        if ((voteNow || voteNight) && mGame.getCurrentPlayer().getPlayerId()==selectedKpu) proposerController.startVote();
     }
 
     public void startGame(String time, String role) {
@@ -113,7 +113,6 @@ public class GameController {
             //TODO: enable cells berisi semua player yg alive u/ divoting
         }*/
         voteNow = true;
-        if (mGame.getCurrentPlayer().getPlayerId()==selectedKpu) proposerController.startVote();
         frame.updateBoard(voteNow);
     }
 
