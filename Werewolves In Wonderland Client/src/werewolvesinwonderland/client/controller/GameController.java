@@ -25,6 +25,7 @@ public class GameController {
     private ArrayList<String> werewolfFriends = new ArrayList<>();
 
     public boolean voteKpu = false;
+    public boolean voteNow = false;
 
     private AcceptorController acceptorController;
     private ProposerController proposerController;
@@ -58,7 +59,7 @@ public class GameController {
         }
         mGame.setListPlayers(playersMap);
         frame.setPlayerInfo(mGame.getCurrentPlayer());
-        frame.disableBoard();
+        frame.updateBoard(voteNow);
         frame.changeNumberOfPlayersInfo(mGame.getAlivePlayers().size(),mGame.getDeadPlayers().size());
     }
 
@@ -110,7 +111,8 @@ public class GameController {
         } else if (phase.equals(Identification.TIME_DAY)) {
             //TODO: enable cells berisi semua player yg alive u/ divoting
         }
-        frame.enableBoard();
+        voteNow = true;
+        frame.updateBoard(voteNow);
     }
 
     public void voteVictim(int playerId) {
@@ -128,6 +130,7 @@ public class GameController {
         mGame.setDays(days);
         //update view
         frame.changePhaseInfo(time, days);
+        if (time.equals(Identification.TIME_NIGHT) && mGame.getCurrentPlayer().getPlayerId()==selectedKpu) proposerController.startVote();
     }
 
     public void setKpu(int kpuId) {

@@ -189,7 +189,7 @@ public class ClientListenerUDP extends Observable implements Runnable {
                 case Identification.STATUS_ERROR:
                     if (messageObj.has(Identification.PRM_DESCRIPTION)) {
                         description = messageObj.getString(Identification.PRM_DESCRIPTION);
-                        clientHandle.getGameHandler().showInformationDialog(description);
+                        // clientHandle.getGameHandler().showInformationDialog(description);
                     }
                     switch (ClientController.lastSentMethod) {
                         case Identification.METHOD_PREPAREPROPOSAL:

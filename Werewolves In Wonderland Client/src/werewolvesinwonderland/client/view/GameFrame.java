@@ -325,7 +325,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
     }//GEN-LAST:event_btnLeaveGameMouseClicked
 
     private void tblPlayerListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPlayerListMouseClicked
-        if (tblPlayerList.isEnabled()) {
+        if (tblPlayerList.isEnabled() && gameController.voteNow) {
             int row = tblPlayerList.getSelectedRow();
             int col = tblPlayerList.getSelectedColumn();
             //int playerPos = (row * 4) + col;
@@ -334,6 +334,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
                 gameController.voteVictim(player.getPlayerId());
                 System.out.println("row: " + row + " col:" + col);
                 System.out.println("Selected player:" + player.getUsername());
+                gameController.voteNow = false;
             }
         }
     }//GEN-LAST:event_tblPlayerListMouseClicked
@@ -445,38 +446,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         }
     }
 
-    public void updateBoard() {
-        int size = gameController.getGame().getListPlayers().size();
-        tblPlayerList.setModel(new DefaultTableModel(size/4 + 1, 4){
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return false;
-            }
-        });
-        int columnCount = 0;
-        int rowCount = 0;
-        for (int i=0; i<size/4 + 1; i++) {
-            tblPlayerList.setRowHeight(i, 232);
-        }
-        for (int i=0;i<4;i++) {
-            tblPlayerList.getColumnModel().getColumn(i).setCellRenderer(new PlayerPanel());
-        }
-        for (Map.Entry<Integer, Player> entry : gameController.getGame().getListPlayers().entrySet()) {
-            if (entry.getValue().getPlayerId()!=gameController.getGame().getCurrentPlayer().getPlayerId()) {
-              PlayerAvatarMaker.addPlayer(entry.getValue()); // harusnya ga di sini
-              if (!entry.getValue().isAlive())
-                  PlayerAvatarMaker.setPlayerHasDied(entry.getValue());
-              tblPlayerList.setValueAt(entry.getValue(),rowCount,columnCount);
-              columnCount++;
-              if (columnCount == 4) {
-                  columnCount = 0;
-                  rowCount++;
-              }
-            }
-        }
-        gamePanel.revalidate();
-    }
-    
-    public void disableBoard() {
+    public void updateBoard(boolean voteNow) {
         int size = gameController.getGame().getListPlayers().size();
         tblPlayerList.setModel(new DefaultTableModel(size/4 + 1, 4){
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -490,40 +460,10 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         }
         for (int i=0;i<4;i++) {
             PlayerPanel playerPanel = new PlayerPanel();
-            playerPanel.disablePanel();
-            tblPlayerList.getColumnModel().getColumn(i).setCellRenderer(playerPanel);
-        }
-        for (Map.Entry<Integer, Player> entry : gameController.getGame().getListPlayers().entrySet()) {
-            if (entry.getValue().getPlayerId()!=gameController.getGame().getCurrentPlayer().getPlayerId()) {
-              PlayerAvatarMaker.addPlayer(entry.getValue()); // harusnya ga di sini
-              if (!entry.getValue().isAlive())
-                  PlayerAvatarMaker.setPlayerHasDied(entry.getValue());
-              tblPlayerList.setValueAt(entry.getValue(),rowCount,columnCount);
-              columnCount++;
-              if (columnCount == 4) {
-                  columnCount = 0;
-                  rowCount++;
-              }
-            }
-        }
-        gamePanel.revalidate();
-    }
-    
-    public void enableBoard() {
-        int size = gameController.getGame().getListPlayers().size();
-        tblPlayerList.setModel(new DefaultTableModel(size/4 + 1, 4){
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return false;
-            }
-        });
-        int columnCount = 0;
-        int rowCount = 0;
-        for (int i=0; i<size/4 + 1; i++) {
-            tblPlayerList.setRowHeight(i, 232);
-        }
-        for (int i=0;i<4;i++) {
-            PlayerPanel playerPanel = new PlayerPanel();
-            playerPanel.enablePanel();
+            if (voteNow)
+                playerPanel.enablePanel();
+            else
+                playerPanel.disablePanel();
             tblPlayerList.getColumnModel().getColumn(i).setCellRenderer(playerPanel);
         }
         for (Map.Entry<Integer, Player> entry : gameController.getGame().getListPlayers().entrySet()) {
