@@ -79,7 +79,6 @@ public class PlayerAvatarMaker {
                         "_" + player.getRole() + getPlayerImageId(player) + "_died.png";
             }
         } else {
-            System.out.println("Role null");
             return "/werewolvesinwonderland/client/assets/ic_player" + size +
                     "_" + "civilian" + getPlayerImageId(player) + ".png"; // dummy
         }

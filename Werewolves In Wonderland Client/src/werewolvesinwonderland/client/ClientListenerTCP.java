@@ -94,9 +94,9 @@ public class ClientListenerTCP extends Observable implements Runnable {
                     ClientSender.requestListClients(os);
                     clientHandle.getGameHandler().startVote(phase);
                     if (phase.equals(Identification.TIME_DAY))
-                        clientHandle.getGameHandler().getGameFrame().addInfoToInfoPane("Vote your suspected werewolf");
+                        clientHandle.getGameHandler().getGameFrame().addInfoToInfoPane("Vote your suspected werewolf!");
                     else
-                        clientHandle.getGameHandler().getGameFrame().addInfoToInfoPane("Vote to kill civilian");
+                        clientHandle.getGameHandler().getGameFrame().addInfoToInfoPane("Vote to kill civilian!");
                     break;
                 case Identification.METHOD_CHANGEPHASE:
                     time = messageObj.getString(Identification.PRM_TIME);
@@ -104,6 +104,10 @@ public class ClientListenerTCP extends Observable implements Runnable {
                     clientHandle.getGameHandler().changePhase(time,days);
                     clientHandle.getGameHandler().voteKpu = true;
                     ClientSender.requestListClients(os);
+                    if (time.equals(Identification.TIME_DAY))
+                        clientHandle.getGameHandler().getGameFrame().addInfoToInfoPane("One day has been passed...");
+                    else
+                        clientHandle.getGameHandler().getGameFrame().addInfoToInfoPane("It's already night now...");
                     break;
                 case Identification.METHOD_KPUSELECTED:
                     int selectedKpu = messageObj.getInt(Identification.PRM_KPUID);
@@ -170,6 +174,7 @@ public class ClientListenerTCP extends Observable implements Runnable {
                             break;
                         case Identification.METHOD_READY:
                             needToDismissDialog = false;
+                            clientHandle.getGameHandler().getGameFrame().addInfoToInfoPane("Waiting for other players to start");
                             break;
                         case Identification.METHOD_LEAVE:
                             clientHandle.getGameHandler().getGameFrame().leaveGameSuccess();

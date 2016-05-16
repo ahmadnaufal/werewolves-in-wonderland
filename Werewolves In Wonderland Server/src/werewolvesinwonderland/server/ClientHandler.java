@@ -162,7 +162,7 @@ public class ClientHandler implements Runnable {
 
                         case Identification.METHOD_VOTERESULT:
                             if (playerId == mServerHandle.getGame().getSelectedKpu()) {
-                                int status = requestObj.getInt(Identification.PRM_STATUS);
+                                int status = requestObj.getInt(Identification.PRM_VOTESTATUS);
                                 switch (status) {
                                     case 1:
                                         int killedId = requestObj.getInt(Identification.PRM_PLAYERKILLED);

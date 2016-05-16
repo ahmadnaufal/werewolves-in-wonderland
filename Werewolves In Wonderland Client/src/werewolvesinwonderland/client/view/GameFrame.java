@@ -325,6 +325,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
 
     private void btnReadyUpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReadyUpMouseClicked
         gameController.readyUp();
+        initializePhaseInfoReady();
         showProgressDialog();
     }//GEN-LAST:event_btnReadyUpMouseClicked
 
@@ -584,7 +585,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         coloredInfoTextArea.setVisible(false);
     }
     
-    public void initializePhaseInfoReady(String phase, int alivePlayer) {
+    public void initializePhaseInfoReady() {
         bgInfo.setVisible(true);
         bgInfoWhite.setVisible(true);
         imgPhase.setVisible(true);
@@ -595,7 +596,6 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
         infoTextArea.setVisible(true);
         coloredInfoScrollPane.setVisible(true);
         coloredInfoTextArea.setVisible(true);
-        changePhaseInfo(phase, 1, alivePlayer, 0);
     }
     
     public void changePhaseInfo(String phase, int day) {

@@ -90,9 +90,9 @@ public class ProposerController {
         voteCount++;
         if (gameHandle.getGame().getTime().equals(Identification.TIME_DAY) && voteCount == alivePlayersCount
                 || gameHandle.getGame().getTime().equals(Identification.TIME_NIGHT) && voteCount == aliveWerewolvesCount) {
+            countKillVotes();
             voteCount = 0;
             killVotes.clear();
-            countKillVotes();
         }
     }
 

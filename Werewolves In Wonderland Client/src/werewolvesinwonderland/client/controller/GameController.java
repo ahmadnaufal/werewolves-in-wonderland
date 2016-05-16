@@ -62,7 +62,7 @@ public class GameController {
         mGame.setTime(time);
         mGame.getCurrentPlayer().setRole(role);
         frame.setPlayerInfo(mGame.getCurrentPlayer());
-        frame.initializePhaseInfoReady(Identification.TIME_DAY, mGame.getListPlayers().size());
+        frame.changePhaseInfo(Identification.TIME_DAY, 0, mGame.getListPlayers().size(), 0);
     }
 
     public void startGame(String time, String role, ArrayList<String> werewolfFriends) {
@@ -70,7 +70,7 @@ public class GameController {
         mGame.getCurrentPlayer().setRole(role);
         this.werewolfFriends = werewolfFriends;
         frame.setPlayerInfo(mGame.getCurrentPlayer());
-        frame.initializePhaseInfoReady(Identification.TIME_DAY, mGame.getListPlayers().size());
+        frame.changePhaseInfo(Identification.TIME_DAY, 0, mGame.getListPlayers().size(), 0);
     }
 
     public void createPlayer(int id) {
