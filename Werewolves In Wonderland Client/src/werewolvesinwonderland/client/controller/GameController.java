@@ -131,6 +131,7 @@ public class GameController {
 
     public void gameOver(String winner) {
         //alert game over & winner
+        frame.showInformationMessage("Game over! The winner is " + winner);
     }
 
     public void leaveGame() {
