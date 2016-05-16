@@ -88,8 +88,9 @@ public class ProposerController {
             killVotes.put(id, 1);
         }
         voteCount++;
-        if (gameHandle.getGame().getTime().equals(Identification.TIME_DAY) && voteCount == alivePlayersCount
-                || gameHandle.getGame().getTime().equals(Identification.TIME_NIGHT) && voteCount == aliveWerewolvesCount) {
+        System.out.println("Vote count: "+voteCount);
+        if ((gameHandle.getGame().getTime().equals(Identification.TIME_DAY) && voteCount == alivePlayersCount)
+                || (gameHandle.getGame().getTime().equals(Identification.TIME_NIGHT) && voteCount == aliveWerewolvesCount)) {
             countKillVotes();
             voteCount = 0;
             killVotes.clear();
@@ -131,10 +132,11 @@ public class ProposerController {
     private void countAliveWerewolves() {
         aliveWerewolvesCount = (acceptorList.size() + 2) / 3;
         for (Entry<Integer, Player> e : gameHandle.getGame().getListPlayers().entrySet()) {
-            if (e.getValue().getRole().equals(Identification.ROLE_WEREWOLF)) {
+            if (e.getValue().getRole().equals(Identification.ROLE_WEREWOLF) && !e.getValue().isAlive()) {
                 aliveWerewolvesCount--;
             }
         }
+        System.out.println("Alive werewolves" + aliveWerewolvesCount);
     }
 
     private void sendInfoKilled(int playerKilled) {
