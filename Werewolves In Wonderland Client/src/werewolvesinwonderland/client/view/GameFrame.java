@@ -335,6 +335,7 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
                 System.out.println("row: " + row + " col:" + col);
                 System.out.println("Selected player:" + player.getUsername());
                 gameController.voteNow = false;
+                updateBoard(gameController.voteNow);
             }
         }
     }//GEN-LAST:event_tblPlayerListMouseClicked
