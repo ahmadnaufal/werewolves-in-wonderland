@@ -263,8 +263,9 @@ public class ClientSender {
         try {
             String requestStr = ClientMessageBuilder.createResponsePaxosPrepareProposalOK(playerId);
             DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
-            UnreliableSender sender = new UnreliableSender(datagramSocket);
-            sender.send(packet);
+            //UnreliableSender sender = new UnreliableSender(datagramSocket);
+            //sender.send(packet);
+            datagramSocket.send(packet);
             
             return 1;
             
@@ -290,8 +291,9 @@ public class ClientSender {
         try {
             String requestStr = ClientMessageBuilder.createResponsePaxosPrepareProposalOK();
             DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
-            UnreliableSender sender = new UnreliableSender(datagramSocket);
-            sender.send(packet);
+            //UnreliableSender sender = new UnreliableSender(datagramSocket);
+            //sender.send(packet);
+            datagramSocket.send(packet);
             
             return 1;
             
@@ -317,8 +319,9 @@ public class ClientSender {
         try {
             String requestStr = ClientMessageBuilder.createResponseFail(Identification.DESC_REJECTED);
             DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
-            UnreliableSender sender = new UnreliableSender(datagramSocket);
-            sender.send(packet);
+            //UnreliableSender sender = new UnreliableSender(datagramSocket);
+            //sender.send(packet);
+            datagramSocket.send(packet);
             
             return 1;
             
@@ -344,8 +347,9 @@ public class ClientSender {
         try {
             String requestStr = ClientMessageBuilder.createResponseOK("");
             DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
-            UnreliableSender sender = new UnreliableSender(datagramSocket);
-            sender.send(packet);
+            //UnreliableSender sender = new UnreliableSender(datagramSocket);
+            //sender.send(packet);
+            datagramSocket.send(packet);
             
             return 1;
             
@@ -371,8 +375,9 @@ public class ClientSender {
         try {
             String requestStr = ClientMessageBuilder.createResponseFail();
             DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
-            UnreliableSender sender = new UnreliableSender(datagramSocket);
-            sender.send(packet);
+            //UnreliableSender sender = new UnreliableSender(datagramSocket);
+            //sender.send(packet);
+            datagramSocket.send(packet);
             
             return 1;
             
@@ -400,8 +405,9 @@ public class ClientSender {
         try {
             String requestStr = ClientMessageBuilder.createRequestPaxosPrepareProposal(proposalNumber, playerId);
             DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
-            UnreliableSender sender = new UnreliableSender(datagramSocket);
-            sender.send(packet);
+            //UnreliableSender sender = new UnreliableSender(datagramSocket);
+            //sender.send(packet);
+            datagramSocket.send(packet);
             
             ClientController.lastSentUdpMethod = Identification.METHOD_PREPAREPROPOSAL;
             return 1;
@@ -431,8 +437,9 @@ public class ClientSender {
         try {
             String requestStr = ClientMessageBuilder.createRequestPaxosAcceptProposal(proposalNumber, playerId, kpuId);
             DatagramPacket packet = buildDatagramPacket(requestStr, InetAddress.getByName(destAddr), destPort);
-            UnreliableSender sender = new UnreliableSender(datagramSocket);
-            sender.send(packet);
+            //UnreliableSender sender = new UnreliableSender(datagramSocket);
+            //sender.send(packet);
+            datagramSocket.send(packet);
             
             ClientController.lastSentUdpMethod = Identification.METHOD_ACCEPTPROPOSAL;
             return 1;

@@ -7,11 +7,9 @@ package werewolvesinwonderland.client.view;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.util.Random;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
-import werewolvesinwonderland.protocol.Identification;
 import werewolvesinwonderland.protocol.model.Player;
 
 /**
