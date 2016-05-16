@@ -58,7 +58,7 @@ public class GameController {
         }
         mGame.setListPlayers(playersMap);
         frame.setPlayerInfo(mGame.getCurrentPlayer());
-        frame.updateBoard();
+        frame.disableBoard();
         frame.changeNumberOfPlayersInfo(mGame.getAlivePlayers().size(),mGame.getDeadPlayers().size());
     }
 
@@ -110,6 +110,7 @@ public class GameController {
         } else if (phase.equals(Identification.TIME_DAY)) {
             //TODO: enable cells berisi semua player yg alive u/ divoting
         }
+        frame.enableBoard();
     }
 
     public void voteVictim(int playerId) {

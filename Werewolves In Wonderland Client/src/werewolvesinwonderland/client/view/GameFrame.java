@@ -484,18 +484,72 @@ public class GameFrame extends javax.swing.JFrame implements NewGameDialogListen
             }
         }
         gamePanel.revalidate();
-//        int size = gameController.getGame().getListPlayers().size();
-//        tblPlayerList.setModel(new DefaultTableModel(size/4 + 1, 4));
-//        for(int i=0; i<3; i++) {
-//            tblPlayerList.setRowHeight(i, 232);
-//            for (int j=0; j<4; j++) {
-//                int x = (i * 4 + j) % 10;
-//                PlayerAvatarMaker.addPlayer(gameController.getGame().getPlayer(x));
-//                if (!players.get(x).isAlive())
-//                    PlayerAvatarMaker.setPlayerHasDied(players.get(x));
-//                tblPlayerList.getColumnModel().getColumn(j).setCellRenderer(new PlayerPanel(this, players.get(x)));
-//            }
-//        }
+    }
+    
+    public void disableBoard() {
+        int size = gameController.getGame().getListPlayers().size();
+        tblPlayerList.setModel(new DefaultTableModel(size/4 + 1, 4){
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }
+        });
+        int columnCount = 0;
+        int rowCount = 0;
+        for (int i=0; i<size/4 + 1; i++) {
+            tblPlayerList.setRowHeight(i, 232);
+        }
+        for (int i=0;i<4;i++) {
+            PlayerPanel playerPanel = new PlayerPanel();
+            playerPanel.disablePanel();
+            tblPlayerList.getColumnModel().getColumn(i).setCellRenderer(playerPanel);
+        }
+        for (Map.Entry<Integer, Player> entry : gameController.getGame().getListPlayers().entrySet()) {
+            if (entry.getValue().getPlayerId()!=gameController.getGame().getCurrentPlayer().getPlayerId()) {
+              PlayerAvatarMaker.addPlayer(entry.getValue()); // harusnya ga di sini
+              if (!entry.getValue().isAlive())
+                  PlayerAvatarMaker.setPlayerHasDied(entry.getValue());
+              tblPlayerList.setValueAt(entry.getValue(),rowCount,columnCount);
+              columnCount++;
+              if (columnCount == 4) {
+                  columnCount = 0;
+                  rowCount++;
+              }
+            }
+        }
+        gamePanel.revalidate();
+    }
+    
+    public void enableBoard() {
+        int size = gameController.getGame().getListPlayers().size();
+        tblPlayerList.setModel(new DefaultTableModel(size/4 + 1, 4){
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }
+        });
+        int columnCount = 0;
+        int rowCount = 0;
+        for (int i=0; i<size/4 + 1; i++) {
+            tblPlayerList.setRowHeight(i, 232);
+        }
+        for (int i=0;i<4;i++) {
+            PlayerPanel playerPanel = new PlayerPanel();
+            playerPanel.enablePanel();
+            tblPlayerList.getColumnModel().getColumn(i).setCellRenderer(playerPanel);
+        }
+        for (Map.Entry<Integer, Player> entry : gameController.getGame().getListPlayers().entrySet()) {
+            if (entry.getValue().getPlayerId()!=gameController.getGame().getCurrentPlayer().getPlayerId()) {
+              PlayerAvatarMaker.addPlayer(entry.getValue()); // harusnya ga di sini
+              if (!entry.getValue().isAlive())
+                  PlayerAvatarMaker.setPlayerHasDied(entry.getValue());
+              tblPlayerList.setValueAt(entry.getValue(),rowCount,columnCount);
+              columnCount++;
+              if (columnCount == 4) {
+                  columnCount = 0;
+                  rowCount++;
+              }
+            }
+        }
+        gamePanel.revalidate();
     }
 
     private void changeScreen(String screenName) {

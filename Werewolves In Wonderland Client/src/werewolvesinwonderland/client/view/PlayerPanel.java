@@ -165,4 +165,18 @@ public class PlayerPanel extends javax.swing.JPanel implements TableCellRenderer
         return this;
     }
     
+    public void disablePanel() {
+        icPlayer.setVisible(false);
+        lbUsername.setVisible(false);
+        lbRole.setVisible(false);
+        btnKill.setVisible(false);
+    }
+    
+    public void enablePanel() {
+        icPlayer.setVisible(true);
+        lbUsername.setVisible(true);
+        lbRole.setVisible(true);
+        btnKill.setVisible(true);
+    }
+    
 }
