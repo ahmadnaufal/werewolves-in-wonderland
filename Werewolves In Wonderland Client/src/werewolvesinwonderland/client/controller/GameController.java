@@ -51,7 +51,7 @@ public class GameController {
     public void updatePlayers(ArrayList<Player> players) {
         HashMap<Integer, Player> playersMap = new HashMap<>();
         for (Player player : players) {
-            if (player.getPlayerId()==mGame.getCurrentPlayer().getPlayerId()) mGame.setCurrentPlayer(player);
+            if (player.getPlayerId()==mGame.getCurrentPlayer().getPlayerId()) mGame.getCurrentPlayer().setAlive(player.isAlive());
             if (werewolfFriends.contains(player.getUsername()))
                 player.setRole(Identification.ROLE_WEREWOLF);
             playersMap.put(player.getPlayerId(), player);
