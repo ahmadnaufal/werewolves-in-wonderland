@@ -230,7 +230,7 @@ public class ClientMessageBuilder {
     public static String createRequestKillCivilianVote(int playerId) throws JSONException {
         return new JSONObject()
                 .put(Identification.PRM_METHOD, Identification.METHOD_VOTECIVILIAN)
-                .put(Identification.PRM_METHOD, playerId)
+                .put(Identification.PRM_PLAYERID, playerId)
                 .toString();
     }
 

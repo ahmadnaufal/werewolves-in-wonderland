@@ -177,6 +177,7 @@ public class Game {
     private void changePhase() {
         if (time.equals(Identification.TIME_DAY)) {
             time = Identification.TIME_NIGHT;
+            mServerHandle.sendVoteNight();
         } else {
             time = Identification.TIME_DAY;
             days++;
