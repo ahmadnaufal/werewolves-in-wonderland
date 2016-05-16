@@ -102,7 +102,8 @@ public class ClientListenerTCP extends Observable implements Runnable {
                     time = messageObj.getString(Identification.PRM_TIME);
                     int days = messageObj.getInt(Identification.PRM_DAYS);
                     clientHandle.getGameHandler().changePhase(time,days);
-                    clientHandle.getGameHandler().voteKpu = true;
+                    if (time.equals(Identification.TIME_DAY))
+                        clientHandle.getGameHandler().voteKpu = true;
                     ClientSender.requestListClients(os);
                     if (time.equals(Identification.TIME_DAY))
                         clientHandle.getGameHandler().getGameFrame().addInfoToInfoPane("One day has been passed...");
