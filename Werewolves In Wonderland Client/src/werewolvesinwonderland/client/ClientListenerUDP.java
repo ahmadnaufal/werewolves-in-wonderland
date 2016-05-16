@@ -233,7 +233,6 @@ public class ClientListenerUDP extends Observable implements Runnable {
                 try {
                     JSONObject messageObj = new JSONObject(receiveStr);
                     if (messageObj.has(Identification.PRM_METHOD)) {
-                        System.out.println(messageObj);
                         handleRequest(messageObj, receivePacket.getAddress().getHostName(), receivePacket.getPort());
                     } else {
                         handleResponse(messageObj);

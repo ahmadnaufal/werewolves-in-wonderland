@@ -51,11 +51,15 @@ public class GameController {
     public void updatePlayers(ArrayList<Player> players) {
         HashMap<Integer, Player> playersMap = new HashMap<>();
         for (Player player : players) {
+            if (player.getPlayerId()==mGame.getCurrentPlayer().getPlayerId()) mGame.setCurrentPlayer(player);
             if (werewolfFriends.contains(player.getUsername()))
                 player.setRole(Identification.ROLE_WEREWOLF);
             playersMap.put(player.getPlayerId(), player);
         }
         mGame.setListPlayers(playersMap);
+        frame.setPlayerInfo(mGame.getCurrentPlayer());
+        frame.updateBoard();
+        frame.changeNumberOfPlayersInfo(mGame.getAlivePlayers().size(),mGame.getDeadPlayers().size());
     }
 
     public void startGame(String time, String role) {

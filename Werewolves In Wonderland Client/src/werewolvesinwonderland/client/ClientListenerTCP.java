@@ -158,11 +158,8 @@ public class ClientListenerTCP extends Observable implements Runnable {
                                         clientObject.getString(Identification.PRM_USERNAME),
                                         role));
                             }
-                            clientHandle.getGameHandler().updatePlayers(playerList);
-                            clientHandle.getGameHandler().getGameFrame().updateBoard();
-                            clientHandle.getGameHandler().getGameFrame().changeNumberOfPlayersInfo(
-                                    clientHandle.getGameHandler().getGame().getAlivePlayers().size(),
-                                    clientHandle.getGameHandler().getGame().getDeadPlayers().size());
+                            clientHandle.getGameHandler().updatePlayers(playerList);     
+                            
                             if (clientHandle.getGameHandler().voteKpu) {
                                 clientHandle.getGameHandler().startPaxos();
                                 clientHandle.getGameHandler().voteKpu = false;
