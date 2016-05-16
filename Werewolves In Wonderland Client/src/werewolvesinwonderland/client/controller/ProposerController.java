@@ -132,8 +132,10 @@ public class ProposerController {
     private void countAliveWerewolves() {
         aliveWerewolvesCount = (acceptorList.size() + 2) / 3;
         for (Entry<Integer, Player> e : gameHandle.getGame().getListPlayers().entrySet()) {
-            if (e.getValue().getRole().equals(Identification.ROLE_WEREWOLF) && !e.getValue().isAlive()) {
-                aliveWerewolvesCount--;
+            if (e.getValue().getRole()!=null) {
+                if (e.getValue().getRole().equals(Identification.ROLE_WEREWOLF) && !e.getValue().isAlive()) {
+                    aliveWerewolvesCount--;
+                }
             }
         }
         System.out.println("Alive werewolves" + aliveWerewolvesCount);
