@@ -29,6 +29,10 @@ public class AcceptorController {
      * 0 if no change (equal)
      * -1 if rejected
      */
+    
+    public void startRound() {
+        kpuId = -1;
+    }
     public int promiseProposal(int proposalNumber, int proposerId) {
         if (proposalNumber > promisedProposalNumber ||
                 (proposalNumber == promisedProposalNumber &&

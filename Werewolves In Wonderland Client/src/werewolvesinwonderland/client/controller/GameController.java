@@ -62,7 +62,7 @@ public class GameController {
         frame.setPlayerInfo(mGame.getCurrentPlayer());
         frame.updateBoard(voteNow);
         frame.changeNumberOfPlayersInfo(mGame.getAlivePlayers().size(),mGame.getDeadPlayers().size());
-        if ((voteNight || voteNow) && mGame.getCurrentPlayer().getPlayerId()==selectedKpu) proposerController.startVote();
+        if (voteNight && mGame.getCurrentPlayer().getPlayerId()==selectedKpu) proposerController.startVote();
     }
 
     public void startGame(String time, String role) {
@@ -113,6 +113,7 @@ public class GameController {
             //TODO: enable cells berisi semua player yg alive u/ divoting
         }*/
         voteNow = true;
+        if (mGame.getCurrentPlayer().getPlayerId()==selectedKpu) proposerController.startVote();
         frame.updateBoard(voteNow);
     }
 
@@ -183,6 +184,7 @@ public class GameController {
         } else {
             // This is an acceptor
             System.out.println("CONSENSUS: I am an acceptor!");
+            getAcceptorController().startRound();
         }
     }
 
