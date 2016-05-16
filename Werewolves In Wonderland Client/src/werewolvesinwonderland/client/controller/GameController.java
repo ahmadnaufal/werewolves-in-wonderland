@@ -130,7 +130,7 @@ public class GameController {
         mGame.setDays(days);
         //update view
         frame.changePhaseInfo(time, days);
-        if (time.equals(Identification.TIME_NIGHT) && mGame.getCurrentPlayer().getPlayerId()==selectedKpu) proposerController.startVote();
+        if (time.equals(Identification.TIME_NIGHT) && mGame.getCurrentPlayer().getPlayerId()==selectedKpu) voteNow=true;
     }
 
     public void setKpu(int kpuId) {
